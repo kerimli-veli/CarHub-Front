@@ -4,7 +4,7 @@ const Header = () => {
   return (
     <nav className=" text-white bg-gradient-to-r from-blue-900 to-black h-screen p-4">
       <div className="container mx-auto flex justify-end items-center">
-
+{/* Hello world */}
         <div className="flex space-x-10 items-center">
           <a href="#" className="hover:text-gray-400">Home</a>
           <div className="relative group">
