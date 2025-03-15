@@ -78,7 +78,8 @@ const SignIn = () => {
       {
         title:"New to CarHub? Sign up now",
         style: "text-black w-full mt-[15px] ",
-        action: ""
+        action: () => {navigate('/SignUp')}
+
 
       }
       

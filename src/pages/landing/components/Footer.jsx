@@ -1,142 +1,102 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+
+  const navigate = useNavigate()
   return (
-    <footer className="bg-gray-900 text-white py-10 px-5">
-      <div className="flex flex-wrap justify-between">
-        {/* Join BoxCar Section */}
-        <div className="flex-1 min-w-[250px] mb-6">
-          <h3 className="mb-2 text-lg font-semibold">Join BoxCar</h3>
-          <p className="mb-4">Receive pricing updates, shopping tips & more!</p>
-          <form className="flex flex-col gap-3">
+    <footer className="bg-[#0B0F19] text-white py-10 px-5">
+      <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-start ">
+        
+        {/* Join BoxCar */}
+        <div className="flex justify-between items-center mb-6 space-x-110 ">
+          <div>
+            <h3 className="text-lg font-semibold">Join BoxCar</h3>
+            <p className="text-sm text-gray-400">Receive pricing updates, shopping tips & more!</p>
+          </div>
+          <div className="flex items-center h-[61px] w-[542px] bg-[#1C1F2E] rounded-full px-4 py-2">
             <input
               type="email"
               placeholder="Your email address"
-              className="p-3 rounded border border-gray-300 text-black"
+              className="bg-transparent outline-none text-white placeholder-gray-400 px-2"
             />
-            <button
-              type="submit"
-              className="p-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
+            <button onClick={() =>{ navigate('SignUp')}} className="bg-blue-600 text-white w-[115px] h-[51px] ml-[200px] rounded-full hover:bg-blue-700 transition">
               Sign Up
             </button>
-          </form>
+          </div>
+           
         </div>
 
-        {/* Links Section */}
-        <div className="flex flex-wrap gap-12 flex-grow">
-          {/* Company Links */}
-          <div className="flex-1 min-w-[150px]">
-            <h4 className="mb-2 text-lg font-semibold">Company</h4>
-            <ul className="list-none pl-0">
-              {['About Us', 'Blog', 'Services', 'FAQs', 'Terms', 'Contact Us'].map((item) => (
-                <li key={item} className="mb-2">
-                  <a href="#" className="text-white hover:underline">
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Footer Links */}
+        
+        <div className="flex flex-wrap flex-grow justify-between gap-8 border-t border-gray-700 mt-6 pt-12 ">
+          <div className="flex flex-wrap flex-grow justify-between gap-8  ">
 
-          {/* Quick Links */}
-          <div className="flex-1 min-w-[150px]">
-            <h4 className="mb-2 text-lg font-semibold">Quick Links</h4>
-            <ul className="list-none pl-0">
-              {['Get in Touch', 'Help Center', 'Live Chat', 'How it Works'].map((item) => (
-                <li key={item} className="mb-2">
-                  <a href="#" className="text-white hover:underline">
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Our Brands */}
-          <div className="flex-1 min-w-[150px]">
-            <h4 className="mb-2 text-lg font-semibold">Our Brands</h4>
-            <ul className="list-none pl-0">
-              {['Toyota', 'Porsche', 'Audi', 'BMW', 'Ford', 'Nissan', 'Peugeot', 'Volkswagen'].map((brand) => (
-                <li key={brand} className="mb-2">
-                  <a href="#" className="text-white hover:underline">
-                    {brand}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Vehicle Types */}
-          <div className="flex-1 min-w-[150px]">
-            <h4 className="mb-2 text-lg font-semibold">Vehicle Types</h4>
-            <ul className="list-none pl-0">
-              {['Sedan', 'Hatchback', 'SUV', 'Hybrid', 'Electric', 'Coupe', 'Truck', 'Convertible'].map((type) => (
-                <li key={type} className="mb-2">
-                  <a href="#" className="text-white hover:underline">
-                    {type}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* our mobile app */}
-        <div>
-            <div className="grid gap-2">
-                <h4 className="mb-2 text-lg font-semibold">Our Mobile App</h4>
-
-                 <div className="w-[198px] h-[60px] bg-[#FFFFFF12]  rounded-[10px] flex justify-center items-center flex-col ">
-                    
-                    
-                    <div>
-                        <p className="text-sm" >Download on the</p>
-                    </div>
-
-                    <div>
-                        <p className="pr-[15px]" >Apple Store</p>
-                    </div>
-                    
-                 </div>
-
-                 <div className="w-[198px] h-[60px] bg-[#FFFFFF12]  rounded-[10px] flex justify-center items-center flex-col ">
-                    <div>
-                        <p className="text-sm" >Get in on</p>
-                    </div>
-
-                    <div>
-                        <p className="pr-[15px]" >Google Play</p>
-                    </div>
-                </div>
-             </div>
-
-        {/* logolar */}
-        <div className="flex-basis-[200px] mb-6">
-          <h4 className="mb-2 text-lg font-semibold">Connect With Us</h4>
-          <div className="flex gap-3">
             {[
-              { url: "https://facebook.com", iconUrl: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" },
-              { url: "https://twitter.com", iconUrl: "https://upload.wikimedia.org/wikipedia/en/6/60/Twitter_Logo_as_of_2021.svg" },
-              { url: "https://instagram.com", iconUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" },
-              { url: "https://linkedin.com", iconUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Linkedin_icon.svg" }
-            ].map((social, index) => (
-              <a href={social.url} key={index} target="_blank" rel="noopener noreferrer">
-                <img src={social.iconUrl} alt={`Social media ${index + 1}`} className="w-7" />
-              </a>
+              { title: "Company", links: ["About Us", "Blog", "Services", "FAQs", "Terms", "Contact Us"] },
+              { title: "Quick Links", links: ["Get in Touch", "Help Center", "Live Chat", "How it Works"] },
+              { title: "Our Brands", links: ["Toyota", "Porsche", "Audi", "BMW", "Ford", "Nissan", "Peugeot", "Volkswagen"] },
+              { title: "Vehicles Type", links: ["Sedan", "Hatchback", "SUV", "Hybrid", "Electric", "Coupe", "Truck", "Convertible"] },
+            ].map((section, index) => (
+              <div key={index} className="min-w-[150px]">
+                <h4 className="text-lg font-semibold mb-2">{section.title}</h4>
+                <ul className="space-y-4">
+                  {section.links.map((item) => (
+                    <li key={item}>
+                      <a href="#" className="text-gray-400 hover:text-white transition">{item}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
+          <div>
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold mb-8">Our Mobile App</h4>
+              <div className="space-y-3">
+                <a href="#" className="block w-[198px] bg-gray-800 text-white py-2 px-5 rounded-[17px] flex items-center space-x-3">
+                  <img src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/apple.svg" alt="Apple" className="w-6  " />
+                  <span>Download on the Apple Store</span>
+                </a>
+                <a href="#" className="block w-[198px] bg-gray-800 text-white py-2 px-5 rounded-[17px] flex items-center space-x-3">
+                  <img src="https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/googleplay.svg" alt="Google Play" className="w-6" />
+                  <span>Get it on <br /> Google Play</span>
+
+                </a>
+              </div>
+            </div>
+
+            {/* Social Media */}
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold mb-6">Connect With Us</h4>
+              <div className="flex space-x-4">
+                {[
+                  { url: "https://facebook.com", iconUrl: "https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/facebook.svg" },
+                  { url: "https://twitter.com", iconUrl: "https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/twitter.svg" },
+                  { url: "https://instagram.com", iconUrl: "https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/instagram.svg" },
+                  { url: "https://linkedin.com", iconUrl: "https://cdn.jsdelivr.net/npm/simple-icons@v7/icons/linkedin.svg" },
+                ].map((social, index) => (
+                  <a href={social.url} key={index} target="_blank" rel="noopener noreferrer">
+                    <img src={social.iconUrl} alt={`Social ${index + 1}`} className="w-6 opacity-75 hover:opacity-100 transition" />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+          </div>
+          
+          
         </div>
-        </div>
-       
+
+        
       </div>
 
-      {/* en asagi */}
-      <div className="flex justify-between border-t border-gray-700 mt-6 pt-3 pl-[150px] pr-[150px] text-sm">
-        <div>© 2024 Boxcars.com. All rights reserved.</div>
-        <div>
-          <a href="#" className="text-white hover:underline mr-4">Terms & Conditions</a>
-          <a href="#" className="text-white hover:underline">Privacy Notice</a>
+      {/* Footer Bottom */}
+      <div className="border-t border-gray-700 mt-6 pt-4 text-sm flex flex-col sm:flex-row justify-between text-gray-400 px-4 ">
+        <div className="pl-[161px]" >© 2024 Boxcars.com. All rights reserved.</div>
+        <div className="flex space-x-4 pr-[167px]">
+          <a href="#" className="hover:text-white transition">Terms & Conditions</a>
+          <a href="#" className="hover:text-white transition">Privacy Notice</a>
         </div>
       </div>
     </footer>
