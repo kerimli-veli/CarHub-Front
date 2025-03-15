@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const navigate = useNavigate()
 
   return (
     <nav className="text-white p-4">
@@ -35,7 +38,8 @@ const Header = () => {
           <a href="#" className="hover:text-gray-400">Contact</a>
 
           {/* Sign In Button */}
-          <button className="flex items-center hover:text-gray-400 transition duration-300 ease-in-out transform hover:scale-105">
+          <button onClick={() =>{ navigate('signIn')}}
+            className="flex items-center hover:text-gray-400 transition duration-300 ease-in-out transform hover:scale-105">
             <span className="mr-2 text-lg font-semibold">Sign in</span>
             <svg className="w-6 h-6 text-white transition-colors duration-300 ease-in-out hover:text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>

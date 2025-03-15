@@ -2,6 +2,7 @@ import React from 'react'
 import Header from './components/Header'
 import Filter from './components/Filter';
 import Background from './../../assets/images/Background.svg'; 
+import Footer from './components/Footer';
 
 const Landing = () => {
   return (
@@ -24,6 +25,8 @@ const Landing = () => {
       <div className="absolute top-[31.5%] left-[8.5%] z-20">
       <Filter />
       </div>
+
+      <Footer/>
     </div>
   );
 };
