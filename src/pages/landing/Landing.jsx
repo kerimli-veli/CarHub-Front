@@ -27,6 +27,7 @@ const Landing = () => {
           Let’s Find Your  Perfect Car
         </h1>
         <Filter />
+        <div className='w-100'></div>
       </div>
 
       <div className='grid grid-cols-1 gap-40 absolute min-h-screen p-[12%] justify-center items-center top-[80%]'>
