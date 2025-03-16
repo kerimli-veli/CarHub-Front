@@ -2,6 +2,7 @@ import React from 'react'
 import Header from './components/Header'
 import BrowseByType from './components/BrowseByType';
 import PremiumBrands from './components/PremiumBrands';
+import FeaturedListings from './components/FeaturedListings'
 import Filter from './components/Filter';
 import Background from './../../assets/images/Background.svg'; 
 
@@ -31,6 +32,7 @@ const Landing = () => {
       <div className='grid grid-cols-1 gap-40 absolute min-h-screen p-[12%] justify-center items-center top-[80%]'>
         <BrowseByType />
         <PremiumBrands/>
+        <FeaturedListings/>
       </div>
 
     </div>
