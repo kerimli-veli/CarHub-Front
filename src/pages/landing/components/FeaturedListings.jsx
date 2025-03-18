@@ -4,7 +4,7 @@ export default function FeaturedListings() {
   const cars = [
     {
       id: 1,
-      image: "https://via.placeholder.com/300x200", 
+      image: "https://via.placeholder.com/300x200",
       tag: "Great Price",
       model: "Ford Transit",
       year: "2021",
@@ -50,11 +50,15 @@ export default function FeaturedListings() {
 
   return (
     <div className="p-6 bg-gray-100 rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Featured Listings</h2>
-      <div className="flex gap-4 overflow-x-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center md:text-left">Featured Listings</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {cars.map((car) => (
-          <div key={car.id} className="w-72 bg-white shadow-lg rounded-lg overflow-hidden">
-            <img src={car.image} alt={car.model} className="w-full h-40 object-cover" />
+          <div
+            key={car.id}
+            className="bg-white shadow-lg rounded-lg overflow-hidden transition transform duration-300 hover:scale-105"
+          >
+            <img src={car.image} alt={car.model} className="w-full h-44 object-cover" />
             <div className="p-4">
               <span className="text-xs font-semibold px-2 py-1 bg-blue-200 text-blue-800 rounded">
                 {car.tag}
@@ -62,7 +66,7 @@ export default function FeaturedListings() {
               <h3 className="mt-2 font-semibold">{car.model} - {car.year}</h3>
               <p className="text-sm text-gray-600">{car.mileage} - {car.fuel} - {car.transmission}</p>
               <p className="text-lg font-bold mt-2">{car.price}</p>
-              <button className="mt-3 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+              <button className="mt-3 w-full bg-blue-500 text-white py-2 rounded transition duration-300 hover:bg-blue-600 hover:shadow-lg">
                 View Details
               </button>
             </div>

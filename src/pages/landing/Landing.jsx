@@ -3,6 +3,7 @@ import Header from './components/Header'
 import BrowseByType from './components/BrowseByType';
 import PremiumBrands from './components/PremiumBrands';
 import FeaturedListings from './components/FeaturedListings'
+import ElectricVehicles from './components/ElectricVehicles'
 import Filter from './components/Filter';
 import Background from './../../assets/images/Background.svg'; 
 
@@ -34,6 +35,7 @@ const Landing = () => {
         <BrowseByType />
         <PremiumBrands/>
         <FeaturedListings/>
+        <ElectricVehicles/>
       </div>
 
     </div>
