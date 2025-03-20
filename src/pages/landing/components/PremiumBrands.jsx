@@ -40,7 +40,7 @@ const PremiumBrands = () => {
             <img
               src={brand.logo}
               alt={brand.name}
-              className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mb-2 transition duration-300 hover:opacity-80"
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-20 md:h-18 mb-2 transition duration-300 hover:opacity-80"
             />
             <span className="text-gray-700 text-xs sm:text-sm font-medium transition duration-300 hover:text-gray-900">
               {brand.name}
