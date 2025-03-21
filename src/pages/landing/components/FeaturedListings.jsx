@@ -70,7 +70,7 @@ export default function FeaturedListings() {
     <div className="p-10 bg-gray-100 rounded-lg relative">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Featured Listings</h2>
-        <a href="#" className="text-blue-600 hover:underline flex gap-2">
+        <a href="/carList" className="text-blue-600 hover:underline flex gap-2">
           View All
           <img className="w-3 h-3" src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png" alt="" />
         </a>
@@ -135,7 +135,7 @@ export default function FeaturedListings() {
               <p className="text-lg font-bold mt-2">{car.price}</p>
 
               <a
-                href="#"
+                href=""
                 className="text-blue-600 hover:underline text-s flex items-center h-6 gap-2"
               >
                 <span className="whitespace-nowrap overflow-hidden font-normal text-ellipsis">View Details</span>
