@@ -4,8 +4,9 @@ import viteLogo from '/vite.svg'
 import Landing from './pages/landing/Landing'
 import {BrowserRouter, Routes, Route } from "react-router"
 import React from "react";
-import SignIn from './pages/sign-in/signIn'
+import SignIn from './pages/sign-in/SignIn'
 import SignUp from './pages/sign-up/signUp'
+import { Toaster } from 'react-hot-toast'
 
 
 function App() {
@@ -13,9 +14,13 @@ function App() {
 
   return (
     <>
+      <div>
+      <Toaster position='top-center'/>
+      </div>
         <BrowserRouter>
           <Routes>
           <Route path="/" element={<Landing/>}/>
+          
           <Route path="/SignIn" element={<SignIn/>} />
           <Route path="/SignUp" element={<SignUp/>} />
          
