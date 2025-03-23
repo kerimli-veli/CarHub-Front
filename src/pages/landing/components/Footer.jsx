@@ -5,7 +5,7 @@ const Footer = () => {
 
   const navigate = useNavigate()
   return (
-    <footer className="bg-[#0B0F19] text-white py-10 px-5">
+    <footer className="bg-[#050B20] text-white py-10 px-5">
       <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-start ">
         
         {/* Join BoxCar */}

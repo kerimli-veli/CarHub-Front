@@ -15,7 +15,7 @@ const TransmissionTypes = [
 const CarListing = () => {
   const [cars, setCars] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const carsPerPage = 8;
+  const carsPerPage = 12;
 
   useEffect(() => {
     fetch("https://localhost:7282/api/Car/GetAll")
@@ -41,10 +41,10 @@ const CarListing = () => {
   const currentCars = cars.slice(indexOfFirstCar, indexOfLastCar);
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8 rounded-[100px]">
+    <div className="bg-gray-100 min-h-screen p-35 rounded-[100px]">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl mt-10 font-semibold mb-15">Listing</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {currentCars.map((car) => (
             <div key={car.id} className="bg-white rounded-lg shadow-md relative transition-transform duration-300 hover:scale-105">
               {car.price < 50000 && (
