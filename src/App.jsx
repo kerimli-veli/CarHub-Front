@@ -5,7 +5,7 @@ import Landing from './pages/landing/Landing'
 import {BrowserRouter, Routes, Route } from "react-router"
 import React from "react";
 import SignIn from './pages/sign-in/SignIn'
-import SignUp from './pages/sign-up/signUp'
+import SignUp from './pages/sign-up/SignUp'
 import { Toaster } from 'react-hot-toast'
 
 

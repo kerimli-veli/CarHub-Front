@@ -1,139 +1,118 @@
-import React from 'react'
-import Header from '../landing/components/Header'
-import Form from '../common/Form'
-import { useNavigate } from 'react-router';
-import { useState } from 'react';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Header from '../landing/components/Header';
 import Footer from '../landing/components/Footer';
-
-//import { useStore } from 'zustand';
-
-//import { div } from 'motion/react-client';
+import { FaUserPlus } from "react-icons/fa";
+import React from "react";
 
 const SignUp = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    phone: "",
+    email: "",
+    password: "",
+    userImagePath: ""
+  });
 
-  const SignUp = async () => {
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
-    //const {addToken} =useStore(themeStore)
-    const navigate = useNavigate();
-    const [formData , setFormData] = useState({})
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
     try {
-        const response = await fetch ("Burada yuksek seviyyeli api olacaq", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type":"application/json",
-                 
-            },
+      const response = await axios.post(
+        "https://localhost:7282/api/User/Register",
+        formData,
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
 
-            body: JSON.stringify(formData)
-        })
+      if (response.status === 200 && response.data) {
+        toast.success(response.data.message || "Registration successful!");
+        setSuccess(true);
 
-     const data = await response.json()
+        setTimeout(() => {
+          navigate("/userDetails");
+        }, 1500);
+      } else {
+        toast.error(response.data.message || "Registration failed!");
+      }
 
-     
-     if (response.ok){
-        //addToken(data.token)
-        //navigate('/home'); 
-     }
-     else {
-        setError(data.message || "Error"); 
-    }
-
-
-    }catch (error){
-        console.log(error)
-    }
-}
-
-  const formItems = [
-    {
-      label: "",
-      name: "username",
-      type: "text",
-      placeholder: "Username",
-      inputStyle: "p-4 bg-transparent border-[1px] border-zinc-400 rounded-[4px] text-white "
-  },
-    {
-      label: "",
-      name: "email",
-      type: "email",
-      placeholder: "E-mail",
-      inputStyle: "p-4 bg-transparent border-[1px] border-zinc-400 rounded-[15px] text-black "
-
-
-    },
-
-    {
-      label: "",
-      name: "password",
-      type: "password",
-      placeholder: "Password",
-      inputStyle: "p-4 bg-transparent border-[1px] border-zinc-400 rounded-[15px] text-black "
-
-    },
-
-
-
-  ]
-
-    const formButtons =[
-      { title: "Sign In ",
-        style : "bg-[#405FF2] text-white font-medium py-[3px] h-[40px] w-full rounded-[10px] hover:bg-blue-700 active:bg-blue-800 focus:outline-none ",
-        action : ""
-
-      },
-
-      {
-        title:"Already have an account? Sign in",
-        style: "text-zinc-300 w-full mt-[25px] ",
-        action: () => {navigate('/SignIn')}
-
-    }
+    } catch (error) {
+      console.error("Error during registration:", error.response ? error.response.data : error);
       
+      if (error.response && error.response.data && error.response.data.Errors) {
+        toast.error(error.response.data.Errors[0] || "An error occurred during registration!");
+      } else {
+        toast.error("An unknown error occurred!");
+      }
+      
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    ]
-    
   return (
-    
     <div>
-      <Header/>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        
-       
-        
-        <div>
+      <Header />
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white p-8 w-[470px] rounded-xl shadow-lg">
+          <div className="relative flex gap-10 pb-2 border-b border-gray-300 ">
+            <button onClick={() => navigate("/signIn")} className="text-gray-500 font-medium pb-2 relative transition-all duration-300 ease-in-out">
+              Sign In
+            </button>
+            <button className="text-gray-800 font-medium pb-2 relative transition-all duration-300 ease-in-out border-b-2 border-blue-600">
+              Sign Up
+            </button>
+          </div>
 
-         <Form
-             headerText = { 
-              {
-                title: "Sign Up",
-                style: "text-black font-bold text-[32px]"
-              }
-            }
-            
+          {success ? (
+            <div className="text-center">...</div>
+          ) : (
+            <motion.form onSubmit={handleSubmit} className="mt-6 grid gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
+              
+              <input type="text" name="surname" placeholder="Surname" value={formData.surname} onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
+              
+              <input type="tel" name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
+              
+              <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
+              
+              <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange}
+                className="w-full p-3 mt-4 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
 
-
-
-            formItems={formItems} 
-            //setFormData={setFormData} 
-            formButtons={formButtons} 
-            formStyle="w-[450px] h-[470px] px-[68px] pt-[48px] flex flex-col gap-6 " />
-
-        
-
-        </div>
-        
-        
-
-
-
+              <input type="text" placeholder="ImagePath" name="userImagePath" value={formData.userImagePath} onChange={handleChange}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
+              
+              <motion.button type="submit" disabled={loading}
+                className="w-full mt-4 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-3"
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+                <FaUserPlus />
+                {loading ? "Registering..." : "Sign Up"}
+              </motion.button>
+            </motion.form>
+          )}
+        </motion.div>
       </div>
-      <div>
-        <Footer/>
-        </div>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;

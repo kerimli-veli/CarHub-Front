@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
-import Header from '../landing/components/Header';
-import Footer from '../landing/components/Footer';
+import Header from "../landing/components/Header";
+import Footer from "../landing/components/Footer";
 import { FaSignInAlt } from "react-icons/fa";
 import React from "react";
 
@@ -11,7 +12,10 @@ const SignIn = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [activeTab, setActiveTab] = useState("signIn");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const activeTab = location.pathname === "/signUp" ? "signUp" : "signIn";
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,15 +26,15 @@ const SignIn = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://localhost:7282/api/User/Login", 
+        "https://localhost:7282/api/User/Login",
         JSON.stringify(formData),
         {
           headers: {
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
-      console.log(response.data); 
+
       if (response.data.isSuccess) {
         localStorage.setItem("accessToken", response.data.data.accessToken);
         localStorage.setItem("refreshToken", response.data.data.refreshToken);
@@ -40,30 +44,58 @@ const SignIn = () => {
         toast.error("Login failed!");
       }
     } catch (error) {
-      console.error("Error response:", error.response); 
-      toast.error("Invalid email or password!");
+      toast.error("Invalid email or password!", {
+        duration: 1400,
+      });
     } finally {
       setLoading(false);
     }
   };
-  
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate("/Listing");
+      }, 2000);
+
+      return () => clearTimeout(timer); 
+    }
+  }, [success, navigate]);
 
   return (
     <div>
       <Header />
       <div className="flex items-center justify-center min-h-screen bg-white">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white p-8 w-[470px] rounded-xl shadow-lg">
+          
           <div className="relative flex gap-10 pb-2 border-b border-gray-300">
-            {['signIn', 'register'].map((tab) => (
+            <Link to="/signIn">
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`text-gray-500 font-medium pb-2 relative transition-all duration-300 ease-in-out ${activeTab === tab ? 'text-gray-800' : 'text-gray-400'}`}
+                className={`text-gray-500 font-medium pb-2 relative transition-all duration-300 ease-in-out ${
+                  activeTab === "signIn" ? "text-gray-800" : "text-gray-400"
+                }`}
               >
-                {tab === 'signIn' ? 'Sign in' : 'Register'}
-                {activeTab === tab && (
+                Sign In
+                {activeTab === "signIn" && (
                   <motion.div
-                    layoutId="underline"
+                    className="absolute bottom-0 left-0 w-full border-b-2 border-blue-600"
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
+              </button>
+            </Link>
+
+            <Link to="/signUp">
+              <button
+                className={`text-gray-500 font-medium pb-2 relative transition-all duration-300 ease-in-out ${
+                  activeTab === "signUp" ? "text-gray-800" : "text-gray-400"
+                }`}
+              >
+                Sign Up
+                {activeTab === "signUp" && (
+                  <motion.div
                     className="absolute bottom-0 left-0 w-full h-1 bg-blue-600"
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
@@ -71,14 +103,11 @@ const SignIn = () => {
                   />
                 )}
               </button>
-            ))}
+            </Link>
           </div>
 
           {success ? (
-            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5 }}
-              className="mt-6 p-4 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-center rounded-lg">
-              Welcome to Premium Access!
-            </motion.div>
+            <div className="text-center">Loading...</div>
           ) : (
             <motion.form onSubmit={handleSubmit} className="mt-10 grid gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <input
@@ -136,11 +165,6 @@ const SignIn = () => {
                   <img src="https://i.postimg.cc/fb4HLJS6/Icon-Google.png" alt="Google Icon" />
                   Login with Google
                 </motion.button>
-              </div>
-
-              <div className="mt-6 p-4 bg-gray-100 text-center rounded-lg">
-                <p>Username: <b>demo</b></p>
-                <p>Password: <b>demo</b></p>
               </div>
             </motion.form>
           )}
