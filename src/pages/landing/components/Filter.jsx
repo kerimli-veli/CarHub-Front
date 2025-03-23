@@ -20,34 +20,29 @@ const Filter = () => {
   };
 
   return (
-    <div className="w-[330px] h-[400px] bg-white shadow-xl rounded-2xl p-4">
+    <div className="w-full max-w-[250px] md:max-w-[300px] lg:max-w-[350px] bg-white shadow-xl rounded-2xl p-3.5">
+      {/* New & Used Buttons */}
       <div className="flex border rounded-lg overflow-hidden">
-        <button
-          className={`flex-1 py-2 text-lg font-medium transition-all ${
-            selectedType === "New"
-              ? "bg-black text-white"
-              : "bg-white text-black hover:bg-gray-200"
-          }`}
-          onClick={() => setSelectedType("New")}
-        >
-          New
-        </button>
-        <button
-          className={`flex-1 py-2 text-lg font-medium transition-all ${
-            selectedType === "Used"
-              ? "bg-black text-white"
-              : "bg-white text-black hover:bg-gray-200"
-          }`}
-          onClick={() => setSelectedType("Used")}
-        >
-          Used
-        </button>
+        {["New", "Used"].map((type) => (
+          <button
+            key={type}
+            className={`flex-1 py-2 text-lg font-medium transition-all duration-300 ${
+              selectedType === type
+                ? "bg-black text-white"
+                : "bg-white text-black hover:bg-gray-200"
+            }`}
+            onClick={() => setSelectedType(type)}
+          >
+            {type}
+          </button>
+        ))}
       </div>
 
-      <div className="mt-3">
-        <label className="block text-gray-500 mb-1">Select Makes</label>
+      {/* Select Makes */}
+      <div className="mt-4">
+        <label className="block text-gray-500 mb-1">Select Make</label>
         <select
-          className="w-full p-2 border rounded-md"
+          className="w-full p-3 border rounded-md bg-gray-50 hover:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={selectedMake}
           onChange={handleBrandChange}
         >
@@ -59,10 +54,11 @@ const Filter = () => {
         </select>
       </div>
 
-      <div className="mt-3">
-        <label className="block text-gray-500 mb-1">Select Models</label>
+      {/* Select Models */}
+      <div className="mt-4">
+        <label className="block text-gray-500 mb-1">Select Model</label>
         <select
-          className="w-full p-2 border rounded-md"
+          className="w-full p-3 border rounded-md bg-gray-50 hover:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={selectedModel}
           onChange={(e) => setSelectedModel(e.target.value)}
         >
@@ -74,7 +70,8 @@ const Filter = () => {
         </select>
       </div>
 
-      <div className="mt-3">
+      {/* Price Range */}
+      <div className="mt-4">
         <label className="block text-gray-500 mb-2">Select Price</label>
         <input
           type="range"
@@ -82,7 +79,7 @@ const Filter = () => {
           max="250000"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className="w-full"
+          className="w-full accent-blue-600 cursor-pointer"
         />
         <div className="flex justify-between text-blue-600 text-sm mt-1">
           <span>$0</span>
@@ -91,6 +88,7 @@ const Filter = () => {
         </div>
       </div>
 
+      {/* Search Button */}
       <button className="w-full mt-5 bg-blue-600 text-white py-3 rounded-md flex justify-center items-center text-lg transition-all duration-300 hover:bg-blue-700 active:scale-95 shadow-md hover:shadow-lg">
         🔍 Search
       </button>
@@ -99,3 +97,6 @@ const Filter = () => {
 };
 
 export default Filter;
+
+
+

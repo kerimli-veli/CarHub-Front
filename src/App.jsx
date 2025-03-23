@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import Landing from './pages/landing/Landing'
+import CarList from './pages/carsList/CarList'
 import {BrowserRouter, Routes, Route } from "react-router"
 import React from "react";
 import SignIn from './pages/sign-in/SignIn'
@@ -20,9 +21,13 @@ function App() {
         <BrowserRouter>
           <Routes>
           <Route path="/" element={<Landing/>}/>
+
           
           <Route path="/SignIn" element={<SignIn/>} />
           <Route path="/SignUp" element={<SignUp/>} />
+
+          <Route path='/carList' element={<CarList/>}/>
+
          
           {/* <Route path='/login' element={<LoginPage/>}/>
           <Route path='/signUp' element={<SignUpPage/>}/> */}
