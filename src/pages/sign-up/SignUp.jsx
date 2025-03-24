@@ -44,7 +44,7 @@ const SignUp = () => {
         setSuccess(true);
 
         setTimeout(() => {
-          navigate("/userDetails");
+          navigate("/");
         }, 1500);
       } else {
         toast.error(response.data.message || "Registration failed!");

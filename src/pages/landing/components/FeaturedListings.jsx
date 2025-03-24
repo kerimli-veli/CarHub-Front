@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Bookmark, ChevronLeft, ChevronRight } from "lucide-react";
 
-const fuelTypes = ["Diesel", "Petrol", "Electric"];
+const fuelTypes = ["None","Diesel", "Petrol", "Electric"];
 const transmissionTypes = ["Automatic", "Manual", "CVT"];
 
 export default function FeaturedListings() {
