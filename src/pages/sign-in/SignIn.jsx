@@ -6,6 +6,7 @@ import axios from "axios";
 import Header from "../landing/components/Header";
 import Footer from "../landing/components/Footer";
 import { FaSignInAlt } from "react-icons/fa";
+import { setCookie } from "cookies-next"; // cookies-next kullanarak cookie işlemleri
 import React from "react";
 
 const SignIn = () => {
@@ -36,10 +37,10 @@ const SignIn = () => {
       );
   
       if (response.data.isSuccess) {
-        localStorage.setItem("accessToken", response.data.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.data.refreshToken);
-  
-        localStorage.setItem("email", formData.email);
+        // Cookie'lere accessToken, refreshToken ve email kaydediyoruz
+        setCookie("accessToken", response.data.data.accessToken, { maxAge: 60 * 60 * 24 }); // 1 gün geçerlilik
+        setCookie("refreshToken", response.data.data.refreshToken, { maxAge: 60 * 60 * 24 }); // 1 gün geçerlilik
+        setCookie("email", formData.email, { maxAge: 60 * 60 * 24 }); // 1 gün geçerlilik
   
         toast.success("Login successful!");
         setSuccess(true);
@@ -54,7 +55,6 @@ const SignIn = () => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     if (success) {

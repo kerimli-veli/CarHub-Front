@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Bookmark, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import Cookies from "js-cookie";
+import getUserFromToken from "./../../common/GetUserFromToken";
 
-const fuelTypes = ["None","Diesel", "Petrol", "Electric"];
+const fuelTypes = ["None", "Diesel", "Petrol", "Electric"];
 const transmissionTypes = ["Automatic", "Manual", "CVT"];
 
 export default function FeaturedListings() {
   const [cars, setCars] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [filter, setFilter] = useState("all");
   const [savedCars, setSavedCars] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [accessToken, setAccessToken] = useState(""); 
+
   const itemsPerPage = 4;
 
   useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (token) {
+      setAccessToken(token);
+    }
+
     fetch("https://localhost:7282/api/Car/GetAll")
       .then((response) => response.json())
       .then((data) => {
@@ -35,89 +45,125 @@ export default function FeaturedListings() {
           fuel: fuelTypes[car.fuel] || "Unknown",
           transmission: transmissionTypes[car.transmission] || "Unknown",
           price: `$${car.price.toLocaleString()}`,
+          isFavorite: car.isFavorite,
         }));
+
+        const initialSavedCars = {};
+        formattedCars.forEach((car) => {
+          initialSavedCars[car.id] = car.isFavorite;
+        });
+
         setCars(formattedCars);
+        setSavedCars(initialSavedCars);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const filteredCars = cars.filter((car) => {
-    if (filter === "new") return car.mileage === 0;
-    if (filter === "used") return car.mileage > 0;
-    return true;
-  });
+  const getAccessToken = () => {
+    return accessToken || Cookies.get("accessToken");
+  };
 
   const toggleSave = (id) => {
-    setSavedCars((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    const token = getAccessToken();
+    
+    if (token) {
+      const user = getUserFromToken();
+      if (user && user.id) {
+        const isCurrentlySaved = savedCars[id];
+        const url = isCurrentlySaved
+          ? `https://localhost:7282/api/User/RemoveFavoriteCar?UserId=${user.id}&CarId=${id}`
+          : `https://localhost:7282/api/User/AddUserFavorites?UserId=${user.id}&CarId=${id}`;
+
+        fetch(url, {
+          method: isCurrentlySaved ? "DELETE" : "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data && data.isSuccess !== undefined) {
+              setSavedCars((prev) => ({
+                ...prev,
+                [id]: !isCurrentlySaved,
+              }));
+            } else {
+              console.error("Error: Response does not contain 'isSuccess' property");
+            }
+          })
+          .catch((error) => console.error("Error:", error.message));
+      } else {
+        setModalMessage("Please log in or sign up to save this car.");
+        setShowModal(true);
+      }
+    } else {
+      setModalMessage("Please log in or sign up to save this car.");
+      setShowModal(true);
+    }
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + itemsPerPage) % filteredCars.length);
+    setCurrentIndex((prevIndex) => (prevIndex + itemsPerPage) % cars.length);
   };
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex - itemsPerPage < 0
-        ? filteredCars.length - (filteredCars.length % itemsPerPage || itemsPerPage)
+        ? cars.length - (cars.length % itemsPerPage || itemsPerPage)
         : prevIndex - itemsPerPage
     );
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
     <div className="p-10 bg-gray-100 rounded-lg relative">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Featured Listings</h2>
-        <a href="/carList" className="text-blue-600 hover:underline flex gap-2">
+        <button
+          onClick={() => (window.location.href = "/carList")}
+          className="mt-3 font-medium text-blue-500 flex gap-2 py-2 rounded-lg border-2 border-transparent transition-all duration-300 hover:px-4 transform hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:scale-105 hover:shadow-xl active:scale-95 active:shadow-none"
+        >
           View All
-          <img className="w-3 h-3" src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png" alt="" />
-        </a>
-      </div>
-
-      <div className="flex space-x-6 mb-6 border-b pb-2">
-        <button
-          className={`text-lg font-semibold border-b-2 ${filter === "all" ? "border-blue-600" : "text-gray-500 hover:text-black"}`}
-          onClick={() => setFilter("all")}
-        >
-          In Stock
-        </button>
-        <button
-          className={`text-lg font-semibold border-b-2 ${filter === "new" ? "border-blue-600" : "text-gray-500 hover:text-black"}`}
-          onClick={() => setFilter("new")}
-        >
-          New Cars
-        </button>
-        <button
-          className={`text-lg font-semibold border-b-2 ${filter === "used" ? "border-blue-600" : "text-gray-500 hover:text-black"}`}
-          onClick={() => setFilter("used")}
-        >
-          Used Cars
         </button>
       </div>
 
       <div className="py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {filteredCars.slice(currentIndex, currentIndex + itemsPerPage).map((car) => (
+        {cars.slice(currentIndex, currentIndex + itemsPerPage).map((car) => (
           <div
             key={car.id}
             className="bg-white shadow-md rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 relative"
           >
             <div className="relative">
-              <img src={car.image} alt={car.model} className="w-full h-45 object-cover" />
+              <img
+                src={car.image}
+                alt={car.model}
+                className="w-full h-[200px] object-cover"
+              />
               <button
                 className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition ${
-                  savedCars[car.id] ? "bg-green-500 text-white" : "bg-white hover:bg-gray-200"
+                  accessToken
+                    ? savedCars[car.id]
+                      ? "bg-green-500 text-white"
+                      : "bg-white hover:bg-gray-200"
+                    : "bg-white hover:bg-gray-200"
                 }`}
                 onClick={() => toggleSave(car.id)}
               >
-                <Bookmark
+                <Heart
                   size={18}
                   className={`transition-transform ${
-                    savedCars[car.id] ? "scale-125 text-white" : "text-gray-700"
+                    accessToken
+                      ? savedCars[car.id]
+                        ? "scale-125 text-white"
+                        : "text-gray-700"
+                      : "text-gray-700"
                   }`}
                 />
               </button>
+
               <span className="absolute top-3 left-3 text-xs font-semibold px-2 py-1 bg-green-200 text-green-800 rounded">
                 {car.tag}
               </span>
@@ -132,17 +178,20 @@ export default function FeaturedListings() {
                 {car.mileage} Miles • {car.fuel} • {car.transmission}
               </p>
 
-              <p className="text-lg font-bold mt-2">{car.price}</p>
+              <h2 className="text-black text-2xl">{car.isFavorite}</h2>
 
-              <a
-                href=""
-                className="text-blue-600 hover:underline text-s flex items-center h-6 gap-2"
-              >
-                <span className="whitespace-nowrap overflow-hidden font-normal text-ellipsis">View Details</span>
-                <img className="w-3 h-3" src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png" alt="" />
-              </a>
+              <div>
+                <p className="text-xl font-bold mt-2">{car.price}</p>
+                <button className="mt-3 font-medium text-blue-500 flex gap-2 py-2 rounded-lg border-2 border-transparent transition-all duration-300 hover:px-4 transform hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:scale-105 hover:shadow-xl active:scale-95 active:shadow-none">
+                  View Details
+                  <img
+                    className="w-3 h-3"
+                    src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png"
+                    alt=""
+                  />
+                </button>
+              </div>
             </div>
-
           </div>
         ))}
       </div>
@@ -161,6 +210,41 @@ export default function FeaturedListings() {
           <ChevronRight size={20} />
         </button>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 backdrop-blur-md z-50">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-sm text-center relative transform transition-all scale-105">
+            <h2 className="text-xl font-semibold text-gray-800">
+              Save Your Favorite Cars
+            </h2>
+            <p className="text-gray-600 mt-2">
+              Please log in or sign up to save this car.
+            </p>
+
+            <div className="mt-6 flex justify-center space-x-3">
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
+                onClick={() => (window.location.href = "/signIn")}
+              >
+                Login
+              </button>
+              <button
+                className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
+                onClick={() => (window.location.href = "/signup")}
+              >
+                Sign Up
+              </button>
+            </div>
+
+            <button
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+              onClick={closeModal}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import Landing from './pages/landing/Landing'
 import CarList from './pages/carsList/CarList'
 import {BrowserRouter, Routes, Route } from "react-router"
@@ -8,7 +6,8 @@ import React from "react";
 import SignIn from './pages/sign-in/SignIn'
 import SignUp from './pages/sign-up/SignUp'
 import { Toaster } from 'react-hot-toast'
-
+import UserProfile from './pages/userProfil/UserProfil'
+import CarFavorites from './pages/userProfil/components/CarFavorites'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -27,6 +26,13 @@ function App() {
           <Route path="/SignUp" element={<SignUp/>} />
 
           <Route path='/carList' element={<CarList/>}/>
+
+          <Route path="/userProfile" element={<UserProfile />}>
+            {/* <Route index element={<Dashboard />} />  */}
+            <Route path="favorites" element={<CarFavorites />} />
+            {/* <Route path="account" element={</>}/> */}
+            {/* <Route path="account" element={<Account />} /> */}
+          </Route>
 
          
           {/* <Route path='/login' element={<LoginPage/>}/>
