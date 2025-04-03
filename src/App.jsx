@@ -8,6 +8,7 @@ import SignUp from './pages/sign-up/SignUp'
 import { Toaster } from 'react-hot-toast'
 import UserProfile from './pages/userProfil/UserProfil'
 import CarFavorites from './pages/userProfil/components/CarFavorites'
+import Account from './pages/userProfil/components/Account';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -31,7 +32,7 @@ function App() {
             {/* <Route index element={<Dashboard />} />  */}
             <Route path="favorites" element={<CarFavorites />} />
             {/* <Route path="account" element={</>}/> */}
-            {/* <Route path="account" element={<Account />} /> */}
+            <Route path="account" element={<Account />} />
           </Route>
 
          

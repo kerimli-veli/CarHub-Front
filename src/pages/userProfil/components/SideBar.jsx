@@ -7,6 +7,7 @@ import TopBar from "./TopBar";
 import getUserFromToken from "./../../common/GetUserFromToken";
 import CarFavorites from "./CarFavorites";
 import React from "react";
+import Account from "./Account";
 
 const menuItems = [
   { id: "dashboard", icon: <FaShoppingCart />, label: "Dashboard", path: "dashboard" },
@@ -113,7 +114,7 @@ const Sidebar = () => {
 
         <div className="mt-6">
           {location.pathname === "/userProfile/favorites" && <CarFavorites />}
-          {location.pathname === "/userProfile/account" && "Salammm"}
+          {location.pathname === "/userProfile/account" && <Account/>}
         </div>
       </div>
     </div>
