@@ -7,6 +7,7 @@ import ElectricVehicles from './components/ElectricVehicles'
 import Filter from './components/Filter';
 import Background from './../../assets/images/Background.svg'; 
 import Footer from './components/Footer';
+import CarSaleSection from './components/CarSaleSection';
 
 const Landing = () => {
   return (
@@ -22,28 +23,26 @@ const Landing = () => {
       
       <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-full max-w-[85%] z-20">
         <Header bgColor='bg-none'/>
+          <div className='grid gap-8 mt-[2%] ml-[1%]'>
+            <h1 className="text-xs sm:text-2xl md:text-3xl font-bold text-white">
+              Let’s Find Your  Perfect Car
+            </h1>
+            <Filter />
+          </div>
       </div>
-      
-      <div className="absolute top-[22%] left-[8.5%] grid gap-8  z-10 text-left">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">
-          Let’s Find Your  Perfect Car
-        </h1>
-        <Filter />
-        <div className='w-100'></div>
-      </div>
-
-      <div className='grid grid-cols-1 gap-40 absolute min-h-screen p-[12%] justify-center items-center top-[80%]'>
+    
+      <div className="grid grid-cols-1 gap-40 p-[12%] justify-center items-center  mt-[40%]">
         <BrowseByType />
         <PremiumBrands/>
         <FeaturedListings/>
         <ElectricVehicles/>
+        <CarSaleSection/>
       </div>
 
-      <div className='absolute top-[450%] w-full'>
-        <Footer/>
+      <div className="mt-auto w-full">
+        <Footer />
       </div>
     </div>
-    
   );
 };
 

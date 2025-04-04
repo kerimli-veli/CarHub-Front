@@ -178,7 +178,6 @@ export default function FeaturedListings() {
                 {car.mileage} Miles • {car.fuel} • {car.transmission}
               </p>
 
-              <h2 className="text-black text-2xl">{car.isFavorite}</h2>
 
               <div>
                 <p className="text-xl font-bold mt-2">{car.price}</p>
