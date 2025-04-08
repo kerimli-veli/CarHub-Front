@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import Cookies from "js-cookie";
 import getUserFromToken from "./../../common/GetUserFromToken";
-
+import { Link } from "react-router-dom";  // React Router-dən Link komponentini əlavə et
 
 export default function FeaturedListings() {
   const [cars, setCars] = useState([]);
@@ -71,7 +71,7 @@ export default function FeaturedListings() {
         const url = isCurrentlySaved
           ? `https://localhost:7282/api/User/RemoveFavoriteCar?UserId=${user.id}&CarId=${id}`
           : `https://localhost:7282/api/User/AddUserFavorites?UserId=${user.id}&CarId=${id}`;
-
+  
         fetch(url, {
           method: isCurrentlySaved ? "DELETE" : "GET",
           headers: {
@@ -99,6 +99,7 @@ export default function FeaturedListings() {
       setShowModal(true);
     }
   };
+  
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + itemsPerPage) % cars.length);
@@ -176,17 +177,27 @@ export default function FeaturedListings() {
                 {car.mileage} Miles • {car.fuel} • {car.transmission}
               </p>
 
-
               <div>
                 <p className="text-xl font-bold mt-2">{car.price}</p>
-                <button className="mt-3 font-medium text-blue-500 flex gap-2 py-2 rounded-lg border-2 border-transparent transition-all duration-300 hover:px-4 transform hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:scale-105 hover:shadow-xl active:scale-95 active:shadow-none">
-                  View Details
-                  <img
-                    className="w-3 h-3"
-                    src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png"
-                    alt=""
-                  />
-                </button>
+                <Link
+                    to={`/carDetails/${car.id}`}
+                    onClick={(e) => {
+                      const token = getAccessToken();
+                      if (!token) {
+                        e.preventDefault(); 
+                        setModalMessage("Please log in or sign up to view details.");
+                        setShowModal(true);
+                      }
+                    }}
+                    className="mt-3 font-medium text-blue-500 flex gap-2 py-2 rounded-lg border-2 border-transparent transition-all duration-300 hover:px-4 transform hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:scale-105 hover:shadow-xl active:scale-95 active:shadow-none"
+                  >
+                    View Details
+                    <img
+                      className="w-3 h-3"
+                      src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png"
+                      alt=""
+                    />
+                </Link>
               </div>
             </div>
           </div>

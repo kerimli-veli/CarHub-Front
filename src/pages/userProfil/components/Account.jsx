@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import getUserFromToken from "../../common/GetUserFromToken";
 import React from "react";
 import Cookies from "js-cookie";
+import { FaEdit } from "react-icons/fa";
 
 export default function Account() {
   const [user, setUser] = useState({});
@@ -82,100 +83,83 @@ export default function Account() {
     setUpdatedUser(user);
   };
 
-  if (loading) return <p className="text-center text-lg">Loading...</p>;
-  if (!user) return <p className="text-center text-lg text-red-500">Error loading user data</p>;
+  if (loading) return <p className="text-center text-xl font-semibold">Loading...</p>;
+  if (!user) return <p className="text-center text-xl text-red-500">Error loading user data</p>;
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6 md:p-8">
-      {/* Profile Section */}
-      <div className="bg-white shadow-md rounded-lg p-6 flex flex-col sm:flex-row items-center gap-6">
-        <img
-          src={user.userImagePath}
-          alt="User Avatar"
-          className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-gray-300"
-        />
-        <div className="text-center sm:text-left">
-          <h2 className="text-2xl text-green-700 font-semibold">
-            {user.name} {user.surname}
-          </h2>
-          <p className="text-gray-500">{user.userRole === 0 ? "Admin" : "User"}</p>
-          <p className="text-gray-500">Leeds, United Kingdom</p>
-        </div>
-      </div>
+    <div className="max-w-7xl mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-8 text-gray-800">Edit Profile</h1>
 
-      {/* Personal Information */}
-      <div className="bg-white shadow-md rounded-lg p-6 mt-6">
-        <div className="flex justify-between items-center">
-          <h3 className="text-xl text-green-700 font-semibold">Personal Information</h3>
-          {!editMode && (
-            <button
-              onClick={() => setEditMode(true)}
-              className="text-blue-500 border border-blue-500 px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transform hover:scale-105 transition-all"
-            >
-              Edit ✏️
-            </button>
-          )}
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 text-gray-700">
-          <InfoRow label="First Name" name="name" value={updatedUser.name} editable={editMode} onChange={handleChange} />
-          <InfoRow label="Last Name" name="surname" value={updatedUser.surname} editable={editMode} onChange={handleChange} />
-          <InfoRow label="Email Address" name="email" value={updatedUser.email} editable={editMode} onChange={handleChange} />
-          <InfoRow label="Phone Number" name="phone" value={updatedUser.phone} editable={editMode} onChange={handleChange} />
-          <InfoRow label="User Role" value={user.userRole === 0 ? "Admin" : "User"} />
+      {/* Profile Header */}
+      <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col lg:flex-row items-center gap-10">
+        <div className="flex flex-col items-center">
+          <img
+            src={user.userImagePath || "https://via.placeholder.com/150"}
+            alt="User Avatar"
+            className="w-40 h-40 rounded-full object-cover border-4 border-gray-200"
+          />
+          <button className="mt-4 px-4 py-2 text-sm font-medium border rounded-lg border-gray-300 hover:bg-gray-100 transition">
+            Upload new photo
+          </button>
+          <p className="text-xs text-gray-500 mt-2 text-center max-w-[200px]">
+            At least 800×800 px recommended. JPG or PNG is allowed.
+          </p>
         </div>
 
-        {editMode && (
-          <div className="mt-6 flex justify-end gap-4">
-            <button
-              onClick={handleUpdate}
-              className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 shadow-md transition-all"
-            >
-              Update ✅
-            </button>
-            <button
-              onClick={handleCancel}
-              className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 shadow-md transition-all"
-            >
-              Cancel ❌
-            </button>
-          </div>
-        )}
-      </div>
+        <div className="w-full">
+          <div className="bg-gray-50 rounded-xl p-6 relative">
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">Personal Info</h2>
 
-      {/* User Cards Section */}
-      <div className="bg-white shadow-md rounded-lg p-6 mt-6">
-        <h3 className="text-xl text-green-700 font-semibold">User Cards</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-          {user.userCards &&
-            user.userCards.map((card, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-6 rounded-lg shadow-md"
-              >
-                <p className="text-lg font-semibold">{card.cardNumber}</p>
-                <p className="text-sm">{card.cardHolder}</p>
-                <p className="text-sm">Valid Thru: {card.expiryDate}</p>
+            <button
+              onClick={() => setEditMode(!editMode)}
+              className="absolute top-6 right-6 text-gray-600 hover:text-gray-800"
+            >
+              <FaEdit className="w-5 h-5" />
+            </button>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-gray-700">
+              <InfoRow label="Full Name" name="name" value={`${updatedUser.name || ""} ${updatedUser.surname || ""}`} editable={editMode} onChange={handleChange} split />
+              <InfoRow label="Email" name="email" value={updatedUser.email} editable={editMode} onChange={handleChange} />
+              <InfoRow label="Phone" name="phone" value={updatedUser.phone} editable={editMode} onChange={handleChange} />
+              <InfoRow label="User Role" value={user.userRole === 0 ? "Admin" : "User"} />
+            </div>
+
+            {editMode && (
+              <div className="mt-6 flex justify-end gap-4">
+                <button
+                  onClick={handleUpdate}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow"
+                >
+                  Save Changes
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition"
+                >
+                  Cancel
+                </button>
               </div>
-            ))}
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-const InfoRow = ({ label, name, value, editable, onChange }) => (
-  <div>
-    <label className="block text-gray-500 text-sm mb-1">{label}</label>
+const InfoRow = ({ label, name, value, editable, onChange, split }) => (
+  <div className="flex flex-col">
+    <label className="text-sm font-semibold text-gray-500 mb-1">{label}</label>
     {editable ? (
       <input
         type="text"
         name={name}
         value={value || ""}
         onChange={onChange}
-        className="border border-gray-300 rounded-md px-3 py-2 w-full"
+        className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     ) : (
-      <p className="font-medium">{value}</p>
+      <p className="text-base font-medium text-gray-800">{value}</p>
     )}
   </div>
 );

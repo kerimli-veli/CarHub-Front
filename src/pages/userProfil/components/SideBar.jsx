@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { motion } from "framer-motion";
-import { FaShoppingCart, FaCreditCard, FaUser, FaExchangeAlt, FaSignOutAlt, FaHeart, FaCar } from "react-icons/fa";
-import { useNavigate, useLocation } from "react-router-dom"; 
-import TopBar from "./TopBar";
+import { useNavigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FaShoppingCart,
+  FaCreditCard,
+  FaUser,
+  FaExchangeAlt,
+  FaHeart,
+  FaCar,
+  FaSearch,
+  FaCog,
+  FaLifeRing,
+  FaSignOutAlt
+} from "react-icons/fa";
 import getUserFromToken from "./../../common/GetUserFromToken";
 import CarFavorites from "./CarFavorites";
-import React from "react";
 import Account from "./Account";
+import React from "react";
 
 const menuItems = [
   { id: "dashboard", icon: <FaShoppingCart />, label: "Dashboard", path: "dashboard" },
@@ -18,22 +28,25 @@ const menuItems = [
   { id: "myCars", icon: <FaCar />, label: "My Cars", path: "myCars" },
 ];
 
+const otherMenu = [
+  { id: "search", icon: <FaSearch />, label: "Search" },
+  { id: "settings", icon: <FaCog />, label: "Settings" },
+  { id: "help", icon: <FaLifeRing />, label: "Help Center" },
+];
+
 const Sidebar = () => {
   const [user, setUser] = useState({});
-  const navigate = useNavigate(); 
-  const location = useLocation(); 
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const userFromToken = getUserFromToken();
-        if (!userFromToken || !userFromToken.id) return;
+        if (!userFromToken?.id) return;
 
         const token = Cookies.get("accessToken");
-        if (!token) {
-          console.error("Token is missing");
-          return;
-        }
+        if (!token) return;
 
         const response = await fetch(`https://localhost:7282/api/User/GetById?Id=${userFromToken.id}`, {
           method: "GET",
@@ -46,63 +59,115 @@ const Sidebar = () => {
         if (response.ok) {
           const userData = await response.json();
           setUser(userData.data);
-        } else {
-          console.error("Failed to fetch user data");
         }
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
+      } catch (err) {
+        console.error("User fetch error:", err);
       }
     };
 
     fetchUserData();
   }, []);
 
-  const handleItemClick = (itemId) => {
-    navigate(`/userProfile/${itemId}`);
+  const handleItemClick = (path) => {
+    navigate(`/userProfile/${path}`);
   };
 
   return (
-    <div className="flex w-full">
+    <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       {/* Sidebar */}
-      <div className="w-[250px] min-h-screen p-7 shadow-md bg-gray-100">
-        <div className="flex items-center space-x-2 mb-6">
-          <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" />
-          </svg>
-          <h2 className="text-lg font-semibold">{user.email}</h2>
-        </div>
-
-        {/* Menu */}
-        <nav className="flex-1">
-          {menuItems.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => handleItemClick(item.path)}
-              className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${
-                location.pathname === `/userProfile/${item.path}` ? "bg-white shadow-md" : "hover:bg-gray-200"
-              }`}
-            >
-              <span className="text-gray-700 text-lg">{item.icon}</span>
-              <span className="text-gray-700 text-sm">{item.label}</span>
+      <motion.aside
+        initial={{ x: -60, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col justify-between"
+      >
+        <div>
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="p-6 flex items-center space-x-3"
+          >
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow">
+              C
             </div>
-          ))}
-        </nav>
+            <span className="text-xl font-semibold text-gray-800 dark:text-gray-100">CarEmpire</span>
+          </motion.div>
+
+          {/* Menu */}
+          <nav className="px-4">
+            <span className="text-xs text-gray-400 uppercase mb-2 block">Menu</span>
+            {menuItems.map((item) => {
+              const isActive = location.pathname === `/userProfile/${item.path}`;
+              return (
+                <motion.div
+                  key={item.id}
+                  onClick={() => handleItemClick(item.path)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg mb-1 text-sm font-medium cursor-pointer relative transition-all duration-300 group ${
+                    isActive
+                      ? "bg-blue-500 text-white shadow-md"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeIndicator"
+                      className="absolute left-0 top-0 h-full w-1 bg-blue-600 rounded-r"
+                    />
+                  )}
+                  <span className={`${isActive ? "text-white" : "text-gray-600 dark:text-gray-300"} text-lg`}>
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </motion.div>
+              );
+            })}
+
+            {/* Other Menu */}
+            <span className="text-xs text-gray-400 uppercase mt-6 mb-2 block">Other Menu</span>
+            {otherMenu.map((item) => (
+              <motion.div
+                key={item.id}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg mb-1 text-sm cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300"
+              >
+                <span className="text-lg">{item.icon}</span>
+                {item.label}
+              </motion.div>
+            ))}
+          </nav>
+        </div>
 
         {/* Logout */}
-        <div className="flex items-center space-x-3 p-3 text-gray-700 cursor-pointer hover:bg-gray-200 rounded-lg mt-4">
-          <FaSignOutAlt className="text-lg" />
-          <span className="text-sm">Logout</span>
-        </div>
-      </div>
-
-      {/* Content Area */}
-      <div className="flex-1 p-6">
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.97 }}
+          className="px-4 pb-6"
+        >
+          <div className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-800 transition-all duration-300">
+            <FaSignOutAlt />
+            Logout
+          </div>
+        </motion.div>
+      </motion.aside>
+
+      {/* Main content */}
+      <motion.main
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="flex-1 p-6"
+      >
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
-          transition={{ duration: 0.3 }}
-          className="text-lg font-semibold text-gray-100 text-center p-4 bg-blue-400 rounded-sm"
+          transition={{ duration: 0.4 }}
+          className="bg-blue-400 text-white text-center py-3 rounded text-lg font-semibold shadow"
         >
           {location.pathname === "/userProfile/favorites" && "View your favorites"}
           {location.pathname === "/userProfile/dashboard" && "Welcome to Dashboard"}
@@ -113,10 +178,12 @@ const Sidebar = () => {
         </motion.div>
 
         <div className="mt-6">
-          {location.pathname === "/userProfile/favorites" && <CarFavorites />}
-          {location.pathname === "/userProfile/account" && <Account/>}
+          <AnimatePresence mode="wait">
+            {location.pathname === "/userProfile/favorites" && <CarFavorites />}
+            {location.pathname === "/userProfile/account" && <Account />}
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.main>
     </div>
   );
 };
