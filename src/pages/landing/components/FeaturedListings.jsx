@@ -3,8 +3,6 @@ import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import Cookies from "js-cookie";
 import getUserFromToken from "./../../common/GetUserFromToken";
 
-const fuelTypes = ["None", "Diesel", "Petrol", "Electric"];
-const transmissionTypes = ["Automatic", "Manual", "CVT"];
 
 export default function FeaturedListings() {
   const [cars, setCars] = useState([]);
@@ -42,8 +40,8 @@ export default function FeaturedListings() {
           model: `${car.brand} ${car.model}`,
           year: car.year,
           mileage: car.miles,
-          fuel: fuelTypes[car.fuel] || "Unknown",
-          transmission: transmissionTypes[car.transmission] || "Unknown",
+          fuel: car.fuel || "Unknown",
+          transmission: car.transmission || "Unknown",
           price: `$${car.price.toLocaleString()}`,
           isFavorite: car.isFavorite,
         }));

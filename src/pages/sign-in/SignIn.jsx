@@ -6,7 +6,7 @@ import axios from "axios";
 import Header from "../landing/components/Header";
 import Footer from "../landing/components/Footer";
 import { FaSignInAlt } from "react-icons/fa";
-import { setCookie } from "cookies-next"; // cookies-next kullanarak cookie işlemleri
+import { setCookie } from "cookies-next"; 
 import React from "react";
 
 const SignIn = () => {

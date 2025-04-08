@@ -9,6 +9,7 @@ import { Toaster } from 'react-hot-toast'
 import UserProfile from './pages/userProfil/UserProfil'
 import CarFavorites from './pages/userProfil/components/CarFavorites'
 import Account from './pages/userProfil/components/Account';
+import CarDetail from './pages/carDetails/CarDetail';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -34,6 +35,8 @@ function App() {
             {/* <Route path="account" element={</>}/> */}
             <Route path="account" element={<Account />} />
           </Route>
+
+          <Route path='/carDetails' element={<CarDetail/>}/>
 
          
           {/* <Route path='/login' element={<LoginPage/>}/>

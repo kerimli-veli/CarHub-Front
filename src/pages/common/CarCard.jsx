@@ -1,24 +1,6 @@
 import React from "react";
-const FuelTypes = [
-    { id: 1, name: "Diesel" },
-    { id: 2, name: "Petrol" },
-    { id: 3, name: "Electric" },
-  ];
   
-  const TransmissionTypes = [
-    { id: 1, name: "Automatic" },
-    { id: 2, name: "Manual" },
-  ];
-  
-  const getFuelType = (fuelId) => {
-    const fuel = FuelTypes.find((f) => f.id === fuelId);
-    return fuel ? fuel.name : "Unknown";
-  };
-  
-  const getTransmissionType = (transmissionId) => {
-    const transmission = TransmissionTypes.find((t) => t.id === transmissionId);
-    return transmission ? transmission.name : "Unknown";
-  };
+
   
   const CarCard = ({ car }) => {
     return (
@@ -50,11 +32,11 @@ const FuelTypes = [
             </span>
             <span className="grid gap-3 place-items-center">
               <img src="https://i.postimg.cc/MKVZtrg7/Petrol.png" alt="" />
-              {getFuelType(car.fuel)}
+              {car.fuel}
             </span>
             <span className="grid gap-3 place-items-center">
               <img src="https://i.postimg.cc/tJrczypq/Transmission.png" alt="" />
-              {getTransmissionType(car.transmission)}
+              {car.transmission}
             </span>
           </div>
           <div>
