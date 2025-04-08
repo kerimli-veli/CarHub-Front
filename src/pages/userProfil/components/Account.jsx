@@ -24,7 +24,7 @@ export default function Account() {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${userInfo.token}`,
+              Authorization: `Bearer ${userInfo.token}`,
             },
           }
         );
@@ -55,7 +55,7 @@ export default function Account() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           id: user.id,
@@ -83,73 +83,86 @@ export default function Account() {
     setUpdatedUser(user);
   };
 
-  if (loading) return <p className="text-center text-xl font-semibold">Loading...</p>;
-  if (!user) return <p className="text-center text-xl text-red-500">Error loading user data</p>;
+  if (loading)
+    return <p className="text-center text-xl font-semibold">Loading...</p>;
+  if (!user)
+    return (
+      <p className="text-center text-xl text-red-500">
+        Error loading user data
+      </p>
+    );
 
-  return (
-    <div className="max-w-7xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">Edit Profile</h1>
-
-      {/* Profile Header */}
-      <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col lg:flex-row items-center gap-10">
-        <div className="flex flex-col items-center">
-          <img
-            src={user.userImagePath || "https://via.placeholder.com/150"}
-            alt="User Avatar"
-            className="w-40 h-40 rounded-full object-cover border-4 border-gray-200"
-          />
-          <button className="mt-4 px-4 py-2 text-sm font-medium border rounded-lg border-gray-300 hover:bg-gray-100 transition">
-            Upload new photo
-          </button>
-          <p className="text-xs text-gray-500 mt-2 text-center max-w-[200px]">
-            At least 800×800 px recommended. JPG or PNG is allowed.
-          </p>
-        </div>
-
-        <div className="w-full">
-          <div className="bg-gray-50 rounded-xl p-6 relative">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">Personal Info</h2>
-
-            <button
-              onClick={() => setEditMode(!editMode)}
-              className="absolute top-6 right-6 text-gray-600 hover:text-gray-800"
-            >
-              <FaEdit className="w-5 h-5" />
-            </button>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-gray-700">
-              <InfoRow label="Full Name" name="name" value={`${updatedUser.name || ""} ${updatedUser.surname || ""}`} editable={editMode} onChange={handleChange} split />
-              <InfoRow label="Email" name="email" value={updatedUser.email} editable={editMode} onChange={handleChange} />
-              <InfoRow label="Phone" name="phone" value={updatedUser.phone} editable={editMode} onChange={handleChange} />
-              <InfoRow label="User Role" value={user.userRole === 0 ? "Admin" : "User"} />
+    return (
+      <div className="max-w-5xl mx-auto p-6 sm:p-10">
+        <h1 className="text-3xl font-bold mb-8 text-gray-900">My Profile</h1>
+    
+        <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col sm:flex-row items-center sm:items-start justify-between mb-8">
+          <div className="flex items-center gap-6">
+            <img
+              src={user.userImagePath || "https://via.placeholder.com/150"}
+              alt="Profile"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-gray-300"
+            />
+            <div>
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{user.name} {user.surname}</h2>
+              <p className="text-sm text-gray-500">{user.bio || "Team Manager"}</p>
+              <p className="text-sm text-gray-400">Leeds, United Kingdom</p>
             </div>
-
-            {editMode && (
-              <div className="mt-6 flex justify-end gap-4">
-                <button
-                  onClick={handleUpdate}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow"
-                >
-                  Save Changes
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
           </div>
+          <button
+            onClick={() => setEditMode(!editMode)}
+            className="mt-4 sm:mt-0 flex items-center gap-1 text-blue-600 hover:underline"
+          >
+            <FaEdit className="w-4 h-4" />
+            Edit
+          </button>
+        </div>
+    
+        
+        <div className="bg-white shadow-md rounded-2xl p-6 relative">
+          <h2 className="text-lg font-semibold text-gray-800 mb-6">Personal Information</h2>
+    
+          <button
+            onClick={() => setEditMode(!editMode)}
+            className="absolute top-6 right-6 flex items-center gap-1 text-blue-600 "
+          >
+            <FaEdit className="w-4 h-4" />
+            Edit
+          </button>
+    
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <InfoRow label="First Name" name="name" value={updatedUser.name} editable={editMode} onChange={handleChange} />
+            <InfoRow label="Last Name" name="surname" value={updatedUser.surname} editable={editMode} onChange={handleChange} />
+            <InfoRow label="Email address" name="email" value={updatedUser.email} editable={editMode} onChange={handleChange} />
+            <InfoRow label="Phone" name="phone" value={updatedUser.phone} editable={editMode} onChange={handleChange} />
+            <InfoRow label="Bio" name="bio" value={updatedUser.bio} editable={editMode} onChange={handleChange} />
+          </div>
+    
+          {editMode && (
+            <div className="mt-6 flex justify-end gap-4">
+              <button
+                onClick={handleUpdate}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Save Changes
+              </button>
+              <button
+                onClick={handleCancel}
+                className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
       </div>
-    </div>
-  );
+    );
+    
 }
 
-const InfoRow = ({ label, name, value, editable, onChange, split }) => (
+const InfoRow = ({ label, name, value, editable, onChange }) => (
   <div className="flex flex-col">
-    <label className="text-sm font-semibold text-gray-500 mb-1">{label}</label>
+    <label className="text-sm font-medium text-gray-500 mb-1">{label}</label>
     {editable ? (
       <input
         type="text"

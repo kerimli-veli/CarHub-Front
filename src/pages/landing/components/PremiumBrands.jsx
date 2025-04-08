@@ -16,7 +16,7 @@ const brands = [
 const PremiumBrands = () => {
   return (
     <div className="w-full mx-auto p-4">
-      {/* Başlık */}
+      
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
         <h2 className="text-2xl md:text-4xl font-bold text-gray-900 text-center md:text-left">
           Explore Our Premium Brands
@@ -30,7 +30,6 @@ const PremiumBrands = () => {
         </a>
       </div>
 
-      {/* Marka Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-10 gap-4 sm:gap-6 md:gap-8 items-center justify-center">
         {brands.map((brand, index) => (
           <div

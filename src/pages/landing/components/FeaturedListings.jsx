@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import Cookies from "js-cookie";
 import getUserFromToken from "./../../common/GetUserFromToken";
-import { Link } from "react-router-dom";  // React Router-dən Link komponentini əlavə et
+import { Link } from "react-router-dom";  
 
 export default function FeaturedListings() {
   const [cars, setCars] = useState([]);
@@ -19,43 +19,53 @@ export default function FeaturedListings() {
     if (token) {
       setAccessToken(token);
     }
-
-    fetch("https://localhost:7282/api/Car/GetAll")
-      .then((response) => response.json())
-      .then((data) => {
-        const formattedCars = data.map((car, index) => ({
+  
+    const fetchData = async () => {
+      try {
+        const carRes = await fetch("https://localhost:7282/api/Car/GetAll");
+        const carData = await carRes.json();
+  
+        const formattedCars = carData.map((car, index) => ({
           id: car.id,
-          image:
-            car.carImagePaths.length > 0
-              ? car.carImagePaths[0].imagePath
-              : "https://via.placeholder.com/300x200",
-          tag:
-            index % 4 === 0
-              ? "Great Price"
-              : index % 4 === 1
-              ? "Low Mileage"
-              : index % 4 === 2
-              ? "New"
-              : "Featured",
+          image: car.carImagePaths.length > 0
+            ? car.carImagePaths[0].imagePath
+            : "https://via.placeholder.com/300x200",
+          tag: index % 4 === 0 ? "Great Price" :
+               index % 4 === 1 ? "Low Mileage" :
+               index % 4 === 2 ? "New" : "Featured",
           model: `${car.brand} ${car.model}`,
           year: car.year,
           mileage: car.miles,
           fuel: car.fuel || "Unknown",
           transmission: car.transmission || "Unknown",
           price: `$${car.price.toLocaleString()}`,
-          isFavorite: car.isFavorite,
         }));
-
-        const initialSavedCars = {};
-        formattedCars.forEach((car) => {
-          initialSavedCars[car.id] = car.isFavorite;
-        });
-
+  
         setCars(formattedCars);
-        setSavedCars(initialSavedCars);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+  
+        const user = getUserFromToken();
+        if (user?.id) {
+          const userRes = await fetch(`https://localhost:7282/api/User/GetById?Id=${user.id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const userData = await userRes.json();
+          const favIds = userData?.data?.favoriteCarIds || [];
+  
+          const initialSavedCars = {};
+          formattedCars.forEach(car => {
+            initialSavedCars[car.id] = favIds.includes(car.id);
+          });
+          setSavedCars(initialSavedCars);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    fetchData();
+  }, []);  
 
   const getAccessToken = () => {
     return accessToken || Cookies.get("accessToken");
@@ -69,8 +79,8 @@ export default function FeaturedListings() {
       if (user && user.id) {
         const isCurrentlySaved = savedCars[id];
         const url = isCurrentlySaved
-          ? `https://localhost:7282/api/User/RemoveFavoriteCar?UserId=${user.id}&CarId=${id}`
-          : `https://localhost:7282/api/User/AddUserFavorites?UserId=${user.id}&CarId=${id}`;
+          ? `https://localhost:7282/api/Favorite/RemoveFavoriteCar?UserId=${user.id}&CarId=${id}`
+          : `https://localhost:7282/api/Favorite/AddUserFavorites?UserId=${user.id}&CarId=${id}`;
   
         fetch(url, {
           method: isCurrentlySaved ? "DELETE" : "GET",
@@ -149,6 +159,7 @@ export default function FeaturedListings() {
                       : "bg-white hover:bg-gray-200"
                     : "bg-white hover:bg-gray-200"
                 }`}
+
                 onClick={() => toggleSave(car.id)}
               >
                 <Heart

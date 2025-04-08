@@ -11,7 +11,7 @@ const Footer = () => {
         {/* Join BoxCar */}
         <div className="flex justify-between items-center mb-6 space-x-110 ">
           <div>
-            <h3 className="text-lg font-semibold">Join BoxCar</h3>
+            <h3 className="text-lg font-semibold">Join CarHub</h3>
             <p className="text-sm text-gray-400">Receive pricing updates, shopping tips & more!</p>
           </div>
           <div className="flex items-center h-[61px] w-[542px] bg-[#1C1F2E] rounded-full px-4 py-2">

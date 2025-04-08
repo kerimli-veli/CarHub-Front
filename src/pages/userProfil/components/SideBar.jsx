@@ -73,7 +73,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+    <div className="flex min-h-screen bg-gray-100 transition-colors duration-300">
       {/* Sidebar */}
       <motion.aside
         initial={{ x: -60, opacity: 0 }}
@@ -89,10 +89,10 @@ const Sidebar = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="p-6 flex items-center space-x-3"
           >
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow">
-              C
+            <div className="w-12 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow">
+              <img className="rounded-full" src="https://wallpapers.com/images/hd/netflix-profile-pictures-1000-x-1000-88wkdmjrorckekha.jpg" alt="" />
             </div>
-            <span className="text-xl font-semibold text-gray-800 dark:text-gray-100">CarEmpire</span>
+            <span className="text-xl font-semibold text-gray-800 dark:text-gray-100">{user.name} {user.surname}</span>
           </motion.div>
 
           {/* Menu */}

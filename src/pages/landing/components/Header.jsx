@@ -8,6 +8,8 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -53,12 +55,36 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
           CarHub
         </a>
 
+        
         <div className="hidden md:flex space-x-6 items-center">
-          <a href="#" className="hover:text-gray-400">Home</a>
-          <a href="#" className="hover:text-gray-400">Pages</a>
-          <a href="#" className="hover:text-gray-400">About</a>
-          <a href="#" className="hover:text-gray-400">Contact</a>
+              <a href="/" className="text-lg font-medium text-white hover:text-blue-300 relative group">
+          Home
+          <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
+        </a>
 
+        <div className="relative group">
+          <button className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out">
+            Pages
+          </button>
+          <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
+
+          <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-48 bg-white text-black rounded-xl shadow-xl scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 origin-top z-50">
+            <a href="/page1" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Page One</a>
+            <a href="/page2" className="block px-4 py-3 hover:bg-blue-50">Page Two</a>
+            <a href="/page3" className="block px-4 py-3 hover:bg-blue-50 rounded-b-xl">Page Three</a>
+          </div>
+        </div>
+
+        <a href="#" className="text-lg font-medium text-white hover:text-blue-300 relative group">
+          About
+          <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
+        </a>
+
+        <a href="#" className="text-lg font-medium text-white hover:text-blue-300 relative group">
+          Contact
+          <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
+        </a>
+        
           {user ? (
             <div className="relative group z-20">
               {user.userImagePath ? (

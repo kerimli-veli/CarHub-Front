@@ -3,6 +3,7 @@ import React from "react";
 import CarCard from "./../../common/CarCard";
 import Cookies from "js-cookie";
 import getUserFromToken from "../../common/GetUserFromToken";
+import { data } from "react-router-dom";
 
 const CarFavorites = () => {
   const [cars, setCars] = useState([]);
@@ -66,9 +67,7 @@ const CarFavorites = () => {
 
         if (response.ok) {
           const data = await response.json();
-          const filteredCars = data.data.filter(car => car.isFavorite === true);
-          setCars(filteredCars);
-          console.log(filteredCars);
+          setCars(data.data);
         } else {
           console.error("Failed to fetch favorite cars");
         }
@@ -81,7 +80,7 @@ const CarFavorites = () => {
   }, [userId]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
       {cars.map((car) => (
         <CarCard key={car.id} car={car} />
       ))}
