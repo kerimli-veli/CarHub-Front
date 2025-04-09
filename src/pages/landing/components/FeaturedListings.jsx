@@ -2,37 +2,38 @@ import React, { useEffect, useState } from "react";
 import { Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import Cookies from "js-cookie";
 import getUserFromToken from "./../../common/GetUserFromToken";
-import { Link } from "react-router-dom";  
+import { Link } from "react-router-dom";
+import useFavoriteCars from "./../../common/Ui/userFavoriteCars";
 
 export default function FeaturedListings() {
   const [cars, setCars] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [savedCars, setSavedCars] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [accessToken, setAccessToken] = useState(""); 
-
   const itemsPerPage = 4;
 
+  const { savedCars, toggleSave, accessToken } = useFavoriteCars(cars);
+
   useEffect(() => {
-    const token = Cookies.get("accessToken");
-    if (token) {
-      setAccessToken(token);
-    }
-  
     const fetchData = async () => {
       try {
         const carRes = await fetch("https://localhost:7282/api/Car/GetAll");
         const carData = await carRes.json();
-  
+
         const formattedCars = carData.map((car, index) => ({
           id: car.id,
-          image: car.carImagePaths.length > 0
-            ? car.carImagePaths[0].imagePath
-            : "https://via.placeholder.com/300x200",
-          tag: index % 4 === 0 ? "Great Price" :
-               index % 4 === 1 ? "Low Mileage" :
-               index % 4 === 2 ? "New" : "Featured",
+          image:
+            car.carImagePaths.length > 0
+              ? car.carImagePaths[0].imagePath
+              : "https://via.placeholder.com/300x200",
+          tag:
+            index % 4 === 0
+              ? "Great Price"
+              : index % 4 === 1
+              ? "Low Mileage"
+              : index % 4 === 2
+              ? "New"
+              : "Featured",
           model: `${car.brand} ${car.model}`,
           year: car.year,
           mileage: car.miles,
@@ -40,76 +41,25 @@ export default function FeaturedListings() {
           transmission: car.transmission || "Unknown",
           price: `$${car.price.toLocaleString()}`,
         }));
-  
+
         setCars(formattedCars);
-  
-        const user = getUserFromToken();
-        if (user?.id) {
-          const userRes = await fetch(`https://localhost:7282/api/User/GetById?Id=${user.id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const userData = await userRes.json();
-          const favIds = userData?.data?.favoriteCarIds || [];
-  
-          const initialSavedCars = {};
-          formattedCars.forEach(car => {
-            initialSavedCars[car.id] = favIds.includes(car.id);
-          });
-          setSavedCars(initialSavedCars);
-        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();
-  }, []);  
+  }, []);
 
-  const getAccessToken = () => {
-    return accessToken || Cookies.get("accessToken");
-  };
-
-  const toggleSave = (id) => {
-    const token = getAccessToken();
-    
-    if (token) {
-      const user = getUserFromToken();
-      if (user && user.id) {
-        const isCurrentlySaved = savedCars[id];
-        const url = isCurrentlySaved
-          ? `https://localhost:7282/api/Favorite/RemoveFavoriteCar?UserId=${user.id}&CarId=${id}`
-          : `https://localhost:7282/api/Favorite/AddUserFavorites?UserId=${user.id}&CarId=${id}`;
-  
-        fetch(url, {
-          method: isCurrentlySaved ? "DELETE" : "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data && data.isSuccess !== undefined) {
-              setSavedCars((prev) => ({
-                ...prev,
-                [id]: !isCurrentlySaved,
-              }));
-            } else {
-              console.error("Error: Response does not contain 'isSuccess' property");
-            }
-          })
-          .catch((error) => console.error("Error:", error.message));
-      } else {
+  const handleToggleSave = (id) => {
+    toggleSave({
+      carId: id,
+      onFail: () => {
         setModalMessage("Please log in or sign up to save this car.");
         setShowModal(true);
-      }
-    } else {
-      setModalMessage("Please log in or sign up to save this car.");
-      setShowModal(true);
-    }
+      },
+    });
   };
-  
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + itemsPerPage) % cars.length);
@@ -159,8 +109,7 @@ export default function FeaturedListings() {
                       : "bg-white hover:bg-gray-200"
                     : "bg-white hover:bg-gray-200"
                 }`}
-
-                onClick={() => toggleSave(car.id)}
+                onClick={() => handleToggleSave(car.id)}
               >
                 <Heart
                   size={18}
@@ -191,23 +140,22 @@ export default function FeaturedListings() {
               <div>
                 <p className="text-xl font-bold mt-2">{car.price}</p>
                 <Link
-                    to={`/carDetails/${car.id}`}
-                    onClick={(e) => {
-                      const token = getAccessToken();
-                      if (!token) {
-                        e.preventDefault(); 
-                        setModalMessage("Please log in or sign up to view details.");
-                        setShowModal(true);
-                      }
-                    }}
-                    className="mt-3 font-medium text-blue-500 flex gap-2 py-2 rounded-lg border-2 border-transparent transition-all duration-300 hover:px-4 transform hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:scale-105 hover:shadow-xl active:scale-95 active:shadow-none"
-                  >
-                    View Details
-                    <img
-                      className="w-3 h-3"
-                      src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png"
-                      alt=""
-                    />
+                  to={`/carDetails/${car.id}`}
+                  onClick={(e) => {
+                    if (!accessToken) {
+                      e.preventDefault();
+                      setModalMessage("Please log in or sign up to view details.");
+                      setShowModal(true);
+                    }
+                  }}
+                  className="mt-3 font-medium text-blue-500 flex gap-2 py-2 rounded-lg border-2 border-transparent transition-all duration-300 hover:px-4 transform hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:scale-105 hover:shadow-xl active:scale-95 active:shadow-none"
+                >
+                  View Details
+                  <img
+                    className="w-3 h-3"
+                    src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png"
+                    alt=""
+                  />
                 </Link>
               </div>
             </div>
@@ -237,7 +185,7 @@ export default function FeaturedListings() {
               Save Your Favorite Cars
             </h2>
             <p className="text-gray-600 mt-2">
-              Please log in or sign up to save this car.
+              {modalMessage}
             </p>
 
             <div className="mt-6 flex justify-center space-x-3">

@@ -29,7 +29,6 @@ const CarListing = () => {
           ))}
         </div>
 
-        {/* Pagination */}
         <div className="flex items-center justify-center space-x-2 mt-[4%]">
           {[...Array(totalPages).keys()].map((page) => (
             <button

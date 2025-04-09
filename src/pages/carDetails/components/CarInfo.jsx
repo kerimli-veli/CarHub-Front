@@ -7,40 +7,42 @@ import { MdVideoLibrary } from "react-icons/md";
 import { IoMdCall } from "react-icons/io";
 import { FaCalendarAlt, FaRoad, FaCogs, FaGasPump, FaShareAlt, FaHeart, FaBalanceScale } from "react-icons/fa";
 import { Car, Calendar, Gauge, Fuel, Settings, DoorOpen, BadgeCent, Thermometer, Palette, KeyRound, Barcode } from "lucide-react";
-import { useParams } from "react-router-dom"; // URL parametrini oxumaq üçün
+import { useParams } from "react-router-dom"; 
+import useFavoriteCars from "../../common/Ui/userFavoriteCars"; 
 
-import  getUserFromToken  from "./../../common/GetUserFromToken";
 
 const CarInfo = () => {
-  const { carId } = useParams(); // URL-dən carId parametrini alırıq
+  const { carId } = useParams(); 
   const [car, setCar] = useState(null);
   const [mainImage, setMainImage] = useState(""); 
   const [otherImages, setOtherImages] = useState([]); 
   const [user, setUser] = useState(null); 
+  const { savedCars, toggleSave } = useFavoriteCars([car]);
 
   useEffect(() => {
-    const userId = getUserFromToken().id; 
-
-    if (userId) {
-      axios
-        .get(`https://localhost:7282/api/User/GetById?Id=${userId}`)
-        .then((res) => {
-          setUser(res.data.data); 
-        })
-        .catch((err) => console.error("İstifadəçi məlumatları xətası:", err));
-    }
-
     if (carId) {
       axios
-        .get(`https://localhost:7282/api/Car/GetById?Id=${carId}`)  // carId istifadə edilir
+        .get(`https://localhost:7282/api/Car/GetById?Id=${carId}`)
         .then((res) => {
-          setCar(res.data.data);
-          setMainImage(res.data.data.carImagePaths[0]?.imagePath);
-          setOtherImages(res.data.data.carImagePaths.slice(1, 5)); 
+          const carData = res.data.data;
+          setCar(carData);
+          setMainImage(carData.carImagePaths[0]?.imagePath);
+          setOtherImages(carData.carImagePaths.slice(1, 5));
+  
+          const userId = carData.createdBy;
+          if (userId) {
+            axios
+              .get(`https://localhost:7282/api/User/GetById?Id=${userId}`)
+              .then((userRes) => {
+                setUser(userRes.data.data);
+              })
+              .catch((err) => console.error("İstifadəçi məlumatları xətası:", err));
+          }
         })
         .catch((err) => console.error("API xətası:", err));
     }
-  }, [carId]); // carId-ya görə yenidən çağırılacaq
+  }, [carId]);
+  
 
   if (!car || !user) return <div>Loading...</div>;
 
@@ -64,9 +66,16 @@ const CarInfo = () => {
               <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-black cursor-pointer px-2 py-1 rounded-md transition-colors">
                 <FaShareAlt /> Share
               </button>
-              <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-black cursor-pointer px-2 py-1 rounded-md transition-colors">
-                <FaHeart /> Save
+
+              <button
+                  onClick={() => toggleSave({ carId: car.id })}
+                  className={`flex items-center gap-1 text-sm ${
+                    savedCars[car.id] ? "text-red-500" : "text-gray-600"
+                  } hover:text-black cursor-pointer px-2 py-1 rounded-md transition-colors`}
+                >
+                  <FaHeart /> {savedCars[car.id] ? "Saved" : "Save"}
               </button>
+
               <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-black cursor-pointer px-2 py-1 rounded-md transition-colors">
                 <FaBalanceScale /> Compare
               </button>
@@ -89,7 +98,6 @@ const CarInfo = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-4">
-            {/* Böyük şəkil */}
             <div className="lg:col-span-2 relative h-[420px]">
               <img
                 src={mainImage}
@@ -104,7 +112,6 @@ const CarInfo = () => {
               </Button>
             </div>
 
-            {/* Kiçik şəkillər */}
             <div className="grid grid-cols-2 grid-rows-2 gap-2 h-[420px]">
               {otherImages.map((img, index) => (
                 <img
@@ -152,7 +159,6 @@ const CarInfo = () => {
             </div>
           </div>
 
-          {/* Premium "Buy" button */}
           <div className="mt-8">
             <Button className="w-full py-3 text-white bg-green-500 hover:bg-green-600 font-bold text-lg rounded-lg shadow-md transition-colors">
               Buy Now

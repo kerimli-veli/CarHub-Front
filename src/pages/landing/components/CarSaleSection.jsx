@@ -2,7 +2,7 @@ import React from "react";
 
 const CarSaleSection = () => { 
   return ( 
-  <div className="flex flex-col lg:flex-row items-center justify-between px-10 py-16 bg-white"> {/* Image Section */} 
+  <div className="flex flex-col lg:flex-row items-center justify-between px-10 py-16 bg-white"> 
   <div className="grid grid-cols-2 gap-4 w-full lg:w-1/2"> 
       <img
           src="https://i.postimg.cc/fLTXWFJc/CarSale1.png"

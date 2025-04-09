@@ -8,7 +8,6 @@ const Footer = () => {
     <footer className="bg-[#050B20] text-white py-10 px-5">
       <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-start ">
         
-        {/* Join BoxCar */}
         <div className="flex justify-between items-center mb-6 space-x-110 ">
           <div>
             <h3 className="text-lg font-semibold">Join CarHub</h3>
@@ -27,7 +26,6 @@ const Footer = () => {
            
         </div>
 
-        {/* Footer Links */}
         
         <div className="flex flex-wrap flex-grow justify-between gap-8 border-t border-gray-700 mt-6 pt-12 ">
           <div className="flex flex-wrap flex-grow justify-between gap-8  ">
@@ -66,7 +64,6 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Social Media */}
             <div className="mb-6">
               <h4 className="text-lg font-semibold mb-6">Connect With Us</h4>
               <div className="flex space-x-4">
@@ -91,7 +88,6 @@ const Footer = () => {
         
       </div>
 
-      {/* Footer Bottom */}
       <div className="border-t border-gray-700 mt-6 pt-4 text-sm flex flex-col sm:flex-row justify-between text-gray-400 px-4 ">
         <div className="pl-[161px]" >© 2024 Boxcars.com. All rights reserved.</div>
         <div className="flex space-x-4 pr-[167px]">

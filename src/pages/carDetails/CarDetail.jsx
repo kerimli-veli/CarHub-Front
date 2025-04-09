@@ -7,9 +7,8 @@ const CarDetail = () => {
     return (
         <div className="relative min-h-screen flex flex-col">
             
-            <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-full max-w-[85%] z-20">
+            <div className="absolute w-full">
                 <Header />
-                
             </div>
 
             <div className='flex justify-center mt-[10%]'>

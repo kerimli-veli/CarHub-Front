@@ -21,7 +21,6 @@ const Filter = () => {
 
   return (
     <div className="w-full max-w-[250px] md:max-w-[300px] lg:max-w-[350px] bg-white shadow-xl rounded-2xl p-3.5">
-      {/* New & Used Buttons */}
       <div className="flex border rounded-lg overflow-hidden">
         {["New", "Used"].map((type) => (
           <button
@@ -38,7 +37,6 @@ const Filter = () => {
         ))}
       </div>
 
-      {/* Select Makes */}
       <div className="mt-4">
         <label className="block text-gray-500 mb-1">Select Make</label>
         <select
@@ -54,7 +52,6 @@ const Filter = () => {
         </select>
       </div>
 
-      {/* Select Models */}
       <div className="mt-4">
         <label className="block text-gray-500 mb-1">Select Model</label>
         <select
@@ -70,7 +67,6 @@ const Filter = () => {
         </select>
       </div>
 
-      {/* Price Range */}
       <div className="mt-4">
         <label className="block text-gray-500 mb-2">Select Price</label>
         <input
@@ -88,7 +84,6 @@ const Filter = () => {
         </div>
       </div>
 
-      {/* Search Button */}
       <button className="w-full mt-5 bg-blue-600 text-white py-3 rounded-md flex justify-center items-center text-lg transition-all duration-300 hover:bg-blue-700 active:scale-95 shadow-md hover:shadow-lg">
         🔍 Search
       </button>

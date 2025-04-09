@@ -37,10 +37,9 @@ const SignIn = () => {
       );
   
       if (response.data.isSuccess) {
-        // Cookie'lere accessToken, refreshToken ve email kaydediyoruz
-        setCookie("accessToken", response.data.data.accessToken, { maxAge: 60 * 60 * 24 }); // 1 gün geçerlilik
-        setCookie("refreshToken", response.data.data.refreshToken, { maxAge: 60 * 60 * 24 }); // 1 gün geçerlilik
-        setCookie("email", formData.email, { maxAge: 60 * 60 * 24 }); // 1 gün geçerlilik
+        setCookie("accessToken", response.data.data.accessToken, { maxAge: 60 * 60 * 24 }); 
+        setCookie("refreshToken", response.data.data.refreshToken, { maxAge: 60 * 60 * 24 });
+        setCookie("email", formData.email, { maxAge: 60 * 60 * 24 });
   
         toast.success("Login successful!");
         setSuccess(true);
