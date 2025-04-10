@@ -1,5 +1,4 @@
 
-import React from "react";
 import ShopPage from "./pages/shop/ShopPage";
 
 import { useState } from 'react'
@@ -28,7 +27,7 @@ function App() {
           <Routes>
           <Route path="/" element={<Landing/>}/>
 
-          <Route path="/" element={<ShopPage/>}/>
+          <Route path="/shopPage" element={<ShopPage/>}/>
           <Route path="/SignIn" element={<SignIn/>} />
           <Route path="/SignUp" element={<SignUp/>} />
 
