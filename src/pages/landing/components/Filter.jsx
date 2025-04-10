@@ -1,22 +1,85 @@
-import React, { useState } from "react";
-
-const carData = {
-  Audi: ["Q7", "A4", "A6", "R8"],
-  BMW: ["X5", "M3", "M5", "i8"],
-  Mercedes: ["C-Class", "E-Class", "S-Class", "G-Wagon"],
-  Toyota: ["Corolla", "Camry", "RAV4", "Supra"],
-};
+import React, { useState, useEffect } from "react";
 
 const Filter = () => {
   const [selectedType, setSelectedType] = useState("New");
-  const [selectedMake, setSelectedMake] = useState("Audi");
-  const [selectedModel, setSelectedModel] = useState(carData["Audi"][0]);
+  const [makeModelMap, setMakeModelMap] = useState({});
+  const [selectedMake, setSelectedMake] = useState("");
+  const [selectedModel, setSelectedModel] = useState("None");
   const [price, setPrice] = useState(125000);
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await fetch("https://localhost:7282/api/Car/GetAll");
+        const data = await response.json();
+
+        const brandMap = {};
+        data.forEach((car) => {
+          const { brand, model } = car;
+          if (!brandMap[brand]) {
+            brandMap[brand] = new Set();
+          }
+          brandMap[brand].add(model);
+        });
+
+        const finalMap = {};
+        Object.keys(brandMap).forEach((brand) => {
+          finalMap[brand] = Array.from(brandMap[brand]);
+        });
+
+        setMakeModelMap(finalMap);
+
+        const defaultMake = Object.keys(finalMap)[0];
+        setSelectedMake(defaultMake);
+        setSelectedModel("None");
+      } catch (error) {
+        console.error("Error fetching car data:", error);
+      }
+    };
+
+    fetchCars();
+  }, []);
+
+  const handleSearch = async () => {
+    const filters = {
+      Brand: selectedMake,
+      MinPrice: "0",
+      MaxPrice: price.toString(),
+    };
+
+    if (selectedModel !== "None") {
+      filters.Model = selectedModel;
+    }
+
+    if (selectedType === "New") {
+      filters.MaxMiles = "0";
+    } else {
+      filters.MinMiles = "1";
+    }
+
+    const filteredParams = Object.fromEntries(
+      Object.entries(filters).filter(
+        ([_, value]) => value !== "" && value !== undefined && value !== null
+      )
+    );
+
+    const queryParams = new URLSearchParams(filteredParams).toString();
+    const url = `https://localhost:7282/api/Car/CarFilter?${queryParams}`;
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      console.log("Filtered Cars:", data);
+      // setFilteredCars(data);
+    } catch (err) {
+      console.error("Search error:", err);
+    }
+  };
 
   const handleBrandChange = (e) => {
     const newMake = e.target.value;
     setSelectedMake(newMake);
-    setSelectedModel(carData[newMake][0]);
+    setSelectedModel("None");
   };
 
   return (
@@ -44,7 +107,7 @@ const Filter = () => {
           value={selectedMake}
           onChange={handleBrandChange}
         >
-          {Object.keys(carData).map((brand) => (
+          {Object.keys(makeModelMap).map((brand) => (
             <option key={brand} value={brand}>
               {brand}
             </option>
@@ -59,7 +122,8 @@ const Filter = () => {
           value={selectedModel}
           onChange={(e) => setSelectedModel(e.target.value)}
         >
-          {carData[selectedMake].map((model) => (
+          <option value="None">None</option>
+          {(makeModelMap[selectedMake] || []).map((model) => (
             <option key={model} value={model}>
               {model}
             </option>
@@ -72,19 +136,22 @@ const Filter = () => {
         <input
           type="range"
           min="0"
-          max="250000"
+          max="1000000"
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) => setPrice(Number(e.target.value))}
           className="w-full accent-blue-600 cursor-pointer"
         />
         <div className="flex justify-between text-blue-600 text-sm mt-1">
           <span>$0</span>
           <span>${price.toLocaleString()}</span>
-          <span>$250,000</span>
+          <span>$1,000,000</span>
         </div>
       </div>
 
-      <button className="w-full mt-5 bg-blue-600 text-white py-3 rounded-md flex justify-center items-center text-lg transition-all duration-300 hover:bg-blue-700 active:scale-95 shadow-md hover:shadow-lg">
+      <button
+        className="w-full mt-5 bg-blue-600 text-white py-3 rounded-md flex justify-center items-center text-lg transition-all duration-300 hover:bg-blue-700 active:scale-95 shadow-md hover:shadow-lg"
+        onClick={handleSearch}
+      >
         🔍 Search
       </button>
     </div>
@@ -92,6 +159,3 @@ const Filter = () => {
 };
 
 export default Filter;
-
-
-
