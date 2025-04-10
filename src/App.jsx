@@ -1,3 +1,7 @@
+
+import React from "react";
+import ShopPage from "./pages/shop/ShopPage";
+
 import { useState } from 'react'
 import Landing from './pages/landing/Landing'
 import CarList from './pages/carsList/CarList'
@@ -11,8 +15,9 @@ import CarFavorites from './pages/userProfil/components/CarFavorites'
 import Account from './pages/userProfil/components/Account';
 import CarDetail from './pages/carDetails/CarDetail';
 
+
 function App() {
-  const [count, setCount] = useState(0)
+  
 
   return (
     <>
@@ -23,7 +28,7 @@ function App() {
           <Routes>
           <Route path="/" element={<Landing/>}/>
 
-          
+          <Route path="/" element={<ShopPage/>}/>
           <Route path="/SignIn" element={<SignIn/>} />
           <Route path="/SignUp" element={<SignUp/>} />
 
@@ -48,6 +53,7 @@ function App() {
             <Route path='/details' element={<Details/>}/>
             </>
           } */}
+
           </Routes>
         </BrowserRouter>
     </>
