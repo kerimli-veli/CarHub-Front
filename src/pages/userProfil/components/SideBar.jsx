@@ -11,6 +11,7 @@ import {
   FaCar,
   FaSearch,
   FaCog,
+  FaPlusSquare,
   FaLifeRing,
   FaSignOutAlt
 } from "react-icons/fa";
@@ -18,6 +19,7 @@ import getUserFromToken from "./../../common/GetUserFromToken";
 import CarFavorites from "./CarFavorites";
 import Account from "./Account";
 import React from "react";
+import AddCarForm from "./AddCarForm";
 
 const menuItems = [
   { id: "dashboard", icon: <FaShoppingCart />, label: "Dashboard", path: "dashboard" },
@@ -26,6 +28,8 @@ const menuItems = [
   { id: "transactions", icon: <FaExchangeAlt />, label: "Transactions", path: "transactions" },
   { id: "favorites", icon: <FaHeart />, label: "Favorites", path: "favorites" },
   { id: "myCars", icon: <FaCar />, label: "My Cars", path: "myCars" },
+  { id: "addCar", icon: <FaPlusSquare />, label: "Add Car", path: "addCar" },
+
 ];
 
 const otherMenu = [
@@ -175,12 +179,14 @@ const Sidebar = () => {
           {location.pathname === "/userProfile/account" && "View Account Details"}
           {location.pathname === "/userProfile/transactions" && "Track Your Transactions"}
           {location.pathname === "/userProfile/myCars" && "Manage your cars"}
+          {location.pathname === "/userProfile/addCar" && "Add your car"}
         </motion.div>
 
         <div className="mt-6">
           <AnimatePresence mode="wait">
             {location.pathname === "/userProfile/favorites" && <CarFavorites />}
             {location.pathname === "/userProfile/account" && <Account />}
+            {location.pathname === "/userProfile/addCar" && <AddCarForm/>}
           </AnimatePresence>
         </div>
       </motion.main>

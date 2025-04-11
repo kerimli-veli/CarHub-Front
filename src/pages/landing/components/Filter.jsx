@@ -52,9 +52,9 @@ const Filter = () => {
     }
 
     if (selectedType === "New") {
-      filters.MaxMiles = "0";
+      filters.MaxMiles = "1";
     } else {
-      filters.MinMiles = "1";
+      filters.MinMiles = "0";
     }
 
     const filteredParams = Object.fromEntries(

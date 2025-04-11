@@ -9,6 +9,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 
   useEffect(() => {
@@ -55,8 +56,28 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
           CarHub
         </a>
 
+<button
+  className="md:hidden text-white focus:outline-none"
+  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+>
+  <svg
+    className="w-8 h-8"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+    ></path>
+  </svg>
+</button>
+
         
-        <div className="hidden md:flex space-x-6 items-center">
+        <div className={`md:flex md:space-x-6 items-center ${isMobileMenuOpen ? "block" : "hidden"} md:block`}>
               <a href="/" className="text-lg font-medium text-white hover:text-blue-300 relative group">
           Home
           <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
@@ -69,7 +90,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
           <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
 
           <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-48 bg-white text-black rounded-xl shadow-xl scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 origin-top z-50">
-            <a href="/page1" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Page One</a>
+            <a href="/shopPage" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Shop</a>
             <a href="/page2" className="block px-4 py-3 hover:bg-blue-50">Page Two</a>
             <a href="/page3" className="block px-4 py-3 hover:bg-blue-50 rounded-b-xl">Page Three</a>
           </div>
@@ -149,7 +170,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                   >
                     <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                       <path fill="#e7000b" d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z"/>
-                    </svg>
+                     </svg>
                     <i className="fas fa-sign-out-alt mr-3"></i> Log out
                 </button>
 
