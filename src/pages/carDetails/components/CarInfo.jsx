@@ -9,6 +9,7 @@ import { FaCalendarAlt, FaRoad, FaCogs, FaGasPump, FaShareAlt, FaHeart, FaBalanc
 import { Car, Calendar, Gauge, Fuel, Settings, DoorOpen, BadgeCent, Thermometer, Palette, KeyRound, Barcode } from "lucide-react";
 import { useParams } from "react-router-dom"; 
 import useFavoriteCars from "../../common/Ui/userFavoriteCars"; 
+import CarLoading from "./CarLoading";
 
 
 const CarInfo = () => {
@@ -44,7 +45,7 @@ const CarInfo = () => {
   }, [carId]);
   
 
-  if (!car || !user) return <div>Loading...</div>;
+  if (!car || !user) return <CarLoading/>;
 
   const handleImageClick = (imagePath, index) => {
     const updatedImages = [...otherImages];

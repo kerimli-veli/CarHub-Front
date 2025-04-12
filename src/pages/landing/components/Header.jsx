@@ -126,7 +126,6 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                   </button>
                 </div>
 
-                {/* Arama Sonuçları */}
                 {searchResults.length > 0 && (
                   <div className="mt-4">
                     {searchResults.map((product) => (
@@ -173,7 +172,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                 <img
                   src={user.userImagePath}
                   alt="User"
-                  className="w-12 h-12 rounded-full border-2 border-white shadow-lg cursor-pointer transform transition-transform duration-500 hover:scale-110 hover:shadow-2xl"
+                  className="w-14 h-13 rounded-full shadow-lg cursor-pointer transform transition-transform duration-500 hover:scale-110 hover:shadow-2xl"
                 />
               ) : (
                 <div className="w-12 h-12 bg-gray-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -186,7 +185,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                   <img
                     src={user.userImagePath}
                     alt="User"
-                    className="w-10 h-10 rounded-full border-2 border-gray-200"
+                    className="w-14 h-14 rounded-full border-2 border-gray-200"
                   />
                   <div className="flex flex-col">
                     <span className="text-lg font-semibold text-gray-800">{user.name} {user.surname}</span>

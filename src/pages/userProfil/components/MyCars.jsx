@@ -3,9 +3,10 @@ import React from "react";
 import CarCard from "./../../common/CarCard";
 import Cookies from "js-cookie";
 import getUserFromToken from "../../common/GetUserFromToken";
+import { FaRegSadCry } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const CarFavorites = () => {
+const MyCars = () => {
   const [cars, setCars] = useState([]);
   const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const CarFavorites = () => {
   useEffect(() => {
     if (!userId) return;
 
-    const fetchFavorites = async () => {
+    const fetchUserCars = async () => {
       try {
         const token = Cookies.get("accessToken");
         if (!token) {
@@ -58,7 +59,7 @@ const CarFavorites = () => {
           return;
         }
 
-        const response = await fetch(`https://localhost:7282/api/User/GetUserFavorites?UserId=${userId}`, {
+        const response = await fetch(`https://localhost:7282/api/User/GetUserCars?UserId=${userId}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -70,34 +71,30 @@ const CarFavorites = () => {
           const data = await response.json();
           setCars(data.data || []);
         } else {
-          console.error("Failed to fetch favorite cars");
+          console.error("Failed to fetch user's cars");
         }
       } catch (error) {
-        console.error("Error fetching favorite cars:", error);
+        console.error("Error fetching user's cars:", error);
       }
     };
 
-    fetchFavorites();
+    fetchUserCars();
   }, [userId]);
 
   return (
-    <div>
+    <div className="overflow-x-hidden overflow-y-hidden">
       {cars.length === 0 ? (
         <div
-          className="flex flex-col items-center justify-center mt-24 cursor-pointer transition-transform transform hover:scale-105 hover:opacity-90 duration-300"
-          onClick={() => navigate("/carList")}
+          className="flex flex-col items-center justify-center mt-28 transition-transform transform hover:scale-105 hover:opacity-90 duration-300 cursor-pointer"
+          onClick={() => navigate("/userProfile/addCar")}
         >
-          <img
-            src="https://i.postimg.cc/5ygPt1bs/Screenshot-2025-04-12-234916.png"
+            <img
+            src="https://i.postimg.cc/cHtQtWZs/add.png"
             alt="No favorite cars"
             className="w-48 mb-5 transition duration-300 rounded-2xl"
           />
-
-          <p className="text-xl text-gray-600 font-medium hover:text-gray-700 transition">
-            You haven’t favorited any cars yet.
-          </p>
-          <p className="text-sm text-gray-400 mt-1 hover:text-gray-500 transition">
-            Click here to explore and add your favorites!
+          <p className="text-lg text-gray-500 font-medium hover:text-gray-600">
+            You haven’t added any cars yet. Click to add one.
           </p>
         </div>
       ) : (
@@ -111,4 +108,4 @@ const CarFavorites = () => {
   );
 };
 
-export default CarFavorites;
+export default MyCars;

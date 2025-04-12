@@ -14,6 +14,7 @@ import CarFavorites from './pages/userProfil/components/CarFavorites'
 import Account from './pages/userProfil/components/Account';
 import CarDetail from './pages/carDetails/CarDetail';
 import AddCarForm from "./pages/userProfil/components/AddCarForm";
+import MyCars from "./pages/userProfil/components/MyCars";
 
 
 function App() {
@@ -40,9 +41,12 @@ function App() {
             {/* <Route path="account" element={</>}/> */}
             <Route path="account" element={<Account />} />
             <Route path="addCar" element={<AddCarForm/>}/>
+            <Route path="myCars" element={<MyCars/>}/>
+            <Route path="shopPage" element={<ShopPage/>}/>
           </Route>
 
           <Route path='/carDetails/:carId' element={<CarDetail/>}/>
+
 
          
           {/* <Route path='/login' element={<LoginPage/>}/>

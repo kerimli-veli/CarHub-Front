@@ -105,8 +105,8 @@ export default function Account() {
             />
             <div>
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{user.name} {user.surname}</h2>
-              <p className="text-sm text-gray-500">{user.bio || "Team Manager"}</p>
-              <p className="text-sm text-gray-400">Leeds, United Kingdom</p>
+              <p className="text-sm text-gray-500">{user.userRole}</p>
+              <p className="text-sm text-gray-400">Azerbaijan, Barda</p>
             </div>
           </div>
           <button
@@ -135,7 +135,6 @@ export default function Account() {
             <InfoRow label="Last Name" name="surname" value={updatedUser.surname} editable={editMode} onChange={handleChange} />
             <InfoRow label="Email address" name="email" value={updatedUser.email} editable={editMode} onChange={handleChange} />
             <InfoRow label="Phone" name="phone" value={updatedUser.phone} editable={editMode} onChange={handleChange} />
-            <InfoRow label="Bio" name="bio" value={updatedUser.bio} editable={editMode} onChange={handleChange} />
           </div>
     
           {editMode && (

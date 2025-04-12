@@ -20,9 +20,11 @@ import CarFavorites from "./CarFavorites";
 import Account from "./Account";
 import React from "react";
 import AddCarForm from "./AddCarForm";
+import MyCars from "./MyCars";
+import ShopPage from "../../shop/ShopPage";
 
 const menuItems = [
-  { id: "dashboard", icon: <FaShoppingCart />, label: "Dashboard", path: "dashboard" },
+  { id: "shopPage", icon: <FaShoppingCart />, label: "Shop Page", path: "shopPage" },
   { id: "cards", icon: <FaCreditCard />, label: "Card Manager", path: "cards" },
   { id: "account", icon: <FaUser />, label: "Account", path: "account" },
   { id: "transactions", icon: <FaExchangeAlt />, label: "Transactions", path: "transactions" },
@@ -174,7 +176,7 @@ const Sidebar = () => {
           className="bg-blue-400 text-white text-center py-3 rounded text-lg font-semibold shadow"
         >
           {location.pathname === "/userProfile/favorites" && "View your favorites"}
-          {location.pathname === "/userProfile/dashboard" && "Welcome to Dashboard"}
+          {location.pathname === "/userProfile/shopPage" && "Welcome to Shop"}
           {location.pathname === "/userProfile/cards" && "Manage Your Cards"}
           {location.pathname === "/userProfile/account" && "View Account Details"}
           {location.pathname === "/userProfile/transactions" && "Track Your Transactions"}
@@ -187,6 +189,8 @@ const Sidebar = () => {
             {location.pathname === "/userProfile/favorites" && <CarFavorites />}
             {location.pathname === "/userProfile/account" && <Account />}
             {location.pathname === "/userProfile/addCar" && <AddCarForm/>}
+            {location.pathname === "/userProfile/myCars" && <MyCars/>}
+            {location.pathname === "/userProfile/shopPage" && <ShopPage/>}
           </AnimatePresence>
         </div>
       </motion.main>

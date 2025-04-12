@@ -6,14 +6,14 @@ import React from 'react';
 
 const CarList = () => {
     return (
-        <div className="relative min-h-screen flex flex-col bg-[#050B20]">
+        <div className="relative min-h-screen flex gap-5 flex-col bg-[#050B20]">
             
-            <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-[85%] z-50">
-  <Header />
-</div>
+            <div className="w-full p-[1%]">
+                <Header />
+            </div>
 
 
-            <div className='flex justify-center mt-[10%]'>
+            <div className='flex justify-center mt-[3%]'>
                 <CarSearchBar/>
             </div>
             <div className='mt-[5%]'>
