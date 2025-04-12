@@ -71,12 +71,11 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
             </div>
           </div>
 
-          <style jsx>{`.w-full::-webkit-scrollbar {width: 8px;}
-            .w-full::-webkit-scrollbar-thumb {background-color: black;border-radius: 10px;}
-            .w-full::-webkit-scrollbar-track {background-color: black;}
-            input[type='range']::-webkit-slider-runnable-track {background-color: #f9fbfc;height: 8px;}
-            input[type='range']::-webkit-slider-thumb {background-color: black;border-radius: 50%;border: 3px solid #000;width: 16px;height: 16px;margin-top: -4px;}
-            input[type='range']:focus {outline: none;}`}</style>
+            <style jsx>{`.w-full::-webkit-scrollbar {width: 8px;}.w-full::-webkit-scrollbar-thumb {background-color: black;border-radius: 10px;} .w-full::-webkit-scrollbar-track {background-color: black;}
+             input[type='range']::-webkit-slider-runnable-track {background-color: #f9fbfc;height: 8px;}
+             input[type='range']::-webkit-slider-thumb {background-color: black;border-radius: 50%;border: 3px solid #000;width: 16px;height: 16px;margin-top: -4px;}
+             input[type='range']:focus {outline: none;}`}
+            </style>
         </div>
       </div>
     </div>

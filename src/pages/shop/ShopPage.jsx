@@ -20,7 +20,6 @@ const ShopPage = () => {
     <>
       <Header />
 
-      {/* Sayfa başlığı ve breadcrumb */}
       <div className="pt-15 pl-23 ">
         
         <h1 className="text-4xl font-bold">Shop</h1>
@@ -36,7 +35,6 @@ const ShopPage = () => {
         </div>
       </div>
 
-      {/* Footer ile Products arasına mesafe ekliyoruz */}
       <div className="mt-12">
         <Footer />
       </div>
