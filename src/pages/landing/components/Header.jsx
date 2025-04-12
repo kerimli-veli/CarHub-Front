@@ -11,9 +11,10 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSearchInput, setShowSearchInput] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
+  
 
 
   useEffect(() => {
@@ -57,24 +58,31 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
 
 
   const handleProductSearch = async () => {
-    if (!searchQuery.trim()) return;
-
     try {
-      const response = await fetch(
-        `https://localhost:7282/api/Product/GetByNameProduct?name=${encodeURIComponent(searchQuery)}`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setSearchResults(data ? [data] : []);
+      const response = await fetch(`https://localhost:7282/api/Product/GetByNameProduct?name=${searchQuery}`);
+      const result = await response.json();
+  
+      console.log("Arama sonucu:", result);
+  
+      if (Array.isArray(result)) {
+        setSearchResults(result); 
+      } else if (result.data && Array.isArray(result.data)) {
+        setSearchResults(result.data); 
       } else {
-        setSearchResults([]);
+        setSearchResults([]); 
       }
     } catch (error) {
-      console.error("Search Error:", error);
-      setSearchResults([]);
+      console.error("Fetch Error:", error);
+      setSearchResults([]); 
     }
   };
+
+  useEffect(() => {
+    if (!showSearchInput) {
+      setSearchQuery("");
+      setSearchResults([]);
+    }
+  }, [showSearchInput]);
 
   useEffect(() => {
     const closeOnOutsideClick = (e) => {
@@ -88,6 +96,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
       document.removeEventListener("mousedown", closeOnOutsideClick);
     };
   }, []);
+
 
 
 
@@ -123,7 +132,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
           {/* axtarmaq ucun */}
           <div className="relative group" id="search-box">
             <button
-              onClick={() => setShowSearchInput(!showSearchInput)} 
+              onClick={() => setShowSearchInput(!showSearchInput)}
               className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out">
               Product Search
               <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
@@ -133,21 +142,23 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
               <div className="absolute top-full mt-3 right-0 w-96 z-50 bg-white p-4 rounded-lg shadow-lg">
                 <div className="flex gap-2">
                   <input
-                    type="text" placeholder="Product search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 text-black"/>
+                    type="text" placeholder="Product search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 text-black" />
                   <button
-                    onClick={handleProductSearch}  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                    onClick={handleProductSearch} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
                     Search
                   </button>
                 </div>
-              
-                {searchResults.length > 0 ? (
+
+                {searchQuery.trim() !== "" && searchResults.length === 0 ? (
+                  <div className="mt-4 text-gray-500 text-sm">No products found for this search.</div>
+                ) : (
                   <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                     {searchResults.map((product) => (
                       <div key={product.id} className="bg-white rounded-xl border border-[#E9E9E9] shadow-sm relative"
                         style={{ width: "327.48px", height: "509.52px", marginTop: "20px" }}>
                         <img src={product.imagePath} alt={product.name} className="rounded-xl object-cover absolute"
-                          style={{ width: "265.48px", height: "265.48px", top: "31px", left: "31px" }}/>
+                          style={{ width: "265.48px", height: "265.48px", top: "31px", left: "31px" }} />
                         <div
                           className="text-2xl font-semibold font-bold absolute text-black"
                           style={{ width: "45.26px", height: "37px", top: "369.27px", left: "31px" }} >
@@ -164,9 +175,11 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                           <span style={{ color: "#3B82F6" }}>&#128722;</span> <span className="ml-2">Add to Cart</span>
                         </button>
                       </div>))}
-                  </div>) : (searchQuery.trim() !== "" && (  <div className="mt-4 text-gray-500 text-sm">No products found for this search.</div>))}
+                  </div>
+                )}
               </div>)}
           </div>
+
 
 
           <div className="relative group">
