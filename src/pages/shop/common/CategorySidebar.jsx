@@ -7,7 +7,6 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
   const [selectedMaxPrice, setSelectedMaxPrice] = useState(360);
   const categoriesListRef = useRef(null);
 
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -22,7 +21,6 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
     fetchCategories();
   }, []);
 
-
   const handleMaxPriceChange = useCallback((event) => {
     const newMaxPrice = parseInt(event.target.value, 10);
     setSelectedMaxPrice(newMaxPrice);
@@ -35,15 +33,8 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
   };
 
   return (
-    <div className="pt-15 pl-23">
+    <div className="pt-15 pl-23 sticky top-24 max-h-screen overflow-auto">
       
-      <nav className="text-sm text-gray-500 mb-4">
-        <span>Home / </span>
-        <span className="text-gray-700 font-semibold">Shop</span>
-      </nav>
-
-      
-      <h1 className="text-4xl font-bold mb-10">Shop</h1>
 
       {/* Sidebar */}
       <div className="space-y-9">
@@ -51,7 +42,7 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
         <div className="bg-white shadow-sm w-[327px] h-[377px] p-4 border border-[#E9E9E9] rounded-[16px]">
           <h2 className="text-lg font-bold mb-4 text-[18px]">Categories</h2>
           <div ref={categoriesListRef} className="overflow-auto scrollbar-hide"
-            style={{ maxHeight: '250px', scrollbarWidth: 'none', /* Firefox */}}>
+            style={{ maxHeight: '250px', scrollbarWidth: 'none' }}>
             <ul className="space-y-2">
               {categories.map((category) => (
                 <li key={category.id} className={`flex justify-between text-gray-700 cursor-pointer transition-all duration-300 ease-in-out 
@@ -59,21 +50,20 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
                   p-2 rounded-md`} onClick={() => handleCategoryClick(category)}>
                   <span className="text-[15px]">{category.name}</span>
                   <span className="text-[15px]">({category.count})</span>
-                </li>))}
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        
+        {/* Price Range */}
         <div className="bg-white shadow-sm w-[327px] h-[150px] p-4 border border-[#E9E9E9] rounded-[16px]">
           <h2 className="text-lg font-bold mb-4 text-[18px]">Prices</h2>
           <div className="flex flex-col items-center">
             <div className="relative w-full">
-            
               <input type="range" min={priceRange.min} max={priceRange.max} value={selectedMaxPrice} onChange={handleMaxPriceChange}
                 className="w-full h-1 bg-gray-200 rounded-full appearance-none cursor-pointer"
-                style={{ background: `linear-gradient(to right, #000 0%, #000 ${(selectedMaxPrice / priceRange.max) * 100}%, #ccc ${(selectedMaxPrice / priceRange.max) * 100}%, #ccc 100%)`,height: '4px',}}/>
-              
+                style={{ background: `linear-gradient(to right, #000 0%, #000 ${(selectedMaxPrice / priceRange.max) * 100}%, #ccc ${(selectedMaxPrice / priceRange.max) * 100}%, #ccc 100%)`, height: '4px' }} />
               <div className="absolute flex justify-between text-sm text-gray-500 w-full top-6">
                 <span>${priceRange.min}</span>
                 <span>${selectedMaxPrice}</span>
@@ -81,14 +71,12 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
             </div>
           </div>
 
-        
           <style jsx>{`.w-full::-webkit-scrollbar {width: 8px;}
-          .w-full::-webkit-scrollbar-thumb {background-color: black;border-radius: 10px;}
-          .w-full::-webkit-scrollbar-track {background-color: black;}
+            .w-full::-webkit-scrollbar-thumb {background-color: black;border-radius: 10px;}
+            .w-full::-webkit-scrollbar-track {background-color: black;}
             input[type='range']::-webkit-slider-runnable-track {background-color: #f9fbfc;height: 8px;}
             input[type='range']::-webkit-slider-thumb {background-color: black;border-radius: 50%;border: 3px solid #000;width: 16px;height: 16px;margin-top: -4px;}
-            input[type='range']:focus {outline: none;}`}
-            </style>
+            input[type='range']:focus {outline: none;}`}</style>
         </div>
       </div>
     </div>

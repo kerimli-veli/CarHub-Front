@@ -59,7 +59,7 @@ const Products = ({ selectedCategory, priceRange }) => {
   const handleNextPage = () => {if (startProduct + productsPerPage < sortedProducts.length) {setStartProduct(startProduct + productsPerPage);}};
 
   return (
-    <div className="pt-40 pl-9 pr-40">
+    <div className="pt-11 pl-9 pr-40">
       {/* Sorting and Pagination */}
       <div className="flex justify-between mb-4 items-center ">
         <div style={{ marginTop: "5px" }}>
