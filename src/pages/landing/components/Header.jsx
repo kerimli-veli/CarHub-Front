@@ -10,6 +10,9 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
   const navigate = useNavigate();
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchInput, setShowSearchInput] = useState(false);
 
 
   useEffect(() => {
@@ -49,6 +52,24 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
     fetchUser();
   }, []);
 
+  const handleProductSearch = async () => {
+    if (!searchQuery.trim()) return;
+
+    try {
+      const response = await fetch(
+        `https://localhost:7282/api/Product/GetByNameProduct?name=${encodeURIComponent(searchQuery)}`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setSearchResults(data.data || []);
+      }
+    } catch (error) {
+      console.error("Arama hatası:", error);
+    }
+  };
+
+
   return (
     <nav className={`${bgColor} text-white p-4`}>
       <div className="container mx-auto flex justify-between items-center">
@@ -56,18 +77,13 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
           CarHub
         </a>
 
+        
+
 <button
   className="md:hidden text-white focus:outline-none"
   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
 >
-  <svg
-    className="w-8 h-8"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
+  <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -82,6 +98,51 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
           Home
           <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
         </a>
+
+        {/* axtarmaq ucun */}
+          <div className="relative">
+            {/* Arama Butonu */}
+            <button
+              onClick={() => setShowSearchInput(!showSearchInput)}
+              className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out"
+            >
+              Product Search
+            </button>
+            {showSearchInput && (
+              <div className="absolute top-full mt-3 right-0 w-96 z-50 bg-white p-4 rounded-lg shadow-lg">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Product search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 text-black"
+                  />
+                  <button
+                    onClick={handleProductSearch}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                  >
+                   Search
+                  </button>
+                </div>
+
+                {/* Arama Sonuçları */}
+                {searchResults.length > 0 && (
+                  <div className="mt-4">
+                    {searchResults.map((product) => (
+                      <div key={product.id} className="p-2 border-b">
+                        <p>{product.name}</p>
+                        <button className="mt-1 px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600">
+                          Add to Cart
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
 
         <div className="relative group">
           <button className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out">
