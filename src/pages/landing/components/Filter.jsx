@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Filter = () => {
   const [selectedType, setSelectedType] = useState("New");
@@ -40,41 +42,35 @@ const Filter = () => {
     fetchCars();
   }, []);
 
-  const handleSearch = async () => {
-    const filters = {
-      Brand: selectedMake,
-      MinPrice: "0",
-      MaxPrice: price.toString(),
-    };
+  const navigate = useNavigate();
 
-    if (selectedModel !== "None") {
-      filters.Model = selectedModel;
-    }
-
-    if (selectedType === "New") {
-      filters.MaxMiles = "1";
-    } else {
-      filters.MinMiles = "0";
-    }
-
-    const filteredParams = Object.fromEntries(
-      Object.entries(filters).filter(
-        ([_, value]) => value !== "" && value !== undefined && value !== null
-      )
-    );
-
-    const queryParams = new URLSearchParams(filteredParams).toString();
-    const url = `https://localhost:7282/api/Car/CarFilter?${queryParams}`;
-
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      console.log("Filtered Cars:", data);
-      // setFilteredCars(data);
-    } catch (err) {
-      console.error("Search error:", err);
-    }
+const handleSearch = () => {
+  const filters = {
+    Brand: selectedMake,
+    MinPrice: "0",
+    MaxPrice: price.toString(),
   };
+
+  if (selectedModel !== "None") {
+    filters.Model = selectedModel;
+  }
+
+  if (selectedType === "New") {
+    filters.MaxMiles = "1";
+  } else {
+    filters.MinMiles = "0";
+  }
+
+  const filteredParams = Object.fromEntries(
+    Object.entries(filters).filter(
+      ([_, value]) => value !== "" && value !== undefined && value !== null
+    )
+  );
+
+  const queryParams = new URLSearchParams(filteredParams).toString();
+  navigate(`/carList?${queryParams}`);
+};
+
 
   const handleBrandChange = (e) => {
     const newMake = e.target.value;

@@ -1,18 +1,36 @@
 import { useState, useEffect } from "react";
 import React from "react";
 import CarCard from "../../common/CarCard";
+import { useLocation } from "react-router-dom";
 
 const CarListing = () => {
   const [cars, setCars] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const carsPerPage = 12;
+  const location = useLocation();
 
   useEffect(() => {
-    fetch("https://localhost:7282/api/Car/GetAll")
-      .then((response) => response.json())
-      .then((data) => setCars(data))
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
+    const fetchFilteredCars = async () => {
+      try {
+        const params = new URLSearchParams(location.search);
+        let url = "https://localhost:7282/api/Car";
+
+        if ([...params].length > 0) {
+          url += "/CarFilter?" + params.toString();
+        } else {
+          url += "/GetAll";
+        }
+
+        const response = await fetch(url);
+        const data = await response.json();
+        setCars(data.data);
+      } catch (error) {
+        console.error("Error fetching filtered cars:", error);
+      }
+    };
+
+    fetchFilteredCars();
+  }, [location.search]);
 
   const totalPages = Math.ceil(cars.length / carsPerPage);
   const indexOfLastCar = currentPage * carsPerPage;
