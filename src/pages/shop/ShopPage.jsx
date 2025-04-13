@@ -3,6 +3,7 @@ import CategorySidebar from './common/CategorySidebar';
 import Products from './common/Products';
 import Footer from '../landing/components/Footer';
 import Header from '../landing/components/Header';
+import Cart from './cart';
 
 const ShopPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -32,6 +33,10 @@ const ShopPage = () => {
         />
         <div className="flex-grow">
           <Products selectedCategory={selectedCategory} priceRange={priceRange} />
+        </div>
+
+        <div>
+           {/* <Cart/> */}
         </div>
       </div>
 
