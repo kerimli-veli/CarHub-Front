@@ -32,7 +32,7 @@ const CarCard = ({ car }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md relative transition-transform duration-300 hover:scale-105">
-      {/* Favori icon */}
+      
       <button
         className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition z-10 ${
           accessToken
@@ -55,7 +55,6 @@ const CarCard = ({ car }) => {
         />
       </button>
 
-      {/* Badge-lər */}
       {car.price < 50000 && (
         <span className="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-xl">
           Great Price
@@ -67,14 +66,12 @@ const CarCard = ({ car }) => {
         </span>
       )}
 
-      {/* Image */}
       <img
         src={car.carImagePaths[0]?.imagePath}
         alt={car.model}
         className="w-full h-50 object-cover rounded-md"
       />
 
-      {/* Info */}
       <div className="p-7 grid gap-2">
         <h2 className="text-xl mt-2 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
           {car.brand} {car.model} - {car.year}
@@ -111,7 +108,6 @@ const CarCard = ({ car }) => {
         </div>
       </div>
 
-      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 backdrop-blur-md z-50">
           <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-sm text-center relative transform transition-all scale-105">
