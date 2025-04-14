@@ -50,7 +50,6 @@ const FilterBar = () => {
       try {
         const response = await fetch("https://localhost:7282/api/Car/GetAll");
         const data = await response.json();
-
         const uniqueBrands = [...new Set(data.map((car) => car.brand))];
         const uniqueModels = [...new Set(data.map((car) => car.model))];
 

@@ -13,21 +13,34 @@ const CarListing = () => {
     const fetchFilteredCars = async () => {
       try {
         const params = new URLSearchParams(location.search);
-        let url = "https://localhost:7282/api/Car";
-
+        let url = "";
+        let data = null;
+    
         if ([...params].length > 0) {
-          url += "/CarFilter?" + params.toString();
+          url = `https://localhost:7282/api/Car/CarFilter?${params.toString()}`;
+          const response = await fetch(url);
+          const result = await response.json();
+          data = result?.data;
+    
+          if (!Array.isArray(data) || data.length === 0) {
+            const fallbackResponse = await fetch("https://localhost:7282/api/Car/GetAll");
+            const fallbackResult = await fallbackResponse.json();
+    
+            data = Array.isArray(fallbackResult) ? fallbackResult : fallbackResult?.data;
+          }
         } else {
-          url += "/GetAll";
+          const response = await fetch("https://localhost:7282/api/Car/GetAll");
+          const result = await response.json();
+    
+          data = Array.isArray(result) ? result : result?.data;
         }
-
-        const response = await fetch(url);
-        const data = await response.json();
-        setCars(data.data);
+    
+        setCars(data || []);
       } catch (error) {
-        console.error("Error fetching filtered cars:", error);
+        console.error("Error fetching cars:", error);
       }
     };
+    
 
     fetchFilteredCars();
   }, [location.search]);
