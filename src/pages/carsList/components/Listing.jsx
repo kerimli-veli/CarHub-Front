@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import React from "react";
 import CarCard from "../../common/CarCard";
 import { useLocation } from "react-router-dom";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+
 
 const CarListing = () => {
   const [cars, setCars] = useState([]);
@@ -15,35 +17,28 @@ const CarListing = () => {
         const params = new URLSearchParams(location.search);
         let url = "";
         let data = null;
-    
+  
         if ([...params].length > 0) {
           url = `https://localhost:7282/api/Car/CarFilter?${params.toString()}`;
           const response = await fetch(url);
           const result = await response.json();
           data = result?.data;
-    
-          if (!Array.isArray(data) || data.length === 0) {
-            const fallbackResponse = await fetch("https://localhost:7282/api/Car/GetAll");
-            const fallbackResult = await fallbackResponse.json();
-    
-            data = Array.isArray(fallbackResult) ? fallbackResult : fallbackResult?.data;
-          }
         } else {
           const response = await fetch("https://localhost:7282/api/Car/GetAll");
           const result = await response.json();
-    
           data = Array.isArray(result) ? result : result?.data;
         }
-    
+  
         setCars(data || []);
       } catch (error) {
         console.error("Error fetching cars:", error);
+        setCars([]); 
       }
     };
-    
-
+  
     fetchFilteredCars();
   }, [location.search]);
+  
 
   const totalPages = Math.ceil(cars.length / carsPerPage);
   const indexOfLastCar = currentPage * carsPerPage;
@@ -55,10 +50,21 @@ const CarListing = () => {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl mt-10 font-semibold mb-15">Listing</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {currentCars.map((car) => (
-            <CarCard key={car.id} car={car} />
-          ))}
-        </div>
+        {currentCars.length === 0 ? (
+  <div className="col-span-full text-center mt-20 flex flex-col items-center justify-center">
+    <MagnifyingGlassIcon className="h-16 w-16 text-gray-400 mb-4" />
+    <p className="text-gray-600 text-xl font-medium">
+      Axtarışa uyğun maşın tapılmadı.
+    </p>
+  </div>
+) : (
+  currentCars.map((car) => (
+    <CarCard key={car.id} car={car} />
+  ))
+)}
+
+</div>
+
 
         <div className="flex items-center justify-center space-x-2 mt-[4%]">
           {[...Array(totalPages).keys()].map((page) => (
