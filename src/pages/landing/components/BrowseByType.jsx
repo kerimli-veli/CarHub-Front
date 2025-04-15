@@ -10,9 +10,8 @@ import Van from "./../../../assets/images/BrowseByTypeImages/Van.svg";
 import Truck from "./../../../assets/images/BrowseByTypeImages/Truck.svg";
 import Electric from "./../../../assets/images/BrowseByTypeImages/Electric.svg";
 
-// BodyType -> Image mapping
 const bodyTypeImages = {
-  SUV: Suv,
+  Suv: Suv,
   Sedan: Sedan,
   Hatchback: Hatchback,
   Coupe: Coupe,
@@ -29,18 +28,12 @@ const BrowseByType = () => {
   useEffect(() => {
     const fetchBodyTypes = async () => {
       try {
-        const response = await fetch("https://localhost:7282/api/Car/GetAll");
+        const response = await fetch("https://localhost:7282/api/Car/GetAllBodyTypes");
         const result = await response.json();
   
-        // Log yoxlaması üçün qalır
-        console.log("Gelen maşınlar:", result);
+        console.log("Gelen body types:", result);
   
-        // Artıq result birbaşa array-dir
-        const uniqueBodyTypes = [
-          ...new Set(result.map((car) => car.body)),
-        ].filter(Boolean);
-  
-        setBodyTypes(uniqueBodyTypes);
+        setBodyTypes(result);
       } catch (error) {
         console.error("Error fetching body types:", error);
       }
@@ -49,22 +42,24 @@ const BrowseByType = () => {
     fetchBodyTypes();
   }, []);
   
+  
 
   return (
     <div className="max-w-6xl mx-auto">
       <h2 className="text-4xl font-bold mb-12 text-gray-800">Browse by Type</h2>
       <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-6">
-        {bodyTypes.map((type, index) => (
+      {bodyTypes.map((type, index) => (
           <div
             key={index}
             className="flex flex-col items-center justify-center p-5 bg-gray-100 border border-gray-200 rounded-lg shadow-md hover:bg-white hover:shadow-xl transform transition-all duration-300 hover:scale-105 cursor-pointer"
           >
             <img
-              src={bodyTypeImages[type] || "/images/default.svg"}
-              alt={type}
+              src={bodyTypeImages[type.name] || "/images/default.svg"}
+              alt={type.name}
               className="w-16 h-12 mb-3"
             />
-            <span className="text-md font-medium text-gray-700">{type}</span>
+
+            <span className="text-md font-medium text-gray-700">{type.name}</span>
           </div>
         ))}
       </div>
