@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import getUserFromToken from "../../common/GetUserFromToken";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const getCookie = (name) => {
@@ -116,21 +118,20 @@ const Products = ({ selectedCategory, priceRange }) => {
     const accessToken = Cookies.get("accessToken");
   
     if (!accessToken) {
-      alert("You must log in first to add items to the cart!");
+      toast.error("Sistemdə giriş etməyiniz tələb olunur!");
       return;
     }
   
     const user = getUserFromToken();
     const userId = user?.id;
-  
     if (!userId) {
-      alert("User ID could not be resolved. Please log in again.");
+      toast.error("İstifadəçi məlumati əldə edilə bilmədi.");
       return;
     }
   
-    const cartId = await fetchCartId(); 
+    const cartId = await fetchCartId();
     if (!cartId) {
-      alert("Cart information could not be retrieved.");
+      toast.error("Səbət əldə edilə bilmədi.");
       return;
     }
   
@@ -152,7 +153,7 @@ const Products = ({ selectedCategory, priceRange }) => {
         const errorData = await response.json();
         console.error("Product could not be added to the cart:", errorData);
       } else {
-        alert("Product added to the cart!");
+        toast.success("Məhsul səbətə əlavə edildi!");
       }
     } catch (error) {
       console.error("An error occurred while adding the product to the cart:", error);
@@ -249,6 +250,17 @@ const Products = ({ selectedCategory, priceRange }) => {
           > &gt;
           </button> )}
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
