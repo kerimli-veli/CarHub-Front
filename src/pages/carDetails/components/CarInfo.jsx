@@ -7,10 +7,10 @@ import { MdVideoLibrary } from "react-icons/md";
 import { IoMdCall } from "react-icons/io";
 import { FaCalendarAlt, FaRoad, FaCogs, FaGasPump, FaShareAlt, FaHeart, FaBalanceScale } from "react-icons/fa";
 import { Car, Calendar, Gauge, Fuel, Settings, DoorOpen, BadgeCent, Thermometer, Palette, KeyRound, Barcode } from "lucide-react";
-import { useParams } from "react-router-dom"; 
+import { useParams, useNavigate } from "react-router-dom"; // useNavigate əlavə et
 import useFavoriteCars from "../../common/Ui/userFavoriteCars"; 
 import CarLoading from "./CarLoading";
-
+import getUserFromToken from "../../common/GetUserFromToken";
 
 const CarInfo = () => {
   const { carId } = useParams(); 
@@ -19,6 +19,7 @@ const CarInfo = () => {
   const [otherImages, setOtherImages] = useState([]); 
   const [user, setUser] = useState(null); 
   const { savedCars, toggleSave } = useFavoriteCars([car]);
+  const navigate = useNavigate(); // useNavigate hook-u əlavə et
 
   useEffect(() => {
     if (carId) {
@@ -43,9 +44,19 @@ const CarInfo = () => {
         .catch((err) => console.error("API xətası:", err));
     }
   }, [carId]);
-  
 
-  if (!car || !user) return <CarLoading/>;
+  const handleSendMessage = () => {
+    const sender = getUserFromToken();
+    if (!sender) {
+      alert("Zəhmət olmasa login olun.");
+      return;
+    }
+
+    // Burada artıq mesaj göndərmirik, amma istifadəçini mesaj səhifəsinə yönləndiririk
+    navigate(`/messages/${car.createdBy}`); // Mesaj səhifəsinə yönləndiririk
+  };
+
+  if (!car || !user) return <CarLoading />;
 
   const handleImageClick = (imagePath, index) => {
     const updatedImages = [...otherImages];
@@ -178,14 +189,9 @@ const CarInfo = () => {
               <p className="font-bold">{user.name}</p>
               <p className="text-sm text-gray-500 mb-2">{user?.address || "943 Broadway, Brooklyn"}</p>
               <Button variant="link" className="text-blue-600 underline">Get Direction</Button>
-              <p className="text-sm text-gray-700 mt-2"><IoMdCall className="inline mr-1" /> {user?.phone || "+88-123456789"}</p>
-              <Button className="w-full mt-4">Message Dealer</Button>
-              <Button variant="outline" className="w-full mt-2 flex items-center justify-center gap-2">
-                <FaWhatsapp /> Chat Via Whatsapp
-              </Button>
-              <Button variant="link" className="mt-2 text-sm text-blue-600 underline">
-                View Other Listings
-              </Button>
+              <p className="text-sm text-gray-700 mt-2"><IoMdCall className="inline mr-1" /> {user.phone}</p>
+              <p className="text-sm text-gray-700 mt-2"><FaWhatsapp className="inline mr-1" /> {user.whatsapp}</p>
+              <Button onClick={handleSendMessage} className="mt-4 w-full py-2 text-white bg-blue-600 hover:bg-blue-700">Message Dealer</Button>
             </CardContent>
           </Card>
         </div>

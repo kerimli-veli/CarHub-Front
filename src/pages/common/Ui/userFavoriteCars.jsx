@@ -8,28 +8,42 @@ export default function useFavoriteCars(initialCars = []) {
 
   useEffect(() => {
     const token = Cookies.get("accessToken");
-    if (token) {
-      setAccessToken(token);
-      const user = getUserFromToken();
+    if (!token) return;
 
-      if (user?.id) {
-        fetch(`https://localhost:7282/api/User/GetById?Id=${user.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((res) => res.json())
-          .then((userData) => {
-            const favIds = userData?.data?.favoriteCarIds || [];
-            const initialSaved = {};
-            initialCars.forEach((car) => {
-              initialSaved[car.id] = favIds.includes(car.id);
-            });
-            setSavedCars(initialSaved);
-          })
-          .catch((err) => console.error("Error fetching user data:", err));
-      }
+    setAccessToken(token);
+
+    const user = getUserFromToken();
+    if (!user?.id) {
+      console.error("User ID not found in token");
+      return;
     }
+
+    fetch(`https://localhost:7282/api/User/GetById?Id=${user.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((userData) => {
+        const favIds = userData?.data?.favoriteCarIds || [];
+
+        if (!Array.isArray(favIds)) {
+          console.error("favoriteCarIds is not an array!", favIds);
+          return;
+        }
+
+        const filteredCars = initialCars.filter(
+          (car) => car && typeof car.id === "number"
+        );
+
+        const initialSaved = {};
+        filteredCars.forEach((car) => {
+          initialSaved[car.id] = favIds.includes(car.id);
+        });
+
+        setSavedCars(initialSaved);
+      })
+      .catch((err) => console.error("Error fetching user data:", err));
   }, [initialCars]);
 
   const toggleSave = ({ carId, onFail }) => {
@@ -37,7 +51,7 @@ export default function useFavoriteCars(initialCars = []) {
     const user = getUserFromToken();
 
     if (!token || !user?.id) {
-      onFail?.(); 
+      onFail?.();
       return;
     }
 

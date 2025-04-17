@@ -16,7 +16,7 @@ import CarDetail from './pages/carDetails/CarDetail';
 import AddCarForm from "./pages/userProfil/components/AddCarForm";
 import MyCars from "./pages/userProfil/components/MyCars";
 import Cart from "./pages/shop/cart";
-
+import Message from "./pages/message/Message";
 
 function App() {
 
@@ -48,7 +48,7 @@ function App() {
           <Route path="cart" element={<Cart />} />
           <Route path='/carDetails/:carId' element={<CarDetail />} />
 
-
+          <Route path="/messages/:receiverId" element={<Message />} />
 
           {/* <Route path='/login' element={<LoginPage/>}/>
           <Route path='/signUp' element={<SignUpPage/>}/> */}
