@@ -1,33 +1,67 @@
+
+import ShopPage from "./pages/shop/ShopPage";
+
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Landing from './pages/landing/Landing'
+import CarList from './pages/carsList/CarList'
+import { BrowserRouter, Routes, Route } from "react-router"
+import React from "react";
+import SignIn from './pages/sign-in/SignIn'
+import SignUp from './pages/sign-up/SignUp'
+import { Toaster } from 'react-hot-toast'
+import UserProfile from './pages/userProfil/UserProfil'
+import CarFavorites from './pages/userProfil/components/CarFavorites'
+import Account from './pages/userProfil/components/Account';
+import CarDetail from './pages/carDetails/CarDetail';
+import AddCarForm from "./pages/userProfil/components/AddCarForm";
+import MyCars from "./pages/userProfil/components/MyCars";
+import Cart from "./pages/shop/cart";
+
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <Toaster position='top-center' />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+
+          <Route path="/shopPage" element={<ShopPage />} />
+          <Route path="/SignIn" element={<SignIn />} />
+          <Route path="/SignUp" element={<SignUp />} />
+
+          <Route path='/carList' element={<CarList />} />
+
+          <Route path="/userProfile" element={<UserProfile />}>
+            {/* <Route index element={<Dashboard />} />  */}
+            <Route path="favorites" element={<CarFavorites />} />
+            {/* <Route path="account" element={</>}/> */}
+            <Route path="account" element={<Account />} />
+            <Route path="addCar" element={<AddCarForm />} />
+            <Route path="myCars" element={<MyCars />} />
+            <Route path="shopPage" element={<ShopPage />} />
+          </Route>
+          <Route path="cart" element={<Cart />} />
+          <Route path='/carDetails/:carId' element={<CarDetail />} />
+
+
+
+          {/* <Route path='/login' element={<LoginPage/>}/>
+          <Route path='/signUp' element={<SignUpPage/>}/> */}
+
+          {/* {token &&
+            <>
+            <Route path='/home' element={<Homepage/>}/>
+            <Route path='/details' element={<Details/>}/>
+            </>
+          } */}
+
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
