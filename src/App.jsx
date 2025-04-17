@@ -4,7 +4,7 @@ import ShopPage from "./pages/shop/ShopPage";
 import { useState } from 'react'
 import Landing from './pages/landing/Landing'
 import CarList from './pages/carsList/CarList'
-import {BrowserRouter, Routes, Route } from "react-router"
+import { BrowserRouter, Routes, Route } from "react-router"
 import React from "react";
 import SignIn from './pages/sign-in/SignIn'
 import SignUp from './pages/sign-up/SignUp'
@@ -19,42 +19,40 @@ import Cart from "./pages/shop/cart";
 
 
 function App() {
-  
+
 
   return (
     <>
       <div>
-      <Toaster position='top-center'/>
+        <Toaster position='top-center' />
       </div>
-        <BrowserRouter>
-          <Routes>
-          <Route path="/" element={<Landing/>}/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
 
-          <Route path="/shopPage" element={<ShopPage/>}/>
-          <Route path="/SignIn" element={<SignIn/>} />
-          <Route path="/SignUp" element={<SignUp/>} />
+          <Route path="/shopPage" element={<ShopPage />} />
+          <Route path="/SignIn" element={<SignIn />} />
+          <Route path="/SignUp" element={<SignUp />} />
 
-          <Route path='/carList' element={<CarList/>}/>
+          <Route path='/carList' element={<CarList />} />
 
           <Route path="/userProfile" element={<UserProfile />}>
             {/* <Route index element={<Dashboard />} />  */}
             <Route path="favorites" element={<CarFavorites />} />
             {/* <Route path="account" element={</>}/> */}
             <Route path="account" element={<Account />} />
-            <Route path="addCar" element={<AddCarForm/>}/>
-            <Route path="myCars" element={<MyCars/>}/>
-            <Route path="shopPage" element={<ShopPage/>}/>
-            
-            <Route path="cart" element={<Cart />} /> 
+            <Route path="addCar" element={<AddCarForm />} />
+            <Route path="myCars" element={<MyCars />} />
+            <Route path="shopPage" element={<ShopPage />} />
           </Route>
+          <Route path="cart" element={<Cart />} />
+          <Route path='/carDetails/:carId' element={<CarDetail />} />
 
-          <Route path='/carDetails/:carId' element={<CarDetail/>}/>
 
 
-         
           {/* <Route path='/login' element={<LoginPage/>}/>
           <Route path='/signUp' element={<SignUpPage/>}/> */}
- 
+
           {/* {token &&
             <>
             <Route path='/home' element={<Homepage/>}/>
@@ -62,8 +60,8 @@ function App() {
             </>
           } */}
 
-          </Routes>
-        </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

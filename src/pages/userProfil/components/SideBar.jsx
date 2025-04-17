@@ -24,7 +24,7 @@ import MyCars from "./MyCars";
 import ShopPage from "../../shop/ShopPage";
 
 const menuItems = [
-  { id: "shopPage", icon: <FaShoppingCart />, label: "Shop Page", path: "shopPage" },
+  { id: "shopPage", icon: <FaShoppingCart />, label: "Basket", path: "shopPage" },
   { id: "cards", icon: <FaCreditCard />, label: "Card Manager", path: "cards" },
   { id: "account", icon: <FaUser />, label: "Account", path: "account" },
   { id: "transactions", icon: <FaExchangeAlt />, label: "Transactions", path: "transactions" },

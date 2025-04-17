@@ -1,22 +1,41 @@
 import React, { useEffect, useState } from 'react';
+import getUserFromToken from '../common/GetUserFromToken';
+import Cookies from "js-cookie";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const userId = 4; // Kullanıcı ID'si
-
+  const user = getUserFromToken();
+  const userId = user?.id;
+  const accessToken = Cookies.get("accessToken");
+ 
   useEffect(() => {
     const fetchCart = async () => {
+      if (!userId || !accessToken) {
+        console.error("Kullanici ID veya token bulunamadi!");
+        return;
+      }
+
       try {
-        const response = await fetch(`https://localhost:7282/api/Cart/GetCartWithLinesByUserId?userId=${userId}`);
+        const response = await fetch(`https://localhost:7282/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error("API Error");
+        }
+
         const data = await response.json();
-        setCartItems(data.cartLines || []); // Sepet ürünlerini set et
+        setCartItems(data.cartLines || []);
       } catch (error) {
-        console.error("Sepet verisi alınamadı:", error);
+        console.error("Sepet verisi alinamadi:", error);
       }
     };
 
     fetchCart();
-  }, []);
+  }, [userId, accessToken]);
 
   return (
     <div className="p-8">

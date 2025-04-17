@@ -49,7 +49,7 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
                   ${selectedCategory?.id === category.id ? 'text-black font-semibold scale-105' : 'text-gray-700 hover:text-black hover:scale-105'} 
                   p-2 rounded-md`} onClick={() => handleCategoryClick(category)}>
                   <span className="text-[15px]">{category.name}</span>
-                  <span className="text-[15px]">({category.count})</span>
+                  {/* <span className="text-[15px]">({category.count})</span> */}
                 </li>
               ))}
             </ul>
