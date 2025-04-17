@@ -129,7 +129,6 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
           </a>
 
-          {/* axtarmaq ucun */}
           <div className="relative group" id="search-box">
             <button
               onClick={() => setShowSearchInput(!showSearchInput)}
@@ -230,7 +229,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                     <span className="text-lg font-semibold text-gray-800">{user.name} {user.surname}</span>
                     <span className="text-sm text-gray-500">{user.email}</span>
                   </div>
-                  <span className="text-xs text-white bg-green-400 px-2 py-1 rounded-full">{userRoles[user.userRole]}</span>
+                  <span className="text-xs text-white bg-green-400 px-2 py-1 rounded-full">{user.userRole}</span>
                 </div>
 
                 <button

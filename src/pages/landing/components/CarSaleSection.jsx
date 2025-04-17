@@ -18,7 +18,7 @@ const CarSaleSection = () => {
           className="col-span-2 w-full rounded-xl"/>
    </div>
 
-{/* Text Section */}
+
   <div className="lg:w-1/2 text-center lg:text-left mt-10 lg:mt-0">
     <h2 className="text-3xl font-bold text-gray-900">
       Get A Fair Price For Your Car Sell To Us Today

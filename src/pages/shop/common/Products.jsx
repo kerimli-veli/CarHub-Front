@@ -75,18 +75,14 @@ const Products = ({ selectedCategory, priceRange }) => {
 
   const handleNextPage = () => {if (startProduct + productsPerPage < sortedProducts.length) {setStartProduct(startProduct + productsPerPage);}};
 
- // Sepet ID'sini al
  
-
-  // ...
-
   const fetchCartId = async () => {
     const user = getUserFromToken();
     const userId = parseInt(user?.id);
     const accessToken = Cookies.get("accessToken");
   
     if (!userId || !accessToken) {
-      console.error("Kullanıcı ID veya token eksik.");
+      console.error("User ID or token is missing.");
       return null;
     }
   
@@ -110,7 +106,7 @@ const Products = ({ selectedCategory, priceRange }) => {
      
       return data.cartId;
     } catch (error) {
-      console.error("Cart ID alinamadi (try-catch):", error);
+      console.error("Cart ID could not be retrieved.(try-catch):", error);
       return null;
     }
   };
@@ -120,7 +116,7 @@ const Products = ({ selectedCategory, priceRange }) => {
     const accessToken = Cookies.get("accessToken");
   
     if (!accessToken) {
-      alert("Sepete eklemek için önce giriş yapmalisiniz!");
+      alert("You must log in first to add items to the cart!");
       return;
     }
   
@@ -128,13 +124,13 @@ const Products = ({ selectedCategory, priceRange }) => {
     const userId = user?.id;
   
     if (!userId) {
-      alert("Kullanici ID çözümlenemedi. Lütfen tekrar giriş yapiniz.");
+      alert("User ID could not be resolved. Please log in again.");
       return;
     }
   
     const cartId = await fetchCartId(); 
     if (!cartId) {
-      alert("Sepet bilgisi alınamadı.");
+      alert("Cart information could not be retrieved.");
       return;
     }
   
@@ -154,12 +150,12 @@ const Products = ({ selectedCategory, priceRange }) => {
   
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Ürün sepete eklenemedi:", errorData);
+        console.error("Product could not be added to the cart:", errorData);
       } else {
-        alert("Ürün sepete eklendi!");
+        alert("Product added to the cart!");
       }
     } catch (error) {
-      console.error("Sepete eklerken hata oluştu:", error);
+      console.error("An error occurred while adding the product to the cart:", error);
     }
   };
 
@@ -169,19 +165,19 @@ const Products = ({ selectedCategory, priceRange }) => {
 
   return (
     <div className="pt-11 pl-9 pr-40">
-    {/* Sorting and Basket */}
+    
     <div className="flex justify-between mb-4 items-center">
       <div style={{ marginTop: "5px" }}>
         Showing {startProduct + 1}–{Math.min(startProduct + productsPerPage, sortedProducts.length)} of {sortedProducts.length} results
       </div>
       <div className="flex items-center" style={{ marginTop: "5px" }}>
-        {/* Basket Icon */}
+
         <button onClick={handleBasketClick} className="mr-4 hover:scale-110 transition-transform">
       <span role="img" aria-label="cart" style={{ fontSize: "24px", color: "#3B82F6" }}>
         🛒
       </span>
     </button>
-        {/* Sort Dropdown */}
+     
         <span className="text-gray-600 mr-1">Sort by:</span>
         <select
           value={sortBy}
@@ -194,65 +190,31 @@ const Products = ({ selectedCategory, priceRange }) => {
         </select>
       </div>
     </div>
-      {/* Products Grid */}
+   
       <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
             <div
               key={product.name}
               className="bg-white rounded-xl border border-[#E9E9E9] shadow-sm relative"
-              style={{
-                width: 327.48,
-                height: 509.52,
-                marginTop: "20px",
-              }}
-            >
-              <img
-                src={product.imagePath}
-                alt={product.name}
-                className="rounded-xl object-cover absolute"
-                style={{
-                  width: 265.48,
-                  height: 265.48,
-                  top: "31px",
-                  left: "31px",
-                }}
-              />
+              style={{ width: 327.48,height: 509.52,marginTop: "20px",}}>
+              <img src={product.imagePath} alt={product.name} className="rounded-xl object-cover absolute"
+                style={{ width: 265.48, height: 265.48, top: "31px", left: "31px", }}/>
               <div
                 className="text-sm font-bold truncate absolute"
-                style={{
-                  width: 180.5,
-                  height: 21,
-                  top: "335px",
-                  left: "31px",
-                }}
-              >
+                style={{ width: 180.5, height: 21, top: "335px", left: "31px", }}>
                 {product.description}
               </div>
 
               <div
                 className="text-2xl font-semibold absolute"
-                style={{
-                  top: "369.27px",
-                  left: "31px",
-                  color: "#111827",
-                }}
-              >
-                ${product.unitPrice}
+                style={{ top: "369.27px", left: "31px", color: "#111827", }}>  ${product.unitPrice}
               </div>
 
               <button
                 onClick={() => handleAddToCart(product.id)}
                 className="bg-white hover:bg-blue-50 text-blue-600 font-semibold py-2 px-4 border border-blue-500 rounded absolute flex items-center justify-center transition duration-200 ease-in-out"
-                style={{
-                  width: 265.48,
-                  height: 56.75,
-                  top: "421.77px",
-                  left: "31px",
-                  borderRadius: "8px",
-                  borderWidth: "1px",
-                }}
-              >
+                style={{  width: 265.48,  height: 56.75, top: "421.77px", left: "31px",  borderRadius: "8px", borderWidth: "1px",}}>
                 <span style={{ fontSize: "20px", color: "#3B82F6" }}>&#128722;</span>
                 <span className="ml-2">Add to Cart</span>
               </button>
@@ -265,8 +227,6 @@ const Products = ({ selectedCategory, priceRange }) => {
         )}
       </div>
 
-
-      {/* Pagination Controls */}
       <div className="flex justify-center mt-6 items-center">
         
         {startProduct > 0 && (
@@ -282,7 +242,6 @@ const Products = ({ selectedCategory, priceRange }) => {
           </button>
         ))}
 
-        
         {startProduct + productsPerPage < sortedProducts.length && (
           <button onClick={handleNextPage}
             className="px-4 py-2 mx-2 font-bold rounded-full border border-[#E9E9E9] text-black"

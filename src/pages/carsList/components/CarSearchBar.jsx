@@ -1,206 +1,293 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-
-const FilterBar = () => {
-  const [active, setActive] = useState(null);
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
+import { FaCar, FaCalendarAlt } from "react-icons/fa";
+ 
+const FilterSidebar = () => {
+  const [cars, setCars] = useState([]);
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
   const [bodyTypes, setBodyTypes] = useState([]);
-  const [showMoreFilters, setShowMoreFilters] = useState(false);
-  const [selectedBodyType, setSelectedBodyType] = useState("Body Type");
-  const [bodyTypeActive, setBodyTypeActive] = useState(false);
-
+  const [colors, setColors] = useState([]);
+ 
+  const [yearRange, setYearRange] = useState([2016, 2023]);
+  const [priceRange, setPriceRange] = useState([0, 1000000]);
+  const [kilometers, setKilometers] = useState([0, 500000]);
+  const [seats, setSeats] = useState([2, 8]);
+  const [hp, setHP] = useState([50, 1000]);
+ 
+  const [selectedBrand, setSelectedBrand] = useState("BMW");
+  const [selectedModel, setSelectedModel] = useState("");
+  const [selectedBody, setSelectedBody] = useState("Coupe");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [carType, setCarType] = useState("Used");
+ 
   const location = useLocation();
   const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-
-  const selectedType = queryParams.get("MaxMiles") === "1" ? "New" : queryParams.get("MinMiles") === "0" ? "Used" : null;
-  const selectedBrand = queryParams.get("Brand");
-  const selectedModel = queryParams.get("Model");
-  const maxPrice = queryParams.get("MaxPrice");
-
-  const handleClick = (filter) => setActive(active === filter ? null : filter);
-
-  const handleItemSelect = (filter, item) => {
-    const newParams = new URLSearchParams(location.search);
-    if (filter === "New or Used") {
-      item === "New" ? (newParams.set("MaxMiles", "1"), newParams.delete("MinMiles")) :
-                      (newParams.set("MinMiles", "0"), newParams.delete("MaxMiles"));
-    } else if (filter === "Brand") newParams.set("Brand", item);
-    else if (filter === "Model") newParams.set("Model", item);
-    else if (filter === "Price") newParams.set("MaxPrice", item);
-    else if (filter === "Body Type") {
-      newParams.set("BodyType", item);
-      setSelectedBodyType(item);
-      setBodyTypeActive(false);
-    }
-
-    navigate({ search: newParams.toString() });
-    setActive(null);
-  };
-
+ 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://localhost:7282/api/Car/GetAll");
-        const data = await response.json();
-        setBrands([...new Set(data.map((car) => car.brand))]);
-        setModels([...new Set(data.map((car) => car.model))]);
-      } catch (error) {
-        console.error("API Error:", error);
-      }
-    };
-    fetchData();
+    fetch("https://localhost:7282/api/Car/GetAll")
+      .then((res) => res.json())
+      .then((data) => {
+        setCars(data);
+        setBrands([...new Set(data.map((c) => c.brand))]);
+        setModels([...new Set(data.map((c) => c.model))]);
+        setColors([...new Set(data.map((c) => c.color))]);
+ 
+        const prices = data.map((c) => c.price);
+        setPriceRange([Math.min(...prices), Math.max(...prices)]);
+      });
+ 
+    fetch("https://localhost:7282/api/Car/GetAllBodyTypes")
+      .then((res) => res.json())
+      .then((data) => setBodyTypes(data.map((b) => b.name)));
   }, []);
-
-  useEffect(() => {
-    const fetchBodyTypes = async () => {
-      try {
-        const response = await fetch("https://localhost:7282/api/Car/GetAllBodyTypes");
-        const result = await response.json();
-        console.log("Body types response:", result);
-        setBodyTypes(Array.isArray(result) ? result : []);
-      } catch (error) {
-        console.error("Error fetching body types:", error);
-        setBodyTypes([]);
-      }
-    };
-
-    if (showMoreFilters) fetchBodyTypes();
-  }, [showMoreFilters]);
-
-  const filters = [
-    { key: "New or Used", label: selectedType || "New or Used", options: ["New", "Used"] },
-    { key: "Brand", label: selectedBrand || "Brand", options: Array.isArray(brands) ? brands : [] },
-    { key: "Model", label: selectedModel || "Model", options: Array.isArray(models) ? models : [] },
-    { key: "Price", label: maxPrice || "Price", options: ["0-10K", "10K-20K", "20K-30K", "30K+"] },
-  ];
-
+ 
+  const updateParams = (key, value) => {
+    const params = new URLSearchParams(location.search);
+    params.set(key, value);
+    navigate({ search: params.toString() });
+  };
+ 
   return (
-    <motion.div
-      layout
-      className="bg-white shadow-md rounded-2xl px-6 py-4 mt-6 w-full max-w-[1200px] mx-auto transition-all duration-300"
-    >
-      <div className="flex flex-wrap gap-2 md:gap-3 items-center justify-between">
-        {filters.map(({ key, label, options }) => (
-          <div key={key} className="relative">
-            <button
-              onClick={() => handleClick(key)}
-              className="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium text-gray-800 hover:bg-blue-100 transition"
-            >
-              {label} <span className="ml-1">▼</span>
-            </button>
-            <AnimatePresence>
-              {active === key && (
-                <motion.div
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  className="absolute left-0 mt-2 w-44 max-h-56 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg z-20"
-                >
-                  {Array.isArray(options) && options.length > 0 ? (
-                    options.map((item, i) => (
-                      <div
-                        key={i}
-                        onClick={() => handleItemSelect(key, item)}
-                        className={`px-4 py-2 text-sm cursor-pointer hover:bg-blue-50 transition-all ${
-                          item === label ? "bg-blue-100 font-semibold" : ""
-                        }`}
-                      >
-                        {item}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="px-4 py-2 text-sm text-gray-400">No options found</div>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+<div className="bg-white p-4 rounded-lg w-full max-w-xs shadow-md text-sm">
+<h2 className="text-base font-semibold mb-4">Filter</h2>
+ 
+      {/* Toggle Used / New */}
+<div className="flex mb-4 bg-gray-100 rounded-full p-1">
+        {["Used", "New"].map((type) => (
+<button
+            key={type}
+            onClick={() => {
+              setCarType(type);
+              type === "Used"
+                ? updateParams("MinMiles", "0")
+                : updateParams("MaxMiles", "1");
+            }}
+            className={`flex-1 px-4 py-2 rounded-full text-sm font-medium transition ${
+              carType === type
+                ? "bg-blue-600 text-white"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+>
+            {type} Cars
+</button>
         ))}
-
-        <div className="flex items-center gap-2 mt-2 md:mt-0">
-          <button
-            onClick={() => setShowMoreFilters(!showMoreFilters)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm hover:bg-blue-700 transition"
-          >
-            {showMoreFilters ? "Hide Filters" : "More Filters"}
-          </button>
-
-          <button className="bg-blue-800 text-white px-5 py-2 rounded-full flex items-center gap-2 hover:bg-blue-900 transition text-sm font-medium shadow-sm">
-            <FaSearch /> Find Listing
-          </button>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {showMoreFilters && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="mt-4"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div>
-                <div className="relative">
-                  <button
-                    onClick={() => setBodyTypeActive(!bodyTypeActive)}
-                    className="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium text-gray-800 hover:bg-blue-100 transition"
-                  >
-                    {selectedBodyType || "Select Body Type"} <span className="ml-1">▼</span>
-                  </button>
-                  <AnimatePresence>
-                    {bodyTypeActive && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        className="absolute left-0 mt-2 w-44 max-h-56 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg z-20"
-                      >
-                        {Array.isArray(bodyTypes) && bodyTypes.length > 0 ? (
-                          bodyTypes.map((type) => (
-                            <div
-                              key={type.id}
-                              onClick={() => handleItemSelect("Body Type", type.name)}
-                              className={`px-4 py-2 text-sm cursor-pointer hover:bg-blue-50 transition-all ${
-                                selectedBodyType === type.name ? "bg-blue-100 font-semibold" : ""
-                              }`}
-                            >
-                              {type.name}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="px-4 py-2 text-sm text-gray-400">No body types found</div>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="text-gray-900 font-medium mb-2">Color</h4>
-                <div className="flex flex-wrap gap-2">
-                  {["Black", "White", "Gray", "Red", "Blue", "Green"].map((color) => (
-                    <button
-                      key={color}
-                      className="bg-gray-100 px-3 py-1.5 rounded-full text-sm text-gray-800 hover:bg-blue-50 transition"
-                    >
-                      {color}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+</div>
+ 
+      {/* Location */}
+<div className="text-xs text-gray-500 mb-3">
+        Location 📍{" "}
+<span className="text-blue-600 underline cursor-pointer">
+          Bangladesh
+</span>
+</div>
+ 
+      {/* Brand/Model/Body */}
+<div className="border-t pt-4 mt-2">
+<div className="flex items-center gap-2 text-sm font-semibold mb-3">
+<FaCar /> Type, Brand, Model
+</div>
+ 
+        <select
+          value={selectedBrand}
+          onChange={(e) => {
+            setSelectedBrand(e.target.value);
+            updateParams("Brand", e.target.value);
+          }}
+          className="w-full mb-2 border rounded p-2 text-sm"
+>
+<option value="">Brand</option>
+          {brands.map((b, i) => (
+<option key={i} value={b}>
+              {b}
+</option>
+          ))}
+</select>
+ 
+        <select
+          value={selectedModel}
+          onChange={(e) => {
+            setSelectedModel(e.target.value);
+            updateParams("Model", e.target.value);
+          }}
+          className="w-full mb-2 border rounded p-2 text-sm"
+>
+<option value="">Model</option>
+          {models.map((m, i) => (
+<option key={i} value={m}>
+              {m}
+</option>
+          ))}
+</select>
+ 
+        <select
+          value={selectedBody}
+          onChange={(e) => {
+            setSelectedBody(e.target.value);
+            updateParams("BodyType", e.target.value);
+          }}
+          className="w-full border rounded p-2 text-sm"
+>
+<option value="">Body Style</option>
+          {bodyTypes.map((b, i) => (
+<option key={i} value={b}>
+              {b}
+</option>
+          ))}
+</select>
+</div>
+ 
+      {/* Vehicle Info */}
+<div className="border-t pt-4 mt-4">
+<div className="flex items-center gap-2 text-sm font-semibold mb-3">
+<FaCalendarAlt /> Vehicle info
+</div>
+ 
+        {/* Year */}
+<div className="mb-4">
+<label className="text-xs block mb-1">Manufacturing Year</label>
+<div className="flex gap-2 mb-2">
+<input
+              value={yearRange[0]}
+              onChange={(e) =>
+                setYearRange([+e.target.value, yearRange[1]])
+              }
+              className="w-1/2 border rounded p-1 text-sm"
+              placeholder="From"
+            />
+<input
+              value={yearRange[1]}
+              onChange={(e) =>
+                setYearRange([yearRange[0], +e.target.value])
+              }
+              className="w-1/2 border rounded p-1 text-sm"
+              placeholder="To"
+            />
+</div>
+<Slider
+            range
+            min={2000}
+            max={2025}
+            value={yearRange}
+            onChange={setYearRange}
+            trackStyle={[{ backgroundColor: "#3B82F6" }]}
+            handleStyle={[
+              { borderColor: "#3B82F6" },
+              { borderColor: "#3B82F6" },
+            ]}
+          />
+</div>
+ 
+        {/* Kilometer */}
+<div className="mb-4">
+<label className="text-xs block mb-1">Kilometre Run</label>
+<div className="flex gap-2 mb-2">
+<input className="w-1/2 border rounded p-1 text-sm" placeholder="Min" />
+<input className="w-1/2 border rounded p-1 text-sm" placeholder="Max" />
+</div>
+<Slider
+            min={0}
+            max={500000}
+            range
+            value={kilometers}
+            onChange={setKilometers}
+            trackStyle={[{ backgroundColor: "#3B82F6" }]}
+            handleStyle={[{ borderColor: "#3B82F6" }, { borderColor: "#3B82F6" }]}
+          />
+</div>
+ 
+        {/* Seats */}
+<div className="mb-4">
+<label className="text-xs block mb-1">No of Seats</label>
+<div className="flex gap-2 mb-2">
+<input className="w-1/2 border rounded p-1 text-sm" placeholder="Min" />
+<input className="w-1/2 border rounded p-1 text-sm" placeholder="Max" />
+</div>
+<Slider
+            min={2}
+            max={8}
+            range
+            value={seats}
+            onChange={setSeats}
+            trackStyle={[{ backgroundColor: "#3B82F6" }]}
+            handleStyle={[{ borderColor: "#3B82F6" }, { borderColor: "#3B82F6" }]}
+          />
+</div>
+ 
+        {/* Power HP */}
+<div className="mb-4">
+<label className="text-xs block mb-1">Power HP</label>
+<div className="flex gap-2 mb-2">
+<input className="w-1/2 border rounded p-1 text-sm" placeholder="Min" />
+<input className="w-1/2 border rounded p-1 text-sm" placeholder="Max" />
+</div>
+<Slider
+            min={50}
+            max={1000}
+            range
+            value={hp}
+            onChange={setHP}
+            trackStyle={[{ backgroundColor: "#3B82F6" }]}
+            handleStyle={[{ borderColor: "#3B82F6" }, { borderColor: "#3B82F6" }]}
+          />
+</div>
+ 
+        {/* Price */}
+<div className="mb-4">
+<label className="text-xs block mb-1">Price</label>
+<div className="flex gap-2 mb-2">
+<input
+              value={priceRange[0]}
+              onChange={(e) =>
+                setPriceRange([+e.target.value, priceRange[1]])
+              }
+              className="w-1/2 border rounded p-1 text-sm"
+              placeholder="Min"
+            />
+<input
+              value={priceRange[1]}
+              onChange={(e) =>
+                setPriceRange([priceRange[0], +e.target.value])
+              }
+              className="w-1/2 border rounded p-1 text-sm"
+              placeholder="Max"
+            />
+</div>
+<Slider
+            min={0}
+            max={1000000}
+            range
+            value={priceRange}
+            onChange={setPriceRange}
+            trackStyle={[{ backgroundColor: "#3B82F6" }]}
+            handleStyle={[{ borderColor: "#3B82F6" }, { borderColor: "#3B82F6" }]}
+          />
+</div>
+ 
+        {/* Color */}
+<div className="mb-2">
+<label className="text-xs block mb-1">Color</label>
+<select
+            value={selectedColor}
+            onChange={(e) => {
+              setSelectedColor(e.target.value);
+              updateParams("Color", e.target.value);
+            }}
+            className="w-full border rounded p-2 text-sm"
+>
+<option value="">Select Color</option>
+            {colors.map((color, i) => (
+<option key={i} value={color}>
+                {color}
+</option>
+            ))}
+</select>
+</div>
+</div>
+</div>
   );
 };
-
-export default FilterBar;
+ 
+export default FilterSidebar;

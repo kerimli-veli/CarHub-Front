@@ -37,7 +37,7 @@ export default function useFavoriteCars(initialCars = []) {
     const user = getUserFromToken();
 
     if (!token || !user?.id) {
-      onFail?.(); // callback function for UI logic
+      onFail?.(); 
       return;
     }
 

@@ -88,7 +88,7 @@ const Sidebar = () => {
         className="w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col justify-between"
       >
         <div>
-          {/* Header */}
+          
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -101,7 +101,7 @@ const Sidebar = () => {
             <span className="text-xl font-semibold text-gray-800 dark:text-gray-100">{user.name} {user.surname}</span>
           </motion.div>
 
-          {/* Menu */}
+          
           <nav className="px-4">
             <span className="text-xs text-gray-400 uppercase mb-2 block">Menu</span>
             {menuItems.map((item) => {
@@ -132,7 +132,7 @@ const Sidebar = () => {
               );
             })}
 
-            {/* Other Menu */}
+            
             <span className="text-xs text-gray-400 uppercase mt-6 mb-2 block">Other Menu</span>
             {otherMenu.map((item) => (
               <motion.div
@@ -148,7 +148,7 @@ const Sidebar = () => {
           </nav>
         </div>
 
-        {/* Logout */}
+        
         <motion.div
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.97 }}
@@ -161,7 +161,7 @@ const Sidebar = () => {
         </motion.div>
       </motion.aside>
 
-      {/* Main content */}
+      
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

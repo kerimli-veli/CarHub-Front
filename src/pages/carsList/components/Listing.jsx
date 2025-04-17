@@ -46,7 +46,7 @@ const CarListing = () => {
   const currentCars = cars.slice(indexOfFirstCar, indexOfLastCar);
 
   return (
-    <div className="bg-gray-100 min-h-screen p-35 rounded-[100px]">
+    <div className="bg-gray-100 min-h-screen p-35 rounded-lg">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl mt-10 font-semibold mb-15">Listing</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -54,7 +54,7 @@ const CarListing = () => {
   <div className="col-span-full text-center mt-20 flex flex-col items-center justify-center">
     <MagnifyingGlassIcon className="h-16 w-16 text-gray-400 mb-4" />
     <p className="text-gray-600 text-xl font-medium">
-      Axtarışa uyğun maşın tapılmadı.
+    No cars found matching your search.
     </p>
   </div>
 ) : (

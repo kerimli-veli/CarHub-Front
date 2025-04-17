@@ -11,7 +11,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchCart = async () => {
       if (!userId || !accessToken) {
-        console.error("Kullanici ID veya token bulunamadi!");
+        console.error("User ID or token not found!");
         return;
       }
 
@@ -30,7 +30,7 @@ const Cart = () => {
         const data = await response.json();
         setCartItems(data.cartLines || []);
       } catch (error) {
-        console.error("Sepet verisi alinamadi:", error);
+        console.error("Cart data could not be retrieved.", error);
       }
     };
 
