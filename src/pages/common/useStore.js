@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const userRoles = ["None", "Admin", "User"];
 
 const Header = ({ bgColor = "bg-[#050B20]" }) => {
-  const [user, setUser] = useState(null);  // Başlangıçta null değil, 'null' olması doğru olur.
+  const [user, setUser] = useState(null);  
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -22,7 +21,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
       try {
         const email = localStorage.getItem("email");
         if (email) {
-          const response = await fetch(`https://localhost:7282/api/User/GetUserByEmail?Email=${email}`, {
+          const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -32,7 +31,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
 
           if (response.ok) {
             const userData = await response.json();
-            setUser(userData.data);  // Burada userData'dan gelen veriyi 'user' state'ine atıyoruz.
+            setUser(userData.data);  
             console.log("User Data:", userData);
           } else {
             console.error("User data didn't get it:", response.status);

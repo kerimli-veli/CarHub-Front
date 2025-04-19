@@ -17,7 +17,7 @@ export default function FeaturedListings() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const carRes = await fetch("https://localhost:7282/api/Car/GetAll");
+        const carRes = await fetch("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetAll");
         const carData = await carRes.json();
 
         const formattedCars = carData.map((car, index) => ({

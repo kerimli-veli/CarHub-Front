@@ -19,7 +19,7 @@ export default function Account() {
         setToken(token);
 
         const response = await fetch(
-          `https://localhost:7282/api/User/GetById?Id=${userInfo.id}`,
+          `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userInfo.id}`,
           {
             method: "GET",
             headers: {
@@ -51,7 +51,7 @@ export default function Account() {
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch("https://localhost:7282/api/User/Update", {
+      const response = await fetch("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/Update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

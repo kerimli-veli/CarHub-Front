@@ -7,7 +7,7 @@ import { MdVideoLibrary } from "react-icons/md";
 import { IoMdCall } from "react-icons/io";
 import { FaCalendarAlt, FaRoad, FaCogs, FaGasPump, FaShareAlt, FaHeart, FaBalanceScale } from "react-icons/fa";
 import { Car, Calendar, Gauge, Fuel, Settings, DoorOpen, BadgeCent, Thermometer, Palette, KeyRound, Barcode } from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom"; // useNavigate əlavə et
+import { useParams, useNavigate } from "react-router-dom"; 
 import useFavoriteCars from "../../common/Ui/userFavoriteCars"; 
 import CarLoading from "./CarLoading";
 import getUserFromToken from "../../common/GetUserFromToken";
@@ -19,12 +19,12 @@ const CarInfo = () => {
   const [otherImages, setOtherImages] = useState([]); 
   const [user, setUser] = useState(null); 
   const { savedCars, toggleSave } = useFavoriteCars([car]);
-  const navigate = useNavigate(); // useNavigate hook-u əlavə et
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (carId) {
       axios
-        .get(`https://localhost:7282/api/Car/GetById?Id=${carId}`)
+        .get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${carId}`)
         .then((res) => {
           const carData = res.data.data;
           setCar(carData);
@@ -34,7 +34,7 @@ const CarInfo = () => {
           const userId = carData.createdBy;
           if (userId) {
             axios
-              .get(`https://localhost:7282/api/User/GetById?Id=${userId}`)
+              .get(`api/User/GetById?Id=${userId}`)
               .then((userRes) => {
                 setUser(userRes.data.data);
               })
@@ -52,8 +52,7 @@ const CarInfo = () => {
       return;
     }
 
-    // Burada artıq mesaj göndərmirik, amma istifadəçini mesaj səhifəsinə yönləndiririk
-    navigate(`/messages/${car.createdBy}`); // Mesaj səhifəsinə yönləndiririk
+    navigate(`/messages/${car.createdBy}`); 
   };
 
   if (!car || !user) return <CarLoading />;

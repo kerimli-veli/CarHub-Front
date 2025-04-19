@@ -58,7 +58,7 @@ const FilterSidebar = () => {
       ]);
     }
   
-    fetch("https://localhost:7282/api/Car/GetAll")
+    fetch("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetAll")
     .then((res) => res.json())
     .then((data) => {
       setCars(data);
@@ -72,7 +72,7 @@ const FilterSidebar = () => {
       ]);
     });
 
-  fetch("https://localhost:7282/api/Car/GetAllBodyTypes")
+  fetch("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetAllBodyTypes")
     .then((res) => res.json())
     .then((data) => setBodyTypes(data.map((b) => b.name)));
   }, []);

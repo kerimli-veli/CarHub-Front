@@ -10,7 +10,7 @@ const CategorySidebar = ({ onCategoryClick, onPriceRangeChange }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('https://localhost:7282/api/Category/GetAll');
+        const response = await fetch('https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Category/GetAll');
         const data = await response.json();
         setCategories(data);
       } catch (error) {

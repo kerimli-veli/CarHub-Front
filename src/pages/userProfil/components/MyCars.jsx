@@ -26,7 +26,7 @@ const MyCars = () => {
           return;
         }
 
-        const response = await fetch(`https://localhost:7282/api/User/GetById?Id=${user.id}`, {
+        const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${user.id}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -59,7 +59,7 @@ const MyCars = () => {
           return;
         }
 
-        const response = await fetch(`https://localhost:7282/api/User/GetUserCars?UserId=${userId}`, {
+        const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetUserCars?UserId=${userId}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,

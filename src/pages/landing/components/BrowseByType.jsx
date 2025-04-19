@@ -28,7 +28,7 @@ const BrowseByType = () => {
   useEffect(() => {
     const fetchBodyTypes = async () => {
       try {
-        const response = await fetch("https://localhost:7282/api/Car/GetAllBodyTypes");
+        const response = await fetch("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetAllBodyTypes");
         const result = await response.json();
   
         console.log("Gelen body types:", result);

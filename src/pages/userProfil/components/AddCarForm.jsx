@@ -57,7 +57,7 @@ export default function AddCarForm() {
     };
 
     try {
-      await axios.post('https://localhost:7282/api/Car', payload);
+      await axios.post('https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car', payload);
       alert('Maşın uğurla əlavə olundu!');
     } catch (error) {
       console.error(error);

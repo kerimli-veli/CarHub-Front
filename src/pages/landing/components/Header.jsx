@@ -30,7 +30,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
       setLoading(true);
 
       try {
-        const response = await fetch(`https://localhost:7282/api/User/GetUserByEmail?Email=${email}`, {
+        const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -59,7 +59,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
 
   const handleProductSearch = async () => {
     try {
-      const response = await fetch(`https://localhost:7282/api/Product/GetByNameProduct?name=${searchQuery}`);
+      const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${searchQuery}`);
       const result = await response.json();
   
       console.log("Arama sonucu:", result);

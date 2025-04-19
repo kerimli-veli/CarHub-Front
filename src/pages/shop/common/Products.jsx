@@ -29,10 +29,10 @@ const Products = ({ selectedCategory, priceRange }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = "https://localhost:7282/api/Product/GetAll";
+        let url = "https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Product/GetAll";
 
         if (selectedCategory) {
-          url = `https://localhost:7282/api/Product/GetProductsByCategoryId?categoryId=${selectedCategory.id}`;
+          url = `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Product/GetProductsByCategoryId?categoryId=${selectedCategory.id}`;
         }
 
         const response = await fetch(url);

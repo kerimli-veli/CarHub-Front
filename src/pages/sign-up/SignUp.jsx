@@ -32,7 +32,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        "https://localhost:7282/api/User/Register",
+        "https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/Register",
         formData,
         {
           headers: { "Content-Type": "application/json" }
