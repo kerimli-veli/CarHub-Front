@@ -45,7 +45,7 @@ const Message = () => {
       });
 
       const res = await axios.get(
-        `https://localhost:7282/api/Chat/getMessages?senderId=${sender.id}&receiverId=${receiverId}`,
+        `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/getMessages?senderId=${sender.id}&receiverId=${receiverId}`,
         { withCredentials: true }
       );
       setMessages(res.data || []);
@@ -63,7 +63,7 @@ const Message = () => {
   
     try {
       const response = await axios.post(
-        "https://localhost:7282/api/Chat/send",
+        "https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/send",
         {
           senderId: sender.id,
           receiverId: parseInt(receiverId),
