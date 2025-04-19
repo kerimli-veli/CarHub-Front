@@ -15,7 +15,8 @@ import Account from './pages/userProfil/components/Account';
 import CarDetail from './pages/carDetails/CarDetail';
 import AddCarForm from "./pages/userProfil/components/AddCarForm";
 import MyCars from "./pages/userProfil/components/MyCars";
-import Cart from "./pages/shop/cart";
+import Cart from "./pages/shop/cart/Cart";
+import CartPayment from "./pages/shop/CartPaymetn";
 
 
 function App() {
@@ -45,7 +46,8 @@ function App() {
             <Route path="myCars" element={<MyCars />} />
             <Route path="shopPage" element={<ShopPage />} />
           </Route>
-          <Route path="cart" element={<Cart />} />
+          {/* <Route path="cart" element={<Cart />} /> */}
+          <Route path="/cart" element={<CartPayment />} />
           <Route path='/carDetails/:carId' element={<CarDetail />} />
 
 
