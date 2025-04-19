@@ -3,6 +3,10 @@ import getUserFromToken from '../../common/GetUserFromToken';
 import Cookies from "js-cookie";
 import { FiTrash2 } from 'react-icons/fi';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import CartEmpty from './CartEmpty';
 
 const Cart = ({ onTotalChange }) => {
   const [cartItems, setCartItems] = useState([]);
@@ -14,6 +18,7 @@ const Cart = ({ onTotalChange }) => {
   const userId = user?.id;
   const accessToken = Cookies.get("accessToken");
   const [showConfirm, setShowConfirm] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCart();
@@ -90,10 +95,10 @@ const Cart = ({ onTotalChange }) => {
     if (currentPage > 1) setCurrentPage(p => p - 1);
   };
 
-  
+
   const handleRemoveItem = async (item) => {
     if (!cartId || !item?.product?.id) return;
-  
+
     try {
       const response = await fetch("https://localhost:7282/api/Cart/RemoveProductFromCart", {
         method: "DELETE",
@@ -106,28 +111,28 @@ const Cart = ({ onTotalChange }) => {
           productId: item.product.id
         })
       });
-  
+
       const result = await response.json();
       console.log("Tekil silme sonucu:", result);
-  
+
       if (response.ok && result.message) {
         // ✅ UI'dan da anında kaldır
         const updatedItems = cartItems.filter((ci) => ci.id !== item.id);
         setCartItems(updatedItems);
-  
+
         // ✅ Toplamı güncelle
         const newTotal = updatedItems.reduce((acc, i) => {
           const price = i.product.discountPrice || i.product.unitPrice;
           return acc + price * i.quantity;
         }, 0);
         onTotalChange?.(newTotal);
-  
+
         toast.success("Ürün kaldırıldı ✔️");
-  
-        // ✅ Yine de sayfayı yenileyebiliriz
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+
+
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 3000);
       } else {
         toast.error("Silme başarısız ❌");
         console.warn("❌ Ürün silinemedi:", result.message || result.errors);
@@ -139,9 +144,15 @@ const Cart = ({ onTotalChange }) => {
   };
 
 
+
+
+
+
   const handleQuantityChange = async (item, quantityChange) => {
     if (!cartId || !item?.product?.id) return;
-  
+
+    const productId = item.product.id;
+
     try {
       const response = await fetch("https://localhost:7282/api/Cart/UpdateProductQuantityInCart", {
         method: "PUT",
@@ -150,90 +161,107 @@ const Cart = ({ onTotalChange }) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          cartId: cartId,
-          productId: item.product.id,
-          quantityChange: quantityChange
+          cartId,
+          productId,
+          quantityChange
         })
       });
-  
+
       const result = await response.json();
-      console.log("Adet güncelleme sonucu:", result);
-  
-      if (response.ok && result.message) {
+      console.log("✅ Adet güncelleme sonucu:", result);
+
+      if (response.ok) {
         toast.success("Ürün adedi güncellendi ✔️");
-  
-        // ✅ Sayfa 1 saniye sonra otomatik yenilensin
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+
+        // 🔁 Yeni cartItems oluştur
+        const updatedItems = cartItems.map((ci) => {
+          if (ci.id === item.id) {
+            const newQty = ci.quantity + quantityChange;
+            return { ...ci, quantity: newQty };
+          }
+          return ci;
+        }).filter(ci => ci.quantity > 0); // 0 olanları sil
+
+        setCartItems(updatedItems);
+
+        // 💰 Yeni toplamı hesapla
+        const newTotal = updatedItems.reduce((acc, i) => {
+          const price = i.product.discountPrice || i.product.unitPrice;
+          return acc + price * i.quantity;
+        }, 0);
+
+        onTotalChange?.(newTotal);
       } else {
         toast.error("Güncelleme başarısız ❌");
       }
+
     } catch (error) {
       toast.error("Hata oluştu!");
-      console.error("Adet güncelleme hatası:", error);
+      console.error("❌ Güncelleme hatası:", error);
     }
   };
-  
-
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg ml-0 w-full max-w-full">
-      {currentItems.length > 0 ? (
-        currentItems.map((item) => {
-          const price = item.product.discountPrice || item.product.unitPrice;
 
-          return (
-            <div
-              key={item.id}
-              className="flex items-center justify-between py-4 px-4 mb-4 bg-gray-50 rounded-lg border border-gray-200 shadow transition-all duration-300 hover:shadow-md hover:border-gray-400"
-            >
-              <div className="flex items-center space-x-4">
-                <img
-                  src={item.product.imagePath || "/placeholder.jpg"}
-                  alt={item.product.name}
-                  className="w-16 h-16 object-cover rounded-lg bg-gray-200 shadow-md"
-                />
-                <div>
-                  <h3 className="text-md font-semibold">{item.product.name}</h3>
-                  <p className="text-sm text-gray-500">{item.product.description || '—'}</p>
-                </div>
-              </div>
+       {currentItems.map((item) => {
+  const price = item.product.discountPrice || item.product.unitPrice;
+  return (
+    <div
+      key={item.id}
+      className="flex items-center justify-between py-4 px-4 mb-4 bg-gray-50 rounded-lg border border-gray-200 shadow transition-all duration-300 hover:shadow-md hover:border-gray-400"
+    >
+      <div className="flex items-center space-x-4">
+        <img
+          src={item.product.imagePath || "/placeholder.jpg"}
+          alt={item.product.name}
+          className="w-16 h-16 object-cover rounded-lg bg-gray-200 shadow-md"
+        />
+        <div>
+          <h3 className="text-md font-semibold">{item.product.name}</h3>
+          <p className="text-sm text-gray-500">{item.product.description || '—'}</p>
+        </div>
+      </div>
 
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleQuantityChange(item, -1)}
-                    className="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-lg"
-                  >
-                    −
-                  </button>
+      <div className="flex items-center space-x-6">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              if (item.quantity === 1) {
+                handleRemoveItem(item);
+              } else {
+                handleQuantityChange(item, -1);
+              }
+            }}
+            className="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-lg"
+          >
+            −
+          </button>
 
-                  <span className="text-md font-medium text-gray-700">{item.quantity}x</span>
+          <span className="text-md font-medium text-gray-700">{item.quantity}x</span>
 
-                  <button
-                    onClick={() => handleQuantityChange(item, 1)}
-                    className="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-lg"
-                  >
-                    +
-                  </button>
-                </div>
-                <span className="text-md font-semibold text-gray-800">
-                  ${price.toFixed(2)}
-                </span>
-                <button
-  className="text-red-500 hover:text-red-700 transition-colors"
-  onClick={() => handleRemoveItem(item)}
->
-  <FiTrash2 size={18} />
-</button>
-              </div>
-            </div>
-          );
-        })
-      ) : (
-        <p className="text-center text-gray-500 mt-10">Your cart is currently empty. Start shopping!</p>
-      )}
+          <button
+            onClick={() => handleQuantityChange(item, 1)}
+            className="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-lg"
+          >
+            +
+          </button>
+        </div>
+
+        <span className="text-md font-semibold text-gray-800">
+          ${price.toFixed(2)}
+        </span>
+
+        <button
+          className="text-red-500 hover:text-red-700 transition-colors"
+          onClick={() => handleRemoveItem(item)}
+        >
+          <FiTrash2 size={18} />
+        </button>
+      </div>
+    </div>
+  );
+})}
 
       {cartItems.length > 0 && (
         <div className="flex justify-between items-center mt-8 w-full flex-wrap">
@@ -303,6 +331,17 @@ const Cart = ({ onTotalChange }) => {
           </div>
         </div>
       )}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
