@@ -3,7 +3,6 @@ import getUserFromToken from '../../common/GetUserFromToken';
 import Cookies from "js-cookie";
 import { FiTrash2 } from 'react-icons/fi';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
-import { toast } from 'react-hot-toast';
 
 const Cart = ({ onTotalChange }) => {
   const [cartItems, setCartItems] = useState([]);
@@ -91,8 +90,7 @@ const Cart = ({ onTotalChange }) => {
     if (currentPage > 1) setCurrentPage(p => p - 1);
   };
 
-
-
+  
   const handleRemoveItem = async (item) => {
     if (!cartId || !item?.product?.id) return;
   
