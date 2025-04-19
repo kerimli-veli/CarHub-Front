@@ -1,16 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Background from '../../../assets/images/Background.svg'; 
+
+
 
 const CartEmpty = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative h-[350px] w-full bg-gray-100 rounded-xl overflow-hidden shadow-inner flex items-center justify-center">
-      <img
-        src="/empty-cart.png"
-        alt="Empty Cart"
-        className="absolute inset-0 object-cover w-full h-full opacity-40"
-      />
+    <div className=" w-full bg-gray-100  flex items-center justify-center">
+        
       <div className="relative z-10 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 drop-shadow-md">
           Your cart is currently empty
