@@ -27,32 +27,84 @@ const FilterSidebar = () => {
   const navigate = useNavigate();
  
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+  
+    const brand = params.get("Brand");
+    const model = params.get("Model");
+    const body = params.get("BodyType");
+    const color = params.get("Color");
+  
+    const minPrice = params.get("MinPrice");
+    const maxPrice = params.get("MaxPrice");
+    const minMiles = params.get("MinMiles");
+    const maxMiles = params.get("MaxMiles");
+  
+    if (brand) setSelectedBrand(brand);
+    if (model) setSelectedModel(model);
+    if (body) setSelectedBody(body);
+    if (color) setSelectedColor(color);
+    
+    if (minPrice || maxPrice) {
+      setPriceRange([
+        minPrice ? Number(minPrice) : priceRange[0],
+        maxPrice ? Number(maxPrice) : priceRange[1],
+      ]);
+    }
+  
+    if (minMiles || maxMiles) {
+      setKilometers([
+        minMiles ? Number(minMiles) : kilometers[0],
+        maxMiles ? Number(maxMiles) : kilometers[1],
+      ]);
+    }
+  
     fetch("https://localhost:7282/api/Car/GetAll")
-      .then((res) => res.json())
-      .then((data) => {
-        setCars(data);
-        setBrands([...new Set(data.map((c) => c.brand))]);
-        setModels([...new Set(data.map((c) => c.model))]);
-        setColors([...new Set(data.map((c) => c.color))]);
- 
-        const prices = data.map((c) => c.price);
-        setPriceRange([Math.min(...prices), Math.max(...prices)]);
-      });
- 
-    fetch("https://localhost:7282/api/Car/GetAllBodyTypes")
-      .then((res) => res.json())
-      .then((data) => setBodyTypes(data.map((b) => b.name)));
+    .then((res) => res.json())
+    .then((data) => {
+      setCars(data);
+      setBrands([...new Set(data.map((c) => c.brand))]);
+      setColors([...new Set(data.map((c) => c.color))]);
+
+      const prices = data.map((c) => c.price);
+      setPriceRange([
+        Math.min(...prices),
+        Math.max(...prices),
+      ]);
+    });
+
+  fetch("https://localhost:7282/api/Car/GetAllBodyTypes")
+    .then((res) => res.json())
+    .then((data) => setBodyTypes(data.map((b) => b.name)));
   }, []);
- 
+  
   const updateParams = (key, value) => {
     const params = new URLSearchParams(location.search);
     params.set(key, value);
     navigate({ search: params.toString() });
   };
+
+  useEffect(() => {
+    if (selectedBrand && cars.length > 0) {
+      const filteredModels = cars
+        .filter((car) => car.brand === selectedBrand)
+        .map((car) => car.model);
+      setModels([...new Set(filteredModels)]);
+    } else {
+      setModels([]);
+    }
+  }, [selectedBrand, cars]);
+  
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    params.set("MinYear", yearRange[0]);
+    params.set("MaxYear", yearRange[1]);
+    navigate({ search: params.toString() });
+  }, [yearRange]);
+  
  
   return (
 <div className="bg-white p-4 rounded-lg w-full max-w-xs shadow-md text-sm">
-<h2 className="text-base font-semibold mb-4">Filter</h2>
+  <h2 className="text-base font-semibold mb-4">Filter</h2>
  
 <div className="flex mb-4 bg-gray-100 rounded-full p-1">
         {["Used", "New"].map((type) => (
@@ -116,20 +168,27 @@ const FilterSidebar = () => {
           ))}
 </select>
  
-        <select
-          value={selectedModel}
-          onChange={(e) => {
-            setSelectedModel(e.target.value);
-            updateParams("Model", e.target.value);
-          }}
-          className="w-full mb-2 border rounded p-2 text-sm"
+<select
+  value={selectedModel}
+  onChange={(e) => {
+    const value = e.target.value;
+    setSelectedModel(value);
+    if (value) {
+      updateParams("Model", value);
+    } else {
+      const params = new URLSearchParams(location.search);
+      params.delete("Model");
+      navigate({ search: params.toString() });
+    }
+  }}
+  className="w-full mb-2 border rounded p-2 text-sm"
 >
-<option value="">Model</option>
-          {models.map((m, i) => (
-<option key={i} value={m}>
-              {m}
-</option>
-          ))}
+  <option value="">Model</option>
+  {models.map((m, i) => (
+    <option key={i} value={m}>
+      {m}
+    </option>
+  ))}
 </select>
  
         <select
