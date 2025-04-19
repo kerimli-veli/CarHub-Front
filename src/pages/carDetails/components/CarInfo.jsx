@@ -22,9 +22,13 @@ const CarInfo = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("carId:", carId);
+
     if (carId) {
       axios
-        .get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${carId}`)
+      axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${carId}`)
+
+    
         .then((res) => {
           const carData = res.data.data;
           setCar(carData);
@@ -34,7 +38,7 @@ const CarInfo = () => {
           const userId = carData.createdBy;
           if (userId) {
             axios
-              .get(`api/User/GetById?Id=${userId}`)
+              .get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`)
               .then((userRes) => {
                 setUser(userRes.data.data);
               })
