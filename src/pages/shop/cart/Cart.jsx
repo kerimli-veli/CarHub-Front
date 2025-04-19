@@ -139,6 +139,42 @@ const Cart = ({ onTotalChange }) => {
   };
 
 
+  const handleQuantityChange = async (item, quantityChange) => {
+    if (!cartId || !item?.product?.id) return;
+  
+    try {
+      const response = await fetch("https://localhost:7282/api/Cart/UpdateProductQuantityInCart", {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          cartId: cartId,
+          productId: item.product.id,
+          quantityChange: quantityChange
+        })
+      });
+  
+      const result = await response.json();
+      console.log("Adet güncelleme sonucu:", result);
+  
+      if (response.ok && result.message) {
+        toast.success("Ürün adedi güncellendi ✔️");
+  
+        // ✅ Sayfa 1 saniye sonra otomatik yenilensin
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        toast.error("Güncelleme başarısız ❌");
+      }
+    } catch (error) {
+      toast.error("Hata oluştu!");
+      console.error("Adet güncelleme hatası:", error);
+    }
+  };
+  
 
 
   return (
@@ -165,7 +201,23 @@ const Cart = ({ onTotalChange }) => {
               </div>
 
               <div className="flex items-center space-x-6">
-                <span className="text-md font-medium text-gray-700">x{item.quantity}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleQuantityChange(item, -1)}
+                    className="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-lg"
+                  >
+                    −
+                  </button>
+
+                  <span className="text-md font-medium text-gray-700">{item.quantity}x</span>
+
+                  <button
+                    onClick={() => handleQuantityChange(item, 1)}
+                    className="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-lg"
+                  >
+                    +
+                  </button>
+                </div>
                 <span className="text-md font-semibold text-gray-800">
                   ${price.toFixed(2)}
                 </span>
