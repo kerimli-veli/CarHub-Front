@@ -26,18 +26,18 @@ const Message = () => {
 
   useEffect(() => {
     if (!sender?.id || !receiverId) return;
-
+  
     const setupConnection = async () => {
       const conn = await startConnection();
       setConnection(conn);
-
+  
       registerOnMessage((incomingSenderId, incomingReceiverId, messageText) => {
         const isBetweenUsers =
           (parseInt(incomingSenderId) === parseInt(sender.id) &&
             parseInt(incomingReceiverId) === parseInt(receiverId)) ||
           (parseInt(incomingSenderId) === parseInt(receiverId) &&
             parseInt(incomingReceiverId) === parseInt(sender.id));
-
+  
         if (isBetweenUsers) {
           setMessages((prev) => {
             const lastMsg = prev[prev.length - 1];
@@ -48,7 +48,7 @@ const Message = () => {
             ) {
               return prev;
             }
-
+  
             return [
               ...prev,
               {
@@ -60,24 +60,31 @@ const Message = () => {
           });
         }
       });
-
+  
       const res = await axios.get(
         `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Chat/getMessages?senderId=${sender.id}&receiverId=${receiverId}`,
         { withCredentials: true }
       );
       setMessages(res.data || []);
     };
-
+  
     setupConnection();
+  
+    return () => {
+      if (connection) {
+        connection.off("ReceiveMessage"); 
+      }
+    };
   }, [sender?.id, receiverId]);
-
+  
+  
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   const handleSend = async () => {
     if (!newMessage.trim()) return;
-
+  
     try {
       const response = await axios.post(
         "https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Chat/send",
@@ -90,9 +97,17 @@ const Message = () => {
           withCredentials: true,
         }
       );
-
+  
       if (response.data) {
-        await connection.invoke("SendMessage", receiverId, newMessage);
+        setMessages((prev) => [
+          ...prev,
+          {
+            senderId: sender.id,
+            text: newMessage,
+            sentAt: new Date(),
+          },
+        ]);
+  
         setNewMessage("");
         setIsTyping(false);
       }
@@ -100,6 +115,7 @@ const Message = () => {
       console.error("Mesaj göndərilərkən xəta:", error);
     }
   };
+  
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

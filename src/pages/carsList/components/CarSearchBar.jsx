@@ -11,15 +11,13 @@ const FilterSidebar = () => {
   const [bodyTypes, setBodyTypes] = useState([]);
   const [colors, setColors] = useState([]);
  
-  const [yearRange, setYearRange] = useState([2016, 2023]);
+  const [yearRange, setYearRange] = useState([1900, 2025]);
   const [priceRange, setPriceRange] = useState([0, 1000000]);
   const [kilometers, setKilometers] = useState([0, 500000]);
-  const [seats, setSeats] = useState([2, 8]);
-  const [hp, setHP] = useState([50, 1000]);
  
-  const [selectedBrand, setSelectedBrand] = useState("BMW");
+  const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
-  const [selectedBody, setSelectedBody] = useState("Coupe");
+  const [selectedBody, setSelectedBody] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [carType, setCarType] = useState("Used");
  
@@ -98,8 +96,10 @@ const FilterSidebar = () => {
     const params = new URLSearchParams(location.search);
     params.set("MinYear", yearRange[0]);
     params.set("MaxYear", yearRange[1]);
+    params.set("MinMiles", kilometers[0]);
+    params.set("MaxMiles", kilometers[1]);
     navigate({ search: params.toString() });
-  }, [yearRange]);
+  }, [yearRange, kilometers]);
   
  
   return (
@@ -142,7 +142,7 @@ const FilterSidebar = () => {
 <div className="text-xs text-gray-500 mb-3">
         Location 📍{" "}
 <span className="text-blue-600 underline cursor-pointer">
-          Bangladesh
+          Azerbaijan
 </span>
 </div>
  
@@ -214,94 +214,88 @@ const FilterSidebar = () => {
 <FaCalendarAlt /> Vehicle info
 </div>
  
-        {/* Year */}
+{/* Year */}
 <div className="mb-4">
-<label className="text-xs block mb-1">Manufacturing Year</label>
-<div className="flex gap-2 mb-2">
-<input
-              value={yearRange[0]}
-              onChange={(e) =>
-                setYearRange([+e.target.value, yearRange[1]])
-              }
-              className="w-1/2 border rounded p-1 text-sm"
-              placeholder="From"
-            />
-<input
-              value={yearRange[1]}
-              onChange={(e) =>
-                setYearRange([yearRange[0], +e.target.value])
-              }
-              className="w-1/2 border rounded p-1 text-sm"
-              placeholder="To"
-            />
+  <label className="text-xs block mb-1">Manufacturing Year</label>
+  <div className="flex gap-2 mb-2">
+    <input
+      type="number"
+      min={1900}
+      max={2025}
+      value={yearRange[0]}
+      onChange={(e) =>
+        setYearRange([+e.target.value, yearRange[1]])
+      }
+      className="w-1/2 border rounded p-1 text-sm"
+      placeholder="From"
+    />
+    <input
+      type="number"
+      min={1900}
+      max={2025}
+      value={yearRange[1]}
+      onChange={(e) =>
+        setYearRange([yearRange[0], +e.target.value])
+      }
+      className="w-1/2 border rounded p-1 text-sm"
+      placeholder="To"
+    />
+  </div>
+  <Slider
+    range
+    min={1900}
+    max={2025}
+    value={yearRange}
+    onChange={setYearRange}
+    trackStyle={[{ backgroundColor: "#3B82F6" }]}
+    handleStyle={[
+      { borderColor: "#3B82F6" },
+      { borderColor: "#3B82F6" },
+    ]}
+  />
 </div>
-<Slider
-            range
-            min={2000}
-            max={2025}
-            value={yearRange}
-            onChange={setYearRange}
-            trackStyle={[{ backgroundColor: "#3B82F6" }]}
-            handleStyle={[
-              { borderColor: "#3B82F6" },
-              { borderColor: "#3B82F6" },
-            ]}
-          />
-</div>
+
  
-        {/* Kilometer */}
 <div className="mb-4">
-<label className="text-xs block mb-1">Kilometre Run</label>
-<div className="flex gap-2 mb-2">
-<input className="w-1/2 border rounded p-1 text-sm" placeholder="Min" />
-<input className="w-1/2 border rounded p-1 text-sm" placeholder="Max" />
+  <label className="text-xs block mb-1">Kilometre Run</label>
+  <div className="flex gap-2 mb-2">
+    <input
+      type="number"
+      min={0}
+      max={500000}
+      value={kilometers[0]}
+      onChange={(e) =>
+        setKilometers([+e.target.value, kilometers[1]])
+      }
+      className="w-1/2 border rounded p-1 text-sm"
+      placeholder="Min"
+    />
+    <input
+      type="number"
+      min={0}
+      max={500000}
+      value={kilometers[1]}
+      onChange={(e) =>
+        setKilometers([kilometers[0], +e.target.value])
+      }
+      className="w-1/2 border rounded p-1 text-sm"
+      placeholder="Max"
+    />
+  </div>
+  <Slider
+    range
+    min={0}
+    max={500000}
+    value={kilometers}
+    onChange={setKilometers}
+    trackStyle={[{ backgroundColor: "#3B82F6" }]}
+    handleStyle={[
+      { borderColor: "#3B82F6" },
+      { borderColor: "#3B82F6" },
+    ]}
+  />
 </div>
-<Slider
-            min={0}
-            max={500000}
-            range
-            value={kilometers}
-            onChange={setKilometers}
-            trackStyle={[{ backgroundColor: "#3B82F6" }]}
-            handleStyle={[{ borderColor: "#3B82F6" }, { borderColor: "#3B82F6" }]}
-          />
-</div>
- 
-        {/* Seats */}
-<div className="mb-4">
-<label className="text-xs block mb-1">No of Seats</label>
-<div className="flex gap-2 mb-2">
-<input className="w-1/2 border rounded p-1 text-sm" placeholder="Min" />
-<input className="w-1/2 border rounded p-1 text-sm" placeholder="Max" />
-</div>
-<Slider
-            min={2}
-            max={8}
-            range
-            value={seats}
-            onChange={setSeats}
-            trackStyle={[{ backgroundColor: "#3B82F6" }]}
-            handleStyle={[{ borderColor: "#3B82F6" }, { borderColor: "#3B82F6" }]}
-          />
-</div>
- 
-        {/* Power HP */}
-<div className="mb-4">
-<label className="text-xs block mb-1">Power HP</label>
-<div className="flex gap-2 mb-2">
-<input className="w-1/2 border rounded p-1 text-sm" placeholder="Min" />
-<input className="w-1/2 border rounded p-1 text-sm" placeholder="Max" />
-</div>
-<Slider
-            min={50}
-            max={1000}
-            range
-            value={hp}
-            onChange={setHP}
-            trackStyle={[{ backgroundColor: "#3B82F6" }]}
-            handleStyle={[{ borderColor: "#3B82F6" }, { borderColor: "#3B82F6" }]}
-          />
-</div>
+
  
         {/* Price */}
 <div className="mb-4">

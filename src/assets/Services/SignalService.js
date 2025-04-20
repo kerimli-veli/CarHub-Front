@@ -32,11 +32,14 @@ export const registerOnMessage = (callback) => {
     return;
   }
 
+  connection.off("ReceiveMessage"); // <== Əvvəlki event-i təmizləyirik
+
   connection.on("ReceiveMessage", (senderId, receiverId, messageText) => {
     console.log("Yeni mesaj gəldi:", { senderId, receiverId, messageText });
-    callback(senderId, receiverId, messageText); 
+    callback(senderId, receiverId, messageText);
   });
 };
+
 
 export const sendMessage = async (receiverId, message) => {
   if (!connection) {
