@@ -19,7 +19,7 @@ const CartPayment = () => {
         </div>
       ) : (
         <>
-          <h2 className="text-3xl font-bold text-gray-800 mt-10 ml-8">Your Basket</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mt-10 ml-8">🛒Your Basket </h2>
 
           <div className="mx-auto px-15 py-10">
             <div className="flex flex-col lg:flex-row gap-8">

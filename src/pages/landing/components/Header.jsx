@@ -57,25 +57,25 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
 
 
 
-  const handleProductSearch = async () => {
+  const handleProductSearch = async (query) => {
     try {
-      const response = await fetch(`https://localhost:7282/api/Product/GetByNameProduct?name=${searchQuery}`);
+      const response = await fetch(`https://localhost:7282/api/Product/GetByNameProduct?name=${query}`);
       const result = await response.json();
   
-      console.log("Arama sonucu:", result);
-  
       if (Array.isArray(result)) {
-        setSearchResults(result); 
+        setSearchResults(result);
       } else if (result.data && Array.isArray(result.data)) {
-        setSearchResults(result.data); 
+        setSearchResults(result.data);
       } else {
-        setSearchResults([]); 
+        setSearchResults([]);
       }
     } catch (error) {
       console.error("Fetch Error:", error);
-      setSearchResults([]); 
+      setSearchResults([]);
     }
   };
+
+  
 
   useEffect(() => {
     if (!showSearchInput) {
@@ -97,7 +97,11 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
     };
   }, []);
 
+  
 
+ const handleBasketClick = () => {
+    navigate("/cart");
+  };
 
 
   return (
@@ -128,69 +132,119 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
             Home
             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
           </a>
+          
 
+
+          
           <div className="relative group" id="search-box">
-            <button
-              onClick={() => setShowSearchInput(!showSearchInput)}
-              className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out">
-              Product Search
-              <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
-            </button>
+  <button
+    onClick={() => setShowSearchInput(!showSearchInput)}
+    className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out"
+  >
+    Product Search
+    <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
+  </button>
 
-            {showSearchInput && (
-              <div className="absolute top-full mt-3 right-0 w-96 z-50 bg-white p-4 rounded-lg shadow-lg">
-                <div className="flex gap-2">
-                  <input
-                    type="text" placeholder="Product search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 text-black" />
+  {showSearchInput && (
+    <div
+      className="absolute top-full mt-3 right-0 w-[420px] z-50 bg-white p-4 rounded-lg shadow-lg max-h-[500px] overflow-y-auto scrollbar-hide"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+    >
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          placeholder="Product search..."
+          value={searchQuery}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchQuery(value);
+            if (value.trim() !== "") {
+              handleProductSearch(value);
+            } else {
+              setSearchResults([]);
+            }
+          }}
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 text-black"
+        />
+        <button
+          onClick={() => handleProductSearch(searchQuery)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+        >
+          Search
+        </button>
+      </div>
+
+      {searchQuery.trim() !== "" ? (
+        searchResults.length > 0 &&
+        searchResults.some(
+          (product) => product.name && product.unitPrice !== undefined && product.unitPrice !== null
+        ) ? (
+          <div className="space-y-3">
+            {searchResults
+              .filter(
+                (product) =>
+                  product.name &&
+                  product.unitPrice !== undefined &&
+                  product.unitPrice !== null
+              )
+              .map((product) => (
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-gray-200 shadow-sm hover:shadow-md transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={product.imagePath || "/placeholder.jpg"}
+                      alt={product.name}
+                      className="w-10 h-10 object-cover rounded bg-gray-200 shadow-sm"
+                    />
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900">
+                        {product.name}
+                      </h3>
+                      <p className="text-xs text-gray-500">
+                        ${product.unitPrice?.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+
                   <button
-                    onClick={handleProductSearch} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
-                    Search
+                    onClick={() =>
+                      navigate(`/product-details/${product.id}`, {
+                        state: product,
+                      })
+                    }
+                    className="text-xs px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                  >
+                    Details
                   </button>
                 </div>
-
-                {searchQuery.trim() !== "" && searchResults.length === 0 ? (
-                  <div className="mt-4 text-gray-500 text-sm">No products found for this search.</div>
-                ) : (
-                  <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {searchResults.map((product) => (
-                      <div key={product.id} className="bg-white rounded-xl border border-[#E9E9E9] shadow-sm relative"
-                        style={{ width: "327.48px", height: "509.52px", marginTop: "20px" }}>
-                        <img src={product.imagePath} alt={product.name} className="rounded-xl object-cover absolute"
-                          style={{ width: "265.48px", height: "265.48px", top: "31px", left: "31px" }} />
-                        <div
-                          className="text-2xl font-semibold font-bold absolute text-black"
-                          style={{ width: "45.26px", height: "37px", top: "369.27px", left: "31px" }} >
-                          ${product.unitPrice}
-                        </div>
-                        <div
-                          className="text-sm font-bold truncate absolute text-black"
-                          style={{ width: "180.5px", height: "21px", top: "335px", left: "31px" }}>
-                          {product.description}
-                        </div>
-                        <button
-                          className="bg-white hover:bg-gray-100 text-blue-500 font-bold py-2 px-4 rounded border border-blue-500 absolute flex items-center justify-center"
-                          style={{ width: "265.48px", height: "56.75px", top: "421.77px", left: "31px", borderRadius: "8px", borderWidth: "1px", }}>
-                          <span style={{ color: "#3B82F6" }}>&#128722;</span> <span className="ml-2">Add to Cart</span>
-                        </button>
-                      </div>))}
-                  </div>
-                )}
-              </div>)}
+              ))}
           </div>
+        ) : (
+          <div className="text-gray-500 text-sm">No products found.</div>
+        )
+      ) : null}
+    </div>
+  )}
+</div>
+
 
 
 
           <div className="relative group">
             <button className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out">
-              Pages
+              Shop
             </button>
             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
 
             <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-48 bg-white text-black rounded-xl shadow-xl scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 origin-top z-50">
               <a href="/shopPage" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Shop</a>
-              <a href="/page2" className="block px-4 py-3 hover:bg-blue-50">Page Two</a>
-              <a href="/page3" className="block px-4 py-3 hover:bg-blue-50 rounded-b-xl">Page Three</a>
+              <button
+                onClick={handleBasketClick}
+                className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Basket
+              </button>
+              
             </div>
           </div>
 

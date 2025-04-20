@@ -46,7 +46,7 @@ function App() {
             <Route path="account" element={<Account />} />
             <Route path="addCar" element={<AddCarForm />} />
             <Route path="myCars" element={<MyCars />} />
-            <Route path="shopPage" element={<ShopPage />} />
+            <Route path="cart" element={<Cart />} />
           </Route>
           {/* <Route path="cart" element={<Cart />} /> */}
           <Route path="/cart" element={<CartPayment />} />
