@@ -19,6 +19,7 @@ import Cart from "./pages/shop/cart/Cart";
 import CartPayment from "./pages/shop/CartPaymetn";
 import CartEmpty from "./pages/shop/cart/CartEmpty";
 import ProductDetails from "./pages/shop/ProductDetails";
+import AboutUs from "./pages/aboutus/AboutUs";
 
 
 function App() {
@@ -53,6 +54,9 @@ function App() {
           <Route path='/carDetails/:carId' element={<CarDetail />} />
           <Route path="/cartEmpty" element={<CartEmpty />} />
           <Route path="/product-details/:id" element={<ProductDetails />} />
+          <Route path="/aboutus" element={<AboutUs />} />
+
+          
 
 
 

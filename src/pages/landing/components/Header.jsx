@@ -103,6 +103,9 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
     navigate("/cart");
   };
 
+  const handleNavigate = () => {
+    navigate('/aboutus');
+  };
 
   return (
     <nav className={`${bgColor} text-white p-4`}>
@@ -248,10 +251,13 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
             </div>
           </div>
 
-          <a href="#" className="text-lg font-medium text-white hover:text-blue-300 relative group">
-            About
-            <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
-          </a>
+          <button
+      onClick={handleNavigate}
+      className="text-lg font-medium text-white hover:text-blue-300 relative group"
+    >
+      About
+      <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
+    </button>
 
           <a href="#" className="text-lg font-medium text-white hover:text-blue-300 relative group">
             Contact
