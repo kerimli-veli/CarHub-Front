@@ -22,9 +22,9 @@ const Products = ({ selectedCategory, priceRange }) => {
   const productsPerPage = 9;
 
   const accessToken = getCookie("accessToken");
- 
-  
- 
+
+
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -45,49 +45,57 @@ const Products = ({ selectedCategory, priceRange }) => {
     };
 
     fetchProducts();
-  },[selectedCategory]);
+  }, [selectedCategory]);
 
   useEffect(() => {
     let filteredProducts = [...products];
 
-    if (priceRange) {filteredProducts = filteredProducts.filter((product) =>product.unitPrice >= priceRange.minPrice && product.unitPrice <= priceRange.maxPrice);}
+    if (priceRange) { filteredProducts = filteredProducts.filter((product) => product.unitPrice >= priceRange.minPrice && product.unitPrice <= priceRange.maxPrice); }
 
-    sortProducts(filteredProducts, sortBy);}, [products, priceRange, sortBy]);
+    sortProducts(filteredProducts, sortBy);
+  }, [products, priceRange, sortBy]);
 
-  const sortProducts = (productsToSort, sortOption) => {let sorted = [...productsToSort];
+  const sortProducts = (productsToSort, sortOption) => {
+    let sorted = [...productsToSort];
 
-    switch (sortOption) {case "price-asc":sorted.sort((a, b) => a.unitPrice - b.unitPrice);
+    switch (sortOption) {
+      case "price-asc": sorted.sort((a, b) => a.unitPrice - b.unitPrice);
         break;
-      case "price-desc":sorted.sort((a, b) => b.unitPrice - a.unitPrice);
+      case "price-desc": sorted.sort((a, b) => b.unitPrice - a.unitPrice);
         break;
       default:
-        break;}
-    setSortedProducts(sorted);};
+        break;
+    }
+    setSortedProducts(sorted);
+  };
 
   const endProduct = Math.min(startProduct + productsPerPage, sortedProducts.length);
   const currentProducts = sortedProducts.slice(startProduct, endProduct);
 
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
 
-  const handlePageChange = (pageNumber) => {const newStartProduct = (pageNumber - 1) * productsPerPage; 
-    setStartProduct(newStartProduct);};
+  const handlePageChange = (pageNumber) => {
+    const newStartProduct = (pageNumber - 1) * productsPerPage;
+    setStartProduct(newStartProduct);
+  };
 
   const handlePreviousPage = () => {
-    if (startProduct > 0) {setStartProduct(startProduct - productsPerPage);}};
+    if (startProduct > 0) { setStartProduct(startProduct - productsPerPage); }
+  };
 
-  const handleNextPage = () => {if (startProduct + productsPerPage < sortedProducts.length) {setStartProduct(startProduct + productsPerPage);}};
+  const handleNextPage = () => { if (startProduct + productsPerPage < sortedProducts.length) { setStartProduct(startProduct + productsPerPage); } };
 
- 
+
   const fetchCartId = async () => {
     const user = getUserFromToken();
     const userId = parseInt(user?.id);
     const accessToken = Cookies.get("accessToken");
-  
+
     if (!userId || !accessToken) {
       console.error("User ID or token is missing.");
       return null;
     }
-  
+
     try {
       const response = await fetch(`https://localhost:7282/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
         method: "GET",
@@ -95,46 +103,46 @@ const Products = ({ selectedCategory, priceRange }) => {
           "Authorization": `Bearer ${accessToken}`
         }
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error("API Response not OK:", errorData);
         return null;
       }
-  
+
       const data = await response.json();
       console.log("Cart API Raw Response:", data); // ✔️
-  
-     
+
+
       return data.cartId;
     } catch (error) {
       console.error("Cart ID could not be retrieved.(try-catch):", error);
       return null;
     }
   };
-  
-  
+
+
   const handleAddToCart = async (productId) => {
     const accessToken = Cookies.get("accessToken");
-  
+
     if (!accessToken) {
       toast.error("Sistemdə giriş etməyiniz tələb olunur!");
       return;
     }
-  
+
     const user = getUserFromToken();
     const userId = user?.id;
     if (!userId) {
       toast.error("İstifadəçi məlumati əldə edilə bilmədi.");
       return;
     }
-  
+
     const cartId = await fetchCartId();
     if (!cartId) {
       toast.error("Səbət əldə edilə bilmədi.");
       return;
     }
-  
+
     try {
       const response = await fetch("https://localhost:7282/api/Cart/AddProductToCart", {
         method: "POST",
@@ -148,7 +156,7 @@ const Products = ({ selectedCategory, priceRange }) => {
           quantity: 1,
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Product could not be added to the cart:", errorData);
@@ -166,56 +174,102 @@ const Products = ({ selectedCategory, priceRange }) => {
 
   return (
     <div className="pt-11 pl-9 pr-40">
-    
-    <div className="flex justify-between mb-4 items-center">
-      <div style={{ marginTop: "5px" }}>
-        Showing {startProduct + 1}–{Math.min(startProduct + productsPerPage, sortedProducts.length)} of {sortedProducts.length} results
-      </div>
-      <div className="flex items-center" style={{ marginTop: "5px" }}>
 
-        <button onClick={handleBasketClick} className="mr-4 hover:scale-110 transition-transform">
-      <span role="img" aria-label="cart" style={{ fontSize: "24px", color: "#3B82F6" }}>
-        🛒
-      </span>
-    </button>
-     
-        <span className="text-gray-600 mr-1">Sort by:</span>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="appearance-none bg-none border-none shadow-none py-2 px-4 focus:outline-none focus:ring-0"
-        >
-          <option value="latest">Sort by latest</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-        </select>
+      <div className="flex justify-between mb-4 items-center">
+        <div style={{ marginTop: "5px" }}>
+          Showing {startProduct + 1}–{Math.min(startProduct + productsPerPage, sortedProducts.length)} of {sortedProducts.length} results
+        </div>
+        <div className="flex items-center" style={{ marginTop: "5px" }}>
+
+          <button onClick={handleBasketClick} className="mr-4 hover:scale-110 transition-transform">
+            <span role="img" aria-label="cart" style={{ fontSize: "24px", color: "#3B82F6" }}>
+              🛒
+            </span>
+          </button>
+
+          <span className="text-gray-600 mr-1">Sort by:</span>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="appearance-none bg-none border-none shadow-none py-2 px-4 focus:outline-none focus:ring-0"
+          >
+            <option value="latest">Sort by latest</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
       </div>
-    </div>
-   
+
       <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
+            // <div
+            //   key={product.name}
+            //   className="bg-white rounded-xl border border-[#E9E9E9] shadow-sm relative"
+            //   style={{ width: 327.48,height: 509.52,marginTop: "20px",}}>
+            //   <img src={product.imagePath} alt={product.name} className="rounded-xl object-cover absolute"
+            //     style={{ width: 265.48, height: 265.48, top: "31px", left: "31px", }}/>
+            //   <div
+            //     className="text-sm font-bold truncate absolute"
+            //     style={{ width: 180.5, height: 21, top: "335px", left: "31px", }}>
+            //     {product.description}
+            //   </div>
+
+            //   <div
+            //     className="text-2xl font-semibold absolute"
+            //     style={{ top: "369.27px", left: "31px", color: "#111827", }}>  ${product.unitPrice}
+            //   </div>
+
+            //   <button
+            //     onClick={() => handleAddToCart(product.id)}
+            //     className="bg-white hover:bg-blue-50 text-blue-600 font-semibold py-2 px-4 border border-blue-500 rounded absolute flex items-center justify-center transition duration-200 ease-in-out"
+            //     style={{  width: 265.48,  height: 56.75, top: "421.77px", left: "31px",  borderRadius: "8px", borderWidth: "1px",}}>
+            //     <span style={{ fontSize: "20px", color: "#3B82F6" }}>&#128722;</span>
+            //     <span className="ml-2">Add to Cart</span>
+            //   </button>
+            // </div>
+
             <div
               key={product.name}
-              className="bg-white rounded-xl border border-[#E9E9E9] shadow-sm relative"
-              style={{ width: 327.48,height: 509.52,marginTop: "20px",}}>
-              <img src={product.imagePath} alt={product.name} className="rounded-xl object-cover absolute"
-                style={{ width: 265.48, height: 265.48, top: "31px", left: "31px", }}/>
+              className="bg-white rounded-xl border border-[#E9E9E9] shadow-sm relative cursor-pointer"
+              style={{ width: 327.48, height: 509.52, marginTop: "20px" }}
+              onClick={() => navigate(`/product-details/${product.id}`, { state: product })}
+            >
+              <img
+                src={product.imagePath}
+                alt={product.name}
+                className="rounded-xl object-cover absolute"
+                style={{ width: 265.48, height: 265.48, top: "31px", left: "31px" }}
+              />
               <div
                 className="text-sm font-bold truncate absolute"
-                style={{ width: 180.5, height: 21, top: "335px", left: "31px", }}>
+                style={{ width: 180.5, height: 21, top: "335px", left: "31px" }}
+              >
                 {product.description}
               </div>
 
               <div
                 className="text-2xl font-semibold absolute"
-                style={{ top: "369.27px", left: "31px", color: "#111827", }}>  ${product.unitPrice}
+                style={{ top: "369.27px", left: "31px", color: "#111827" }}
+              >
+                ${product.unitPrice}
               </div>
 
               <button
-                onClick={() => handleAddToCart(product.id)}
+                onClick={(e) => {
+                  e.stopPropagation(); // Kart yönlendirmesini engelle
+                  handleAddToCart(product.id);
+                }}
                 className="bg-white hover:bg-blue-50 text-blue-600 font-semibold py-2 px-4 border border-blue-500 rounded absolute flex items-center justify-center transition duration-200 ease-in-out"
-                style={{  width: 265.48,  height: 56.75, top: "421.77px", left: "31px",  borderRadius: "8px", borderWidth: "1px",}}>
+                style={{
+                  width: 265.48,
+                  height: 56.75,
+                  top: "421.77px",
+                  left: "31px",
+                  borderRadius: "8px",
+                  borderWidth: "1px",
+                }}
+              >
                 <span style={{ fontSize: "20px", color: "#3B82F6" }}>&#128722;</span>
                 <span className="ml-2">Add to Cart</span>
               </button>
@@ -229,16 +283,16 @@ const Products = ({ selectedCategory, priceRange }) => {
       </div>
 
       <div className="flex justify-center mt-6 items-center">
-        
+
         {startProduct > 0 && (
           <button onClick={handlePreviousPage} className="px-4 py-2 mx-2 font-bold rounded-full border border-[#E9E9E9] text-black"
             style={{ backgroundColor: "#F9FBFC", width: "60px" }}> &lt;
-          </button> )}
+          </button>)}
 
-        
+
         {Array.from({ length: totalPages }, (_, index) => (
           <button key={index} onClick={() => handlePageChange(index + 1)}
-           className={`px-4 py-2 mx-1 font-bold rounded-full ${startProduct / productsPerPage === index? "bg-black text-white": "text-black bg-transparent"}`}>
+            className={`px-4 py-2 mx-1 font-bold rounded-full ${startProduct / productsPerPage === index ? "bg-black text-white" : "text-black bg-transparent"}`}>
             {index + 1}
           </button>
         ))}
@@ -248,7 +302,7 @@ const Products = ({ selectedCategory, priceRange }) => {
             className="px-4 py-2 mx-2 font-bold rounded-full border border-[#E9E9E9] text-black"
             style={{ backgroundColor: "#F9FBFC", width: "60px" }}
           > &gt;
-          </button> )}
+          </button>)}
       </div>
       <ToastContainer
         position="top-center"

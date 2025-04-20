@@ -18,6 +18,7 @@ import MyCars from "./pages/userProfil/components/MyCars";
 import Cart from "./pages/shop/cart/Cart";
 import CartPayment from "./pages/shop/CartPaymetn";
 import CartEmpty from "./pages/shop/cart/CartEmpty";
+import ProductDetails from "./pages/shop/ProductDetails";
 
 
 function App() {
@@ -51,7 +52,7 @@ function App() {
           <Route path="/cart" element={<CartPayment />} />
           <Route path='/carDetails/:carId' element={<CarDetail />} />
           <Route path="/cartEmpty" element={<CartEmpty />} />
-          
+          <Route path="/product-details/:id" element={<ProductDetails />} />
 
 
 
