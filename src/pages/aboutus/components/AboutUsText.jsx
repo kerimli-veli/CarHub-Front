@@ -4,7 +4,7 @@ const AboutUsText = () => {
   return (
     <div className="w-full bg-white py-16">
       <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-start gap-10 px-4 md:px-8">
-        {/* Left Side */}
+       
         <div className="md:w-1/2">
           <h2 className="text-2xl font-bold text-slate-900 mb-6">About Us</h2>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900 leading-snug">
@@ -14,7 +14,7 @@ const AboutUsText = () => {
           </h1>
         </div>
 
-        {/* Right Side */}
+        
         <div className="md:w-1/2 text-slate-600 space-y-6 text-base leading-relaxed">
           <p>
             Lorem ipsum dolor sit amet consectetur. Convallis integer enim eget sit urna. Eu duis lectus amet

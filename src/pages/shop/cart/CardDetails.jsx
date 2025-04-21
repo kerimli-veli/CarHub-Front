@@ -99,7 +99,7 @@ const CardDetails = ({ total = 0 }) => {
           <span>${total.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
-          <span>Shipping</span>
+          <span>Delivery</span>
           <span>${shipping.toFixed(2)}</span>
         </div>
         <div className="flex justify-between font-semibold">

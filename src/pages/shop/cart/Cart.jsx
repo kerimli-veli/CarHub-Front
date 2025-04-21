@@ -10,7 +10,7 @@ import CartEmpty from './CartEmpty';
 
 const Cart = ({ onTotalChange }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [cartId, setCartId] = useState(null); // ✅ cartId state
+  const [cartId, setCartId] = useState(null); 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
 
@@ -36,7 +36,7 @@ const Cart = ({ onTotalChange }) => {
 
       const items = data.cartLines || [];
       setCartItems(items);
-      setCartId(data.cartId); // ✅ Doğru yerde artık
+      setCartId(data.cartId); 
 
       const total = items.reduce((acc, item) => {
         const price = item.product.discountPrice || item.product.unitPrice;
@@ -45,7 +45,7 @@ const Cart = ({ onTotalChange }) => {
 
       onTotalChange?.(total);
     } catch (error) {
-      console.error("Sepet verisi alınamadı:", error);
+      console.error("Cart data could not be retrieved:", error);
     }
   };
 
@@ -53,7 +53,7 @@ const Cart = ({ onTotalChange }) => {
 
   const handleClearCart = async () => {
     if (!cartId) {
-      console.warn("❗ cartId mevcut değil.");
+      console.warn("❗ cartId does not exist.");
       return;
     }
 
@@ -71,15 +71,15 @@ const Cart = ({ onTotalChange }) => {
       console.log("API RESPONSE:", result);
 
       if (response.ok) {
-        console.log("✅ Silme başarılı! Sayfa şimdi yenileniyor...");
+        console.log("✅ Deletion successful! The page is now refreshing...");
         setTimeout(() => {
           window.location.reload();
         }, 500);
       } else {
-        console.warn("❌ API çalıştı ama başarılı dönmedi:", result.errors);
+        console.warn("❌ The API ran but did not return successfully.:", result.errors);
       }
     } catch (error) {
-      console.error("❌ Silme isteği başarısız:", error);
+      console.error("❌ Delete request failed:", error);
     }
   };
   const totalPages = Math.ceil(cartItems.length / itemsPerPage);
@@ -113,33 +113,32 @@ const Cart = ({ onTotalChange }) => {
       });
 
       const result = await response.json();
-      console.log("Tekil silme sonucu:", result);
+      console.log("Single deletion result:", result);
 
       if (response.ok && result.message) {
-        // ✅ UI'dan da anında kaldır
+       
         const updatedItems = cartItems.filter((ci) => ci.id !== item.id);
         setCartItems(updatedItems);
 
-        // ✅ Toplamı güncelle
         const newTotal = updatedItems.reduce((acc, i) => {
           const price = i.product.discountPrice || i.product.unitPrice;
           return acc + price * i.quantity;
         }, 0);
         onTotalChange?.(newTotal);
 
-        toast.success("Ürün kaldırıldı ✔️");
+        toast.success("Product removed.✔️");
 
 
         // setTimeout(() => {
         //   window.location.reload();
         // }, 3000);
       } else {
-        toast.error("Silme başarısız ❌");
-        console.warn("❌ Ürün silinemedi:", result.message || result.errors);
+        toast.error("Deletion failed. ❌");
+        console.warn("❌ Product could not be deleted.:", result.message || result.errors);
       }
     } catch (error) {
       toast.error("Hata oluştu!");
-      console.error("❌ Silme isteği başarısız:", error);
+      console.error("❌ Delete request failed:", error);
     }
   };
 
@@ -168,23 +167,23 @@ const Cart = ({ onTotalChange }) => {
       });
 
       const result = await response.json();
-      console.log("✅ Adet güncelleme sonucu:", result);
+      console.log("✅ Quantity update result:", result);
 
       if (response.ok) {
-        toast.success("Ürün adedi güncellendi ✔️");
+        toast.success("Product quantity updated.✔️");
 
-        // 🔁 Yeni cartItems oluştur
+       
         const updatedItems = cartItems.map((ci) => {
           if (ci.id === item.id) {
             const newQty = ci.quantity + quantityChange;
             return { ...ci, quantity: newQty };
           }
           return ci;
-        }).filter(ci => ci.quantity > 0); // 0 olanları sil
+        }).filter(ci => ci.quantity > 0); 
 
         setCartItems(updatedItems);
 
-        // 💰 Yeni toplamı hesapla
+     
         const newTotal = updatedItems.reduce((acc, i) => {
           const price = i.product.discountPrice || i.product.unitPrice;
           return acc + price * i.quantity;
@@ -192,12 +191,12 @@ const Cart = ({ onTotalChange }) => {
 
         onTotalChange?.(newTotal);
       } else {
-        toast.error("Güncelleme başarısız ❌");
+        toast.error("Update failed. ❌");
       }
 
     } catch (error) {
-      toast.error("Hata oluştu!");
-      console.error("❌ Güncelleme hatası:", error);
+      toast.error("An error occurred!");
+      console.error("❌ Update failed.", error);
     }
   };
 

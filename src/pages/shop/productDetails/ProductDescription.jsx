@@ -37,7 +37,7 @@ const ProductDescription = ({ product }) => {
         if (createData?.isSuccess && createData?.data?.id) {
           return createData.data.id;
         } else {
-          console.error("Sepet oluşturulamadı:", createData?.errors);
+          console.error("Cart could not be created.:", createData?.errors);
           return null;
         }
       }
@@ -45,20 +45,20 @@ const ProductDescription = ({ product }) => {
       const data = await response.json();
       return data.cartId;
     } catch (error) {
-      console.error("Sepet alınırken hata oluştu:", error);
+      console.error("An error occurred while retrieving the cart:", error);
       return null;
     }
   };
 
   const handleAddToCart = async () => {
     if (!userId || !accessToken) {
-      toast.error("Giriş yapmanız gerekiyor!");
+      toast.error("You need to log in!");
       return;
     }
 
     const cartId = await fetchCartId();
     if (!cartId) {
-      toast.error("Sepet oluşturulamadı!");
+      toast.error("Cart could not be created!");
       return;
     }
 
@@ -78,58 +78,64 @@ const ProductDescription = ({ product }) => {
 
       const data = await response.json();
       if (response.ok && data.isSuccess) {
-        toast.success("Ürün sepete eklendi!");
+        toast.success("Product added to the cart!");
       } else {
-        toast.error("Sepete eklenemedi ❌");
+        toast.error("Could not be added to the cart.❌");
         console.warn("API ERROR:", data);
       }
     } catch (error) {
-      toast.error("Bir hata oluştu!");
+      toast.error("An error occurred!");
       console.error("Add to cart error:", error);
     }
   };
 
-  return (
-    <div className="flex flex-col gap-4 w-[500px]">
-      <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
-      <p className="text-green-600 font-medium text-sm">In Stock</p>
-      <div className="text-3xl font-semibold text-gray-800">${product.unitPrice}</div>
-      <p className="text-gray-600">{product.description}</p>
-      <hr className="my-4" />
+  
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center border border-gray-300 rounded-md">
-          <button onClick={decrement} className="px-3 py-2 text-xl font-bold text-gray-700">−</button>
-          <span className="px-4 text-lg">{quantity}</span>
-          <button onClick={increment} className="px-3 py-2 text-xl font-bold text-gray-700">+</button>
-        </div>
+return (
+  <div className="flex flex-col gap-4 w-[500px]">
+    <h1 className="text-2xl font-bold text-gray-900 leading-snug">{product.name}</h1>
+    <p className="text-green-600 font-medium text-sm">{product.unitsInStock}</p>
+    <div className="text-3xl font-bold text-gray-800">${product.unitPrice}</div>
+    <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
+    <hr className="my-4 border-gray-300" />
 
-        <button
-          onClick={handleAddToCart}
-          className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-3 px-6 rounded-md"
-        >
-          Add to Basket
-        </button>
+    <div className="flex items-center gap-4">
+      <div className="flex items-center border border-gray-300 rounded-md shadow-sm">
+        <button onClick={decrement} className="px-3 py-2 text-xl font-bold text-gray-700 hover:bg-gray-100">−</button>
+        <span className="px-4 text-lg">{quantity}</span>
+        <button onClick={increment} className="px-3 py-2 text-xl font-bold text-gray-700 hover:bg-gray-100">+</button>
       </div>
 
-      <div className="border border-gray-300 rounded-md mt-6 divide-y">
-        <div className="flex items-start gap-4 p-4">
-          <span className="text-2xl">🚚</span>
-          <div>
-            <h3 className="font-semibold">Free Delivery</h3>
-            <p className="text-sm text-gray-600">Enter your postal code for Delivery Availability</p>
-          </div>
+      <button
+        onClick={handleAddToCart}
+        className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-3 px-6 rounded-md shadow-md"
+      >
+        Add to Basket
+      </button>
+    </div>
+
+    <div className="border border-gray-200 rounded-md mt-6 divide-y bg-white shadow-sm">
+      <div className="flex items-start gap-4 p-4">
+        <span className="text-2xl">🚚</span>
+        <div>
+          <h3 className="font-semibold">Free Delivery</h3>
+          <p className="text-sm text-gray-600">Enter your postal code for Delivery Availability</p>
         </div>
-        <div className="flex items-start gap-4 p-4">
-          <span className="text-2xl">🔁</span>
-          <div>
-            <h3 className="font-semibold">Return Delivery</h3>
-            <p className="text-sm text-gray-600">Free 30 Days Delivery Returns. <a className="text-blue-500 underline" href="#">Details</a></p>
-          </div>
+      </div>
+      <div className="flex items-start gap-4 p-4">
+        <span className="text-2xl">🔁</span>
+        <div>
+          <h3 className="font-semibold">Return Delivery</h3>
+          <p className="text-sm text-gray-600">
+            Free 30 Days Delivery Returns.{' '}
+            <a className="text-blue-500 underline" href="#">Details</a>
+          </p>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default ProductDescription;

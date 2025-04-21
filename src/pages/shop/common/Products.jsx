@@ -126,20 +126,20 @@ const Products = ({ selectedCategory, priceRange }) => {
     const accessToken = Cookies.get("accessToken");
 
     if (!accessToken) {
-      toast.error("Sistemdə giriş etməyiniz tələb olunur!");
+      toast.error("You are required to log into the system!");
       return;
     }
 
     const user = getUserFromToken();
     const userId = user?.id;
     if (!userId) {
-      toast.error("İstifadəçi məlumati əldə edilə bilmədi.");
+      toast.error("User information could not be retrieved.");
       return;
     }
 
     const cartId = await fetchCartId();
     if (!cartId) {
-      toast.error("Səbət əldə edilə bilmədi.");
+      toast.error("The cart could not be obtained.");
       return;
     }
 
@@ -161,7 +161,7 @@ const Products = ({ selectedCategory, priceRange }) => {
         const errorData = await response.json();
         console.error("Product could not be added to the cart:", errorData);
       } else {
-        toast.success("Məhsul səbətə əlavə edildi!");
+        toast.success("Product was added to the cart!");
       }
     } catch (error) {
       console.error("An error occurred while adding the product to the cart:", error);
@@ -203,32 +203,6 @@ const Products = ({ selectedCategory, priceRange }) => {
       <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
-            // <div
-            //   key={product.name}
-            //   className="bg-white rounded-xl border border-[#E9E9E9] shadow-sm relative"
-            //   style={{ width: 327.48,height: 509.52,marginTop: "20px",}}>
-            //   <img src={product.imagePath} alt={product.name} className="rounded-xl object-cover absolute"
-            //     style={{ width: 265.48, height: 265.48, top: "31px", left: "31px", }}/>
-            //   <div
-            //     className="text-sm font-bold truncate absolute"
-            //     style={{ width: 180.5, height: 21, top: "335px", left: "31px", }}>
-            //     {product.description}
-            //   </div>
-
-            //   <div
-            //     className="text-2xl font-semibold absolute"
-            //     style={{ top: "369.27px", left: "31px", color: "#111827", }}>  ${product.unitPrice}
-            //   </div>
-
-            //   <button
-            //     onClick={() => handleAddToCart(product.id)}
-            //     className="bg-white hover:bg-blue-50 text-blue-600 font-semibold py-2 px-4 border border-blue-500 rounded absolute flex items-center justify-center transition duration-200 ease-in-out"
-            //     style={{  width: 265.48,  height: 56.75, top: "421.77px", left: "31px",  borderRadius: "8px", borderWidth: "1px",}}>
-            //     <span style={{ fontSize: "20px", color: "#3B82F6" }}>&#128722;</span>
-            //     <span className="ml-2">Add to Cart</span>
-            //   </button>
-            // </div>
-
             <div
               key={product.name}
               className="bg-white rounded-xl border border-[#E9E9E9] shadow-sm relative cursor-pointer"
@@ -257,7 +231,7 @@ const Products = ({ selectedCategory, priceRange }) => {
 
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); // Kart yönlendirmesini engelle
+                  e.stopPropagation();
                   handleAddToCart(product.id);
                 }}
                 className="bg-white hover:bg-blue-50 text-blue-600 font-semibold py-2 px-4 border border-blue-500 rounded absolute flex items-center justify-center transition duration-200 ease-in-out"
