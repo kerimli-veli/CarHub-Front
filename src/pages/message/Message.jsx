@@ -2,10 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import getUserFromToken from "./../common/GetUserFromToken";
 import { useParams } from "react-router-dom";
-import {
-  startConnection,
-  registerOnMessage,
-} from "../../assets/Services/SignalService";
+import { startConnection } from "../../assets/Services/SignalService";
 
 const Message = () => {
   const { receiverId } = useParams();
@@ -26,64 +23,72 @@ const Message = () => {
 
   useEffect(() => {
     if (!sender?.id || !receiverId) return;
-  
+
+    let conn;
+    const onMessage = (incomingSenderId, incomingReceiverId, messageText) => {
+      const isBetweenUsers =
+        (parseInt(incomingSenderId) === parseInt(sender.id) &&
+          parseInt(incomingReceiverId) === parseInt(receiverId)) ||
+        (parseInt(incomingSenderId) === parseInt(receiverId) &&
+          parseInt(incomingReceiverId) === parseInt(sender.id));
+
+      if (isBetweenUsers) {
+        const newMsg = {
+          senderId: parseInt(incomingSenderId),
+          text: messageText,
+          sentAt: new Date(),
+        };
+
+        setMessages((prev) => {
+          const isDuplicate = prev.some(
+            (m) =>
+              m.text === newMsg.text &&
+              m.senderId === newMsg.senderId &&
+              Math.abs(new Date(m.sentAt) - new Date(newMsg.sentAt)) < 2000
+          );
+          return isDuplicate ? prev : [...prev, newMsg];
+        });
+      }
+    };
+
     const setupConnection = async () => {
-      const conn = await startConnection();
+      conn = await startConnection();
       setConnection(conn);
-  
-      registerOnMessage((incomingSenderId, incomingReceiverId, messageText) => {
-        const isBetweenUsers =
-          (parseInt(incomingSenderId) === parseInt(sender.id) &&
-            parseInt(incomingReceiverId) === parseInt(receiverId)) ||
-          (parseInt(incomingSenderId) === parseInt(receiverId) &&
-            parseInt(incomingReceiverId) === parseInt(sender.id));
-  
-        if (isBetweenUsers) {
-          setMessages((prev) => {
-            const lastMsg = prev[prev.length - 1];
-            if (
-              lastMsg &&
-              lastMsg.senderId === parseInt(incomingSenderId) &&
-              lastMsg.text === messageText
-            ) {
-              return prev;
-            }
-  
-            return [
-              ...prev,
-              {
-                senderId: parseInt(incomingSenderId),
-                text: messageText,
-                sentAt: new Date(),
-              },
-            ];
-          });
-        }
-      });
-  
+      conn.on("ReceiveMessage", onMessage);
+    
       const res = await axios.get(
         `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Chat/getMessages?senderId=${sender.id}&receiverId=${receiverId}`,
         { withCredentials: true }
       );
-      setMessages(res.data || []);
+    
+      const fetchedMessages = res.data || [];
+    
+      setMessages((prev) => {
+        if (prev.length === 0) return fetchedMessages;
+    
+        const lastPrevMsg = prev[prev.length - 1];
+        const lastFetchedMsg = fetchedMessages[fetchedMessages.length - 1];
+    
+        const isDuplicate =
+          lastPrevMsg &&
+          lastFetchedMsg &&
+          lastPrevMsg.text === lastFetchedMsg.text &&
+          lastPrevMsg.senderId === lastFetchedMsg.senderId &&
+          Math.abs(new Date(lastPrevMsg.sentAt) - new Date(lastFetchedMsg.sentAt)) < 2000;
+    
+        return isDuplicate ? fetchedMessages.slice(0, -1) : fetchedMessages;
+      });
     };
-  
+    
     setupConnection();
-  
-    return () => {
-      if (connection) {
-        connection.off("ReceiveMessage"); 
-      }
-    };
   }, [sender?.id, receiverId]);
-  
-  
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   const handleSend = async () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !connection) return;
   
     try {
       const response = await axios.post(
@@ -99,15 +104,7 @@ const Message = () => {
       );
   
       if (response.data) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            senderId: sender.id,
-            text: newMessage,
-            sentAt: new Date(),
-          },
-        ]);
-  
+        await connection.invoke("SendMessage", receiverId, newMessage);
         setNewMessage("");
         setIsTyping(false);
       }
@@ -135,22 +132,22 @@ const Message = () => {
   useEffect(() => {
     if (!connection) return;
 
-    connection.on("ReceiveTyping", (typingSenderId) => {
+    const handleTypingReceived = (typingSenderId) => {
       if (parseInt(typingSenderId) === parseInt(receiverId)) {
         setIsTyping(true);
-
         if (typingTimeoutRef.current) {
           clearTimeout(typingTimeoutRef.current);
         }
-
         typingTimeoutRef.current = setTimeout(() => {
           setIsTyping(false);
         }, 3000);
       }
-    });
+    };
+
+    connection.on("ReceiveTyping", handleTypingReceived);
 
     return () => {
-      connection.off("ReceiveTyping");
+      connection.off("ReceiveTyping", handleTypingReceived);
     };
   }, [connection, receiverId]);
 
@@ -164,26 +161,30 @@ const Message = () => {
           const avatarUrl = isOwnMessage ? senderAvatar : receiverAvatar;
 
           return (
-            <div key={idx} className={`flex items-end ${isOwnMessage ? "justify-end" : "justify-start"}`}>
-
-              {!isOwnMessage && (
-                <img src={avatarUrl} className="w-8 h-8 rounded-full mr-2" alt="avatar" />
-              )}
-              <div
-                className={`px-4 py-2 rounded-2xl max-w-[75%] shadow-md text-sm leading-snug ${
-                  isOwnMessage
-                    ? "bg-blue-600 text-white rounded-br-none"
-                    : "bg-white text-gray-800 rounded-bl-none"
-                }`}
-              >
-                <p>{msg.text}</p>
-                <div className="text-[10px] text-right mt-1 opacity-70">
-                  {new Date(msg.sentAt).toLocaleString()}
+            <div
+              key={idx}
+              className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+            >
+              <div className={`flex items-end ${isOwnMessage ? "justify-end" : "justify-start"}`}>
+                {!isOwnMessage && (
+                  <img src={avatarUrl} className="w-8 h-8 rounded-full mr-2" alt="avatar" />
+                )}
+                <div
+                  className={`px-4 py-2 rounded-2xl max-w-[75%] shadow-md text-sm leading-snug ${
+                    isOwnMessage
+                      ? "bg-blue-600 text-white rounded-br-none"
+                      : "bg-white text-gray-800 rounded-bl-none"
+                  }`}
+                >
+                  <p>{msg.text}</p>
+                  <div className="text-[10px] text-right mt-1 opacity-70">
+                    {new Date(msg.sentAt).toLocaleString()}
+                  </div>
                 </div>
+                {isOwnMessage && (
+                  <img src={avatarUrl} className="w-8 h-8 rounded-full ml-2" alt="avatar" />
+                )}
               </div>
-              {isOwnMessage && (
-                <img src={avatarUrl} className="w-8 h-8 rounded-full ml-2" alt="avatar" />
-              )}
             </div>
           );
         })}
@@ -206,19 +207,22 @@ const Message = () => {
           className="flex-1 border rounded-full p-3 shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Mesajınızı yazın..."
           value={newMessage}
-          onChange={(e) => {
-            setNewMessage(e.target.value);
-            handleTyping();
-          }}
+          onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={handleKeyPress}
         />
 
-        <button
-          onClick={handleSend}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-medium transition"
-        >
-          Göndər
-        </button>
+<button
+  onClick={handleSend}
+  disabled={!connection}
+  className={`px-5 py-2 rounded-full font-medium transition ${
+    connection
+      ? "bg-blue-600 hover:bg-blue-700 text-white"
+      : "bg-gray-400 cursor-not-allowed text-white"
+  }`}
+>
+  Göndər
+</button>
+
       </div>
 
       <style>{`
@@ -236,8 +240,7 @@ const Message = () => {
           0% {
             background-color: #999;
           }
-          50%,
-          100% {
+          50%, 100% {
             background-color: #ccc;
           }
         }
