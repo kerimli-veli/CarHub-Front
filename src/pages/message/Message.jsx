@@ -64,20 +64,29 @@ const Message = () => {
       const fetchedMessages = res.data || [];
     
       setMessages((prev) => {
-        if (prev.length === 0) return fetchedMessages;
-    
-        const lastPrevMsg = prev[prev.length - 1];
-        const lastFetchedMsg = fetchedMessages[fetchedMessages.length - 1];
-    
-        const isDuplicate =
-          lastPrevMsg &&
-          lastFetchedMsg &&
-          lastPrevMsg.text === lastFetchedMsg.text &&
-          lastPrevMsg.senderId === lastFetchedMsg.senderId &&
-          Math.abs(new Date(lastPrevMsg.sentAt) - new Date(lastFetchedMsg.sentAt)) < 2000;
-    
-        return isDuplicate ? fetchedMessages.slice(0, -1) : fetchedMessages;
+        const combined = [...prev, ...fetchedMessages];
+      
+        const uniqueMessages = [];
+        const seen = new Set();
+      
+        for (const msg of combined) {
+          const key = `${msg.senderId}-${msg.text}-${new Date(msg.sentAt).getTime()}`;
+      
+          // 2 saniyəlik fərqlə gələn mesajları da eyni saymaq üçün
+          const existing = uniqueMessages.find((m) =>
+            m.senderId === msg.senderId &&
+            m.text === msg.text &&
+            Math.abs(new Date(m.sentAt) - new Date(msg.sentAt)) < 2000
+          );
+      
+          if (!existing) {
+            uniqueMessages.push(msg);
+          }
+        }
+      
+        return uniqueMessages.sort((a, b) => new Date(a.sentAt) - new Date(b.sentAt));
       });
+      
     };
     
     setupConnection();
