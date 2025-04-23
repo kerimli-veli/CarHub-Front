@@ -51,24 +51,29 @@ export default function Account() {
 
   const handleUpdate = async () => {
     try {
+      const formData = new FormData();
+      formData.append("Id", user.id);
+      formData.append("Name", updatedUser.name);
+      formData.append("Surname", updatedUser.surname);
+      formData.append("Email", updatedUser.email);
+      formData.append("Phone", updatedUser.phone);
+      if (updatedUser.userImage) {
+        formData.append("UserImage", updatedUser.userImage);
+      }
+  
       const response = await fetch("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/Update", {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          id: user.id,
-          name: updatedUser.name,
-          surname: updatedUser.surname,
-          email: updatedUser.email,
-          phone: updatedUser.phone,
-        }),
+        body: formData,
       });
-
+  
       if (response.ok) {
         alert("User updated successfully!");
-        setUser(updatedUser);
+        const data = await response.json();
+        setUser(data.data);
+        setUpdatedUser(data.data);
         setEditMode(false);
       } else {
         alert("Update failed!");
@@ -77,6 +82,7 @@ export default function Account() {
       console.error("Update error:", error);
     }
   };
+  
 
   const handleCancel = () => {
     setEditMode(false);
@@ -98,24 +104,43 @@ export default function Account() {
     
         <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col sm:flex-row items-center sm:items-start justify-between mb-8">
           <div className="flex items-center gap-6">
-            <img
-              src={user.userImagePath || "https://via.placeholder.com/150"}
-              alt="Profile"
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-gray-300"
-            />
+          <div className="relative">
+  <img
+    src={
+      updatedUser.userImage
+        ? URL.createObjectURL(updatedUser.userImage)
+        : user.userImagePath
+        ? `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${user.userImagePath}`
+        : "https://via.placeholder.com/150"
+    }
+    alt="Profile"
+    className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-gray-300"
+  />
+
+  <label
+    htmlFor="fileInput"
+    className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full cursor-pointer hover:bg-blue-700 shadow-lg"
+    title="Change profile picture"
+  >
+    <FaEdit className="w-4 h-4" />
+  </label>
+  <input
+    type="file"
+    id="fileInput"
+    accept="image/*"
+    onChange={(e) =>
+      setUpdatedUser({ ...updatedUser, userImage: e.target.files[0] })
+    }
+    className="hidden"
+  />
+</div>
+
             <div>
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{user.name} {user.surname}</h2>
               <p className="text-sm text-gray-500">{user.userRole}</p>
               <p className="text-sm text-gray-400">Azerbaijan, Barda</p>
             </div>
           </div>
-          <button
-            onClick={() => setEditMode(!editMode)}
-            className="mt-4 sm:mt-0 flex items-center gap-1 text-blue-600 hover:underline"
-          >
-            <FaEdit className="w-4 h-4" />
-            Edit
-          </button>
         </div>
     
         
@@ -173,5 +198,7 @@ const InfoRow = ({ label, name, value, editable, onChange }) => (
     ) : (
       <p className="text-base font-medium text-gray-800">{value}</p>
     )}
+
+    
   </div>
 );

@@ -14,8 +14,6 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
 
-  
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -61,8 +59,6 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
     try {
       const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${searchQuery}`);
       const result = await response.json();
-  
-      console.log("Arama sonucu:", result);
   
       if (Array.isArray(result)) {
         setSearchResults(result); 
@@ -208,9 +204,12 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
             <div className="relative group z-20">
               {user.userImagePath ? (
                 <img
-                  src={user.userImagePath}
+                src={
+                  user.userImagePath
+                    ? `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${user.userImagePath}`
+                    : "https://via.placeholder.com/150"}
                   alt="User"
-                  className="w-14 h-13 rounded-full shadow-lg cursor-pointer transform transition-transform duration-500 hover:scale-110 hover:shadow-2xl"
+                  className="w-15 h-15 rounded-full shadow-lg cursor-pointer transform transition-transform duration-500 hover:scale-110 hover:shadow-2xl"
                 />
               ) : (
                 <div className="w-12 h-12 bg-gray-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -221,15 +220,19 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
               <div className="absolute top-14 right-0 w-64 bg-white shadow-lg rounded-xl p-4 opacity-0 transform scale-95 translate-y-4 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-500 ease-in-out pointer-events-none group-hover:pointer-events-auto">
                 <div className="flex items-center space-x-3 border-b pb-3 mb-3">
                   <img
-                    src={user.userImagePath}
+                  src={
+                    user.userImagePath
+                      ? `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${user.userImagePath}`
+                      : "https://via.placeholder.com/150"}
                     alt="User"
-                    className="w-14 h-14 rounded-full border-2 border-gray-200"
+                    className="w-14 h-14 rounded-full"
                   />
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-1.5">
                     <span className="text-lg font-semibold text-gray-800">{user.name} {user.surname}</span>
                     <span className="text-sm text-gray-500">{user.email}</span>
+                    <span className="text-xs text-white w-15 bg-green-400 px-2 py-1 rounded-full">{user.userRole}</span>
+
                   </div>
-                  <span className="text-xs text-white bg-green-400 px-2 py-1 rounded-full">{user.userRole}</span>
                 </div>
 
                 <button
