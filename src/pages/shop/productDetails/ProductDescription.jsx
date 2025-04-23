@@ -95,7 +95,9 @@ return (
   <div className="flex flex-col gap-4 w-[500px]">
     <h1 className="text-2xl font-bold text-gray-900 leading-snug">{product.name}</h1>
     <p className="text-green-600 font-medium text-sm">{product.unitsInStock}</p>
-    <div className="text-3xl font-bold text-gray-800">${product.unitPrice}</div>
+    <div className="text-3xl font-bold text-gray-800">
+  ${ (product.unitPrice * quantity).toFixed(2) }
+</div>
     <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
     <hr className="my-4 border-gray-300" />
 

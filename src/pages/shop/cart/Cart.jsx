@@ -25,27 +25,33 @@ const Cart = ({ onTotalChange }) => {
   }, [userId, accessToken, onTotalChange]);
 
   const fetchCart = async () => {
-    if (!userId || !accessToken) return;
-
+    if (!userId || !accessToken) {
+      setCartItems([]);  // 👈 boş dahi olsa cart gösterilecek
+      onTotalChange?.(0);
+      return;
+    }
+  
     try {
       const response = await fetch(`https://localhost:7282/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
         headers: { "Authorization": `Bearer ${accessToken}` }
       });
-
+  
       const data = await response.json();
-
       const items = data.cartLines || [];
+  
       setCartItems(items);
-      setCartId(data.cartId); 
-
+      setCartId(data.cartId);
+  
       const total = items.reduce((acc, item) => {
         const price = item.product.discountPrice || item.product.unitPrice;
         return acc + price * item.quantity;
       }, 0);
-
+  
       onTotalChange?.(total);
     } catch (error) {
       console.error("Cart data could not be retrieved:", error);
+      setCartItems([]); // hata durumunda da boş göster
+      onTotalChange?.(0);
     }
   };
 
@@ -248,8 +254,8 @@ const Cart = ({ onTotalChange }) => {
         </div>
 
         <span className="text-md font-semibold text-gray-800">
-          ${price.toFixed(2)}
-        </span>
+  ${(price * item.quantity).toFixed(2)}
+</span>
 
         <button
           className="text-red-500 hover:text-red-700 transition-colors"
