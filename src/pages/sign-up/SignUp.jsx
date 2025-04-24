@@ -14,9 +14,11 @@ const SignUp = () => {
     surname: "",
     phone: "",
     email: "",
-    password: "",
-    userImagePath: ""
+    password: ""
   });
+  const [userImage, setUserImage] = useState(null);
+  
+  
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -26,43 +28,56 @@ const SignUp = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    setUserImage(e.target.files[0]);
+  };
+  
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("surname", formData.surname);
+    data.append("phone", formData.phone);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    if (userImage) {
+      data.append("userImage", userImage); 
+    }
+  
     try {
       const response = await axios.post(
         "https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/Register",
-        formData,
+        data,
         {
-          headers: { "Content-Type": "application/json" }
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
         }
       );
-
+  
       if (response.status === 200 && response.data) {
         toast.success(response.data.message || "Registration successful!");
         setSuccess(true);
-
-        setTimeout(() => {
-          navigate("/");
-        }, 1500);
+        setTimeout(() => navigate("/"), 1500);
       } else {
         toast.error(response.data.message || "Registration failed!");
       }
-
+  
     } catch (error) {
-      console.error("Error during registration:", error.response ? error.response.data : error);
-      
-      if (error.response && error.response.data && error.response.data.Errors) {
-        toast.error(error.response.data.Errors[0] || "An error occurred during registration!");
-      } else {
-        toast.error("An unknown error occurred!");
-      }
-      
+      console.error("Error during registration:", error);
+      toast.error(
+        error.response?.data?.Errors?.[0] || "An unknown error occurred!"
+      );
     } finally {
       setLoading(false);
     }
   };
+  
+  
 
   return (
     <div>
@@ -96,9 +111,15 @@ const SignUp = () => {
               
               <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange}
                 className="w-full p-3 mt-4 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
+              
+              <input
+  type="file"
+  accept="image/*"
+  onChange={handleFileChange}
+  className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
+/>
 
-              <input type="text" placeholder="ImagePath" name="userImagePath" value={formData.userImagePath} onChange={handleChange}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
+
               
               <motion.button type="submit" disabled={loading}
                 className="w-full mt-4 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-3"
