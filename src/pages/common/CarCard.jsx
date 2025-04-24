@@ -31,109 +31,103 @@ const CarCard = ({ car }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md relative transition-transform duration-300 hover:scale-105">
-      
-      <button
-        className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition z-10 ${
-          accessToken
-            ? savedCars[car.id]
-              ? "bg-green-500 text-white"
-              : "bg-white hover:bg-gray-200"
-            : "bg-white hover:bg-gray-200"
-        }`}
-        onClick={() => handleToggleSave(car.id)}
-      >
-        <Heart
-          size={18}
-          className={`transition-transform ${
-            accessToken
-              ? savedCars[car.id]
-                ? "scale-125 text-white"
-                : "text-gray-700"
-              : "text-gray-700"
-          }`}
+    <div className="bg-white rounded-2xl shadow-md relative transition hover:shadow-lg overflow-hidden">
+      {/* Image with overlay info */}
+      <div className="relative h-52 w-full">
+        <img
+          src={car.carImagePaths?.[0]?.imagePath || "https://via.placeholder.com/400"}
+          alt={car.model}
+          className="w-full h-full object-cover"
         />
-      </button>
+        <span className="absolute top-2 left-2 bg-white text-xs font-semibold px-2 py-1 rounded-full shadow">
+          1/{car.carImagePaths?.length || 1}
+        </span>
+        <button
+          onClick={() => handleToggleSave(car.id)}
+          className={`absolute top-2 right-2 p-2 rounded-full shadow transition ${
+            accessToken && savedCars[car.id] ? "bg-green-500 text-white" : "bg-white hover:bg-gray-100"
+          }`}
+        >
+          <Heart
+            size={18}
+            className={`${
+              accessToken && savedCars[car.id] ? "text-white" : "text-gray-700"
+            }`}
+          />
+        </button>
+      </div>
 
+      {/* Badges */}
       {car.price < 50000 && (
-        <span className="absolute top-3 left-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-xl">
+        <span className="absolute top-14 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-xl">
           Great Price
         </span>
       )}
       {car.miles <= 100 && (
-        <span className="absolute top-10 left-3 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-xl">
+        <span className="absolute top-24 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-xl">
           Low Mileage
         </span>
       )}
 
-      <img
-        src={car.carImagePaths[0]?.imagePath}
-        alt={car.model}
-        className="w-full h-50 object-cover rounded-md"
-      />
+      {/* Car Info */}
+      <div className="p-5">
+        <h2 className="text-lg font-semibold truncate">{car.brand} {car.model} - {car.year}</h2>
 
-      <div className="p-7 grid gap-2">
-        <h2 className="text-xl mt-2 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
-          {car.brand} {car.model} - {car.year}
-        </h2>
-
-        <div className="flex justify-between mt-2 text-sm text-gray-600">
-          <span className="grid gap-3 place-items-center">
-            <img src="https://i.postimg.cc/q7WtFCBS/Miles.png" alt="" />
-            {car.miles} Miles
-          </span>
-          <span className="grid gap-3 place-items-center">
-            <img src="https://i.postimg.cc/MKVZtrg7/Petrol.png" alt="" />
+        <div className="flex justify-between text-xs text-gray-500 mt-2">
+          <div className="flex flex-col items-center">
+            <img src="https://i.postimg.cc/q7WtFCBS/Miles.png" alt="Miles" className="w-5 h-5" />
+            {car.miles} mi
+          </div>
+          <div className="flex flex-col items-center">
+            <img src="https://i.postimg.cc/MKVZtrg7/Petrol.png" alt="Fuel" className="w-5 h-5" />
             {car.fuel}
-          </span>
-          <span className="grid gap-3 place-items-center">
-            <img src="https://i.postimg.cc/tJrczypq/Transmission.png" alt="" />
+          </div>
+          <div className="flex flex-col items-center">
+            <img src="https://i.postimg.cc/tJrczypq/Transmission.png" alt="Gear" className="w-5 h-5" />
             {car.transmission}
-          </span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-[11px] text-center">HP</span>
+            {car.horsePower || 200}
+          </div>
         </div>
 
-        <div>
-          <p className="text-xl font-bold mt-2">${car.price}</p>
+        <div className="mt-4">
+          <p className="text-lg font-bold text-gray-900">${car.price}</p>
+          <p className="text-xs text-gray-500 truncate">{car.text}</p>
+
           <button
             onClick={handleViewDetails}
-            className="mt-3 font-medium text-blue-500 flex gap-2 py-2 rounded-lg border-2 border-transparent transition-all duration-300 hover:px-4 transform hover:bg-blue-600 hover:text-white hover:border-blue-600 hover:scale-105 hover:shadow-xl active:scale-95 active:shadow-none"
+            className="mt-3 w-full text-center bg-blue-600 text-white py-2 rounded-xl font-semibold hover:bg-blue-700 transition-all"
           >
-            View Details
-            <img
-              className="w-3 h-3"
-              src="https://i.postimg.cc/QCmSx9yY/Arrow-Up-Right.png"
-              alt=""
-            />
+            View Deal
           </button>
         </div>
       </div>
 
+      {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 backdrop-blur-md z-50">
-          <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-sm text-center relative transform transition-all scale-105">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Hold Up ✋
-            </h2>
-            <p className="text-gray-600 mt-2">{modalMessage}</p>
-
-            <div className="mt-6 flex justify-center space-x-3">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full text-center">
+            <h3 className="text-lg font-bold">Hold Up ✋</h3>
+            <p className="text-sm mt-2">{modalMessage}</p>
+            <div className="flex justify-center gap-4 mt-4">
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
                 onClick={() => (window.location.href = "/signIn")}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 Login
               </button>
               <button
-                className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
                 onClick={() => (window.location.href = "/signup")}
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
               >
                 Sign Up
               </button>
             </div>
-
             <button
-              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
               onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
             >
               ✕
             </button>

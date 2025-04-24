@@ -14,12 +14,42 @@ const Message = () => {
   const [connection, setConnection] = useState(null);
   const messagesEndRef = useRef(null);
 
-  const senderAvatar = "https://randomuser.me/api/portraits/men/75.jpg";
-  const receiverAvatar = "https://randomuser.me/api/portraits/women/65.jpg";
+  const [senderAvatar, setSenderAvatar] = useState("");
+const [receiverAvatar, setReceiverAvatar] = useState("");
+
+
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      try {
+        if (sender?.id) {
+          const resSender = await axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${sender.id}`);
+          const path = resSender.data?.data?.userImagePath;
+          if (path) {
+            setSenderAvatar(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${path}`);
+          }
+        }
+  
+        if (receiverId) {
+          const resReceiver = await axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${receiverId}`);
+          const path = resReceiver.data?.data?.userImagePath;
+          if (path) {
+            setReceiverAvatar(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${path}`);
+          }
+        }
+      } catch (error) {
+        console.error("Profil şəkilləri alınarkən xəta:", error);
+      }
+    };
+  
+    fetchAvatars();
+  }, [sender?.id, receiverId]);
+  
+  
 
   useEffect(() => {
     if (!sender?.id || !receiverId) return;
@@ -165,38 +195,39 @@ const Message = () => {
       <h2 className="text-xl font-bold mb-4 text-center">💬 Söhbət</h2>
 
       <div className="flex-1 overflow-y-auto border rounded-lg p-4 bg-gray-50 space-y-3">
-        {messages.map((msg, idx) => {
-          const isOwnMessage = Number(msg.senderId) === Number(sender.id);
-          const avatarUrl = isOwnMessage ? senderAvatar : receiverAvatar;
+      {messages.map((msg, idx) => {
+  const isOwnMessage = Number(msg.senderId) === Number(sender.id);
+  const avatarUrl = isOwnMessage ? senderAvatar : receiverAvatar;
 
-          return (
-            <div
-              key={idx}
-              className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
-            >
-              <div className={`flex items-end ${isOwnMessage ? "justify-end" : "justify-start"}`}>
-                {!isOwnMessage && (
-                  <img src={avatarUrl} className="w-8 h-8 rounded-full mr-2" alt="avatar" />
-                )}
-                <div
-                  className={`px-4 py-2 rounded-2xl max-w-[75%] shadow-md text-sm leading-snug ${
-                    isOwnMessage
-                      ? "bg-blue-600 text-white rounded-br-none"
-                      : "bg-white text-gray-800 rounded-bl-none"
-                  }`}
-                >
-                  <p>{msg.text}</p>
-                  <div className="text-[10px] text-right mt-1 opacity-70">
-                    {new Date(msg.sentAt).toLocaleString()}
-                  </div>
-                </div>
-                {isOwnMessage && (
-                  <img src={avatarUrl} className="w-8 h-8 rounded-full ml-2" alt="avatar" />
-                )}
-              </div>
-            </div>
-          );
-        })}
+  return (
+    <div
+      key={idx}
+      className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+    >
+      <div className={`flex items-end ${isOwnMessage ? "justify-end" : "justify-start"}`}>
+        {!isOwnMessage && (
+          <img src={avatarUrl} className="w-8 h-8 rounded-full mr-2" alt="avatar" />
+        )}
+        <div
+          className={`px-4 py-2 rounded-2xl max-w-[75%] shadow-md text-sm leading-snug ${
+            isOwnMessage
+              ? "bg-blue-600 text-white rounded-br-none"
+              : "bg-white text-gray-800 rounded-bl-none"
+          }`}
+        >
+          <p>{msg.text}</p>
+          <div className="text-[10px] text-right mt-1 opacity-70">
+            {new Date(msg.sentAt).toLocaleString()}
+          </div>
+        </div>
+        {isOwnMessage && (
+          <img src={avatarUrl} className="w-8 h-8 rounded-full ml-2" alt="avatar" />
+        )}
+      </div>
+    </div>
+  );
+})}
+
 
         {isTyping && (
           <div className="flex justify-start items-center gap-2 mt-2">
