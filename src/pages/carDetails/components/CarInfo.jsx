@@ -11,6 +11,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import useFavoriteCars from "../../common/Ui/userFavoriteCars"; 
 import CarLoading from "./CarLoading";
 import getUserFromToken from "../../common/GetUserFromToken";
+import EditCarForm from "../../common/Ui/EditCarForm";
+
 
 const CarInfo = () => {
   const { carId } = useParams(); 
@@ -21,6 +23,7 @@ const CarInfo = () => {
   const { savedCars, toggleSave } = useFavoriteCars([car]);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     console.log("carId:", carId);
 
@@ -58,6 +61,11 @@ const CarInfo = () => {
 
     navigate(`/messages/${car.createdBy}`); 
   };
+
+  
+  const currentUser = getUserFromToken();
+const isOwner = currentUser && String(currentUser.id) === String(car?.createdBy);
+
 
   if (!car || !user) return <CarLoading />;
 
@@ -182,22 +190,29 @@ const CarInfo = () => {
         </div>
 
         <div className="w-full lg:w-1/3">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <img
-                src={user.userImagePath || "https://randomuser.me/api/portraits/men/32.jpg"}
-                className="w-16 h-16 rounded-full mx-auto mb-2"
-                alt="admin"
-              />
-              <p className="font-bold">{user.name}</p>
-              <p className="text-sm text-gray-500 mb-2">{user?.address || "943 Broadway, Brooklyn"}</p>
-              <Button variant="link" className="text-blue-600 underline">Get Direction</Button>
-              <p className="text-sm text-gray-700 mt-2"><IoMdCall className="inline mr-1" /> {user.phone}</p>
-              <p className="text-sm text-gray-700 mt-2"><FaWhatsapp className="inline mr-1" /> {user.whatsapp}</p>
-              <Button onClick={handleSendMessage} className="mt-4 w-full py-2 text-white bg-blue-600 hover:bg-blue-700">Message Dealer</Button>
-            </CardContent>
-          </Card>
-        </div>
+  {isOwner ? (
+    <div className="mt-10">
+    <EditCarForm car={car} />
+  </div>
+  
+  ) : (
+    <Card>
+      <CardContent className="p-6 text-center">
+        <img
+          src={user.userImagePath || "https://randomuser.me/api/portraits/men/32.jpg"}
+          className="w-16 h-16 rounded-full mx-auto mb-2"
+          alt="admin"
+        />
+        <p className="font-bold">{user.name}</p>
+        <p className="text-sm text-gray-500 mb-2">{user?.address || "943 Broadway, Brooklyn"}</p>
+        <Button variant="link" className="text-blue-600 underline">Get Direction</Button>
+        <p className="text-sm text-gray-700 mt-2"><IoMdCall className="inline mr-1" /> {user.phone}</p>
+        <p className="text-sm text-gray-700 mt-2"><FaWhatsapp className="inline mr-1" /> {user.whatsapp}</p>
+        <Button onClick={handleSendMessage} className="mt-4 w-full py-2 text-white bg-blue-600 hover:bg-blue-700">Message Dealer</Button>
+      </CardContent>
+    </Card>
+  )}
+</div>
       </div>
     </div>
   );
