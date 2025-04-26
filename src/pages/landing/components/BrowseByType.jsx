@@ -10,6 +10,9 @@ import Convertible from "./../../../assets/images/BrowseByTypeImages/Convertible
 import Van from "./../../../assets/images/BrowseByTypeImages/Van.svg";
 import Truck from "./../../../assets/images/BrowseByTypeImages/Truck.svg";
 import Electric from "./../../../assets/images/BrowseByTypeImages/Electric.svg";
+import { motion } from "framer-motion";
+
+
 
 const bodyTypeImages = {
   Suv: Suv,
@@ -52,26 +55,31 @@ const BrowseByType = () => {
       <h2 className="text-4xl font-bold mb-12 text-gray-800">Browse by Type</h2>
       <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-6">
       {bodyTypes.map((type, index) => (
-  <div
-    key={index}
-    className="flex flex-col items-center justify-center p-5 bg-gray-100 border border-gray-200 rounded-lg shadow-md hover:bg-white hover:shadow-xl transform transition-all duration-300 hover:scale-105 cursor-pointer"
-    onClick={() => {
-      const params = new URLSearchParams();
-      params.set("Body", type.id); // ID istifadə olunur
-      navigate({
-        pathname: "/carList", // ya da n hara yönəltmək istəyirsənsə
-        search: params.toString(),
-      });
-    }}
-  >
+  <motion.div
+  key={index}
+  initial={{ opacity: 0, y: 60 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+  viewport={{ once: true, amount: 0.3 }}
+  className="flex flex-col items-center justify-center p-5 bg-gray-100 border border-gray-200 rounded-lg shadow-md hover:bg-white hover:shadow-xl transform transition-all duration-300 hover:scale-105 cursor-pointer"
+  onClick={() => {
+    const params = new URLSearchParams();
+    params.set("Body", type.id);
+    navigate({
+      pathname: "/carList",
+      search: params.toString(),
+    });
+  }}
+>
     <img
       src={bodyTypeImages[type.name] || "/images/default.svg"}
       alt={type.name}
       className="w-16 h-12 mb-3"
     />
     <span className="text-md font-medium text-gray-700">{type.name}</span>
-  </div>
+  </motion.div>
 ))}
+
       </div>
     </div>
   );

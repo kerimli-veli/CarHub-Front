@@ -83,13 +83,14 @@ const CarInfoView = ({
           {/* Şəkillər */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-4">
             <div className="lg:col-span-2 relative h-[420px]">
-              <img src={mainImage} alt={car.model} className="w-full h-full object-cover rounded-xl" />
+              <img src={
+                    mainImage
+                      ? `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${mainImage}`
+                      : "https://via.placeholder.com/150"} alt={car.model} className="w-full h-full object-cover rounded-xl" />
               <span className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
                 ${car.price}
               </span>
-              <Button className="absolute bottom-4 left-4 flex items-center gap-2 text-black bg-white hover:bg-gray-100 shadow-md">
-                <MdVideoLibrary /> Video
-              </Button>
+              
             </div>
             <div className="grid grid-cols-2 grid-rows-2 gap-2 h-[420px]">
               {otherImages.map((img, index) => (

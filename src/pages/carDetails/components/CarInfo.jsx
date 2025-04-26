@@ -6,6 +6,8 @@ import CarLoading from "./CarLoading";
 import getUserFromToken from "../../common/GetUserFromToken";
 import EditCarForm from "../../common/Ui/EditCarForm";
 import CarInfoView from "./CarInfoView";
+import { motion } from "framer-motion";
+
 
 const CarInfo = () => {
   const { carId } = useParams(); 
@@ -57,18 +59,26 @@ const CarInfo = () => {
   if (!car || !user) return <CarLoading />;
 
   return (
-    <CarInfoView
-      car={car}
-      user={user}
-      isOwner={isOwner}
-      mainImage={mainImage}
-      otherImages={otherImages}
-      handleImageClick={handleImageClick}
-      toggleSave={toggleSave}
-      savedCars={savedCars}
-      handleSendMessage={handleSendMessage}
-    />
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="p-2"
+    >
+      <CarInfoView
+        car={car}
+        user={user}
+        isOwner={isOwner}
+        mainImage={mainImage}
+        otherImages={otherImages}
+        handleImageClick={handleImageClick}
+        toggleSave={toggleSave}
+        savedCars={savedCars}
+        handleSendMessage={handleSendMessage}
+      />
+    </motion.div>
   );
+  
 };
 
 export default CarInfo;
