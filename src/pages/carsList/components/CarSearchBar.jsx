@@ -216,10 +216,6 @@ return (
       ))}
     </div>
 
-    <div className="text-xs text-gray-500 mb-3">
-      Location 📍{" "}
-      <span className="text-blue-600 underline cursor-pointer">Azerbaijan</span>
-    </div>
 
     {/* Brand/Model/Body */}
     <div className="border-t pt-4 mt-2">

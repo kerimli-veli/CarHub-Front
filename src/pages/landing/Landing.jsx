@@ -8,6 +8,7 @@ import Filter from './components/Filter';
 import Background from './../../assets/images/Background.svg'; 
 import Footer from './components/Footer';
 import CarSaleSection from './components/CarSaleSection';
+import ActionCards from './components/ActionsCard';
 
 const Landing = () => {
   return (
@@ -33,8 +34,8 @@ const Landing = () => {
     
       <div className="grid grid-cols-1 gap-40 p-[12%] justify-center items-center  mt-[40%]">
         <BrowseByType />
-        <PremiumBrands/>
         <FeaturedListings/>
+        <ActionCards/>
         <ElectricVehicles/>
         <CarSaleSection/>
       </div>

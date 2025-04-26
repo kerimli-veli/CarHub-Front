@@ -3,6 +3,9 @@ import axios from "axios";
 import getUserFromToken from "./../common/GetUserFromToken";
 import { useParams } from "react-router-dom";
 import { startConnection } from "../../assets/Services/SignalService";
+import MessageList from "./MessageList";
+import MessageInput from "./MessageInput";
+import { useLocation } from "react-router-dom";
 
 const Message = () => {
   const { receiverId } = useParams();
@@ -13,9 +16,14 @@ const Message = () => {
   const typingTimeoutRef = useRef(null);
   const [connection, setConnection] = useState(null);
   const messagesEndRef = useRef(null);
-
+  const location = useLocation();
+  const isModal = !!location.state?.background;
   const [senderAvatar, setSenderAvatar] = useState("");
-const [receiverAvatar, setReceiverAvatar] = useState("");
+  const [receiverAvatar, setReceiverAvatar] = useState("");
+  const [senderInfo, setSenderInfo] = useState({});
+  const [receiverInfo, setReceiverInfo] = useState({});
+
+  const { receiverId: receiverIdFromParams } = useParams();
 
 
 
@@ -27,24 +35,31 @@ const [receiverAvatar, setReceiverAvatar] = useState("");
     const fetchAvatars = async () => {
       try {
         if (sender?.id) {
-          const resSender = await axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${sender.id}`);
-          const path = resSender.data?.data?.userImagePath;
-          if (path) {
-            setSenderAvatar(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${path}`);
+          const resSender = await axios.get(
+            `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${sender.id}`
+          );
+          const data = resSender.data?.data;
+          if (data) {
+            setSenderAvatar(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${data.userImagePath}`);
+            setSenderInfo({ name: data.name, surname: data.surname });
           }
         }
-  
+    
         if (receiverId) {
-          const resReceiver = await axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${receiverId}`);
-          const path = resReceiver.data?.data?.userImagePath;
-          if (path) {
-            setReceiverAvatar(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${path}`);
+          const resReceiver = await axios.get(
+            `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${receiverId}`
+          );
+          const data = resReceiver.data?.data;
+          if (data) {
+            setReceiverAvatar(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${data.userImagePath}`);
+            setReceiverInfo({ name: data.name, surname: data.surname });
           }
         }
       } catch (error) {
-        console.error("Profil şəkilləri alınarkən xəta:", error);
+        console.error("Profil məlumatları alınarkən xəta:", error);
       }
     };
+    
   
     fetchAvatars();
   }, [sender?.id, receiverId]);
@@ -191,102 +206,54 @@ const [receiverAvatar, setReceiverAvatar] = useState("");
   }, [connection, receiverId]);
 
   return (
-    <div className="max-w-3xl mx-auto h-screen flex flex-col p-4">
-      <h2 className="text-xl font-bold mb-4 text-center">💬 Söhbət</h2>
-
-      <div className="flex-1 overflow-y-auto border rounded-lg p-4 bg-gray-50 space-y-3">
-      {messages.map((msg, idx) => {
-  const isOwnMessage = Number(msg.senderId) === Number(sender.id);
-  const avatarUrl = isOwnMessage ? senderAvatar : receiverAvatar;
-
-  return (
     <div
-      key={idx}
-      className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+      className={`${
+        isModal
+          ? "fixed inset-0 bg-black/10 flex justify-end items-end z-50"
+          : "max-w-3xl mx-auto h-screen"
+      } flex flex-col p-4`}
     >
-      <div className={`flex items-end ${isOwnMessage ? "justify-end" : "justify-start"}`}>
-        {!isOwnMessage && (
-          <img src={avatarUrl} className="w-8 h-8 rounded-full mr-2" alt="avatar" />
+      <div
+        className={`${
+          isModal
+            ? "bg-white rounded-2xl shadow-2xl w-full sm:max-w-md max-h-[85%] overflow-y-auto animate-fade-in-up relative"
+            : "w-full"
+        } transition-all duration-300`}
+      >
+        {isModal && (
+          <button
+            onClick={() => window.history.back()}
+            className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl font-bold"
+          >
+            &times;
+          </button>
         )}
-        <div
-          className={`px-4 py-2 rounded-2xl max-w-[75%] shadow-md text-sm leading-snug ${
-            isOwnMessage
-              ? "bg-blue-600 text-white rounded-br-none"
-              : "bg-white text-gray-800 rounded-bl-none"
-          }`}
-        >
-          <p>{msg.text}</p>
-          <div className="text-[10px] text-right mt-1 opacity-70">
-            {new Date(msg.sentAt).toLocaleString()}
-          </div>
-        </div>
-        {isOwnMessage && (
-          <img src={avatarUrl} className="w-8 h-8 rounded-full ml-2" alt="avatar" />
-        )}
-      </div>
-    </div>
-  );
-})}
-
-
-        {isTyping && (
-          <div className="flex justify-start items-center gap-2 mt-2">
-            <img src={receiverAvatar} alt="Typing" className="w-8 h-8 rounded-full" />
-            <div className="bg-white text-gray-800 px-4 py-2 rounded-2xl shadow text-sm rounded-bl-none">
-              <div className="dot-flashing"></div>
-            </div>
-          </div>
-        )}
-
-        <div ref={messagesEndRef} />
-      </div>
-
-      <div className="mt-4 flex items-center gap-2">
-        <textarea
-          rows="1"
-          className="flex-1 border rounded-full p-3 shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
-          placeholder="Mesajınızı yazın..."
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={handleKeyPress}
+  
+        <h2 className="text-xl font-bold mb-4 text-center pt-4">💬 Söhbət</h2>
+  
+        <MessageList
+          messages={messages}
+          senderId={sender.id}
+          senderAvatar={senderAvatar}
+          receiverAvatar={receiverAvatar}
+          senderName={`${senderInfo.name} ${senderInfo.surname}`}
+          receiverName={`${receiverInfo.name} ${receiverInfo.surname}`}
+          isTyping={isTyping}
+          messagesEndRef={messagesEndRef}
         />
-
-<button
-  onClick={handleSend}
-  disabled={!connection}
-  className={`px-5 py-2 rounded-full font-medium transition ${
-    connection
-      ? "bg-blue-600 hover:bg-blue-700 text-white"
-      : "bg-gray-400 cursor-not-allowed text-white"
-  }`}
->
-  Göndər
-</button>
-
+  
+        <MessageInput
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          handleKeyPress={handleKeyPress}
+          handleSend={handleSend}
+          connection={connection}
+        />
       </div>
-
-      <style>{`
-        .dot-flashing {
-          position: relative;
-          width: 12px;
-          height: 12px;
-          border-radius: 6px;
-          background-color: #999;
-          color: #999;
-          animation: dotFlashing 1s infinite linear alternate;
-        }
-
-        @keyframes dotFlashing {
-          0% {
-            background-color: #999;
-          }
-          50%, 100% {
-            background-color: #ccc;
-          }
-        }
-      `}</style>
     </div>
   );
+  
+  
 };
 
 export default Message;
