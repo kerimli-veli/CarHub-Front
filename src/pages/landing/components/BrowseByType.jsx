@@ -37,8 +37,6 @@ const BrowseByType = () => {
         const response = await fetch("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetAllBodyTypes");
         const result = await response.json();
   
-        console.log("Gelen body types:", result);
-  
         setBodyTypes(result);
       } catch (error) {
         console.error("Error fetching body types:", error);

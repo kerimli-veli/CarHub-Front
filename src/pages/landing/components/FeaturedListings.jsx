@@ -19,13 +19,12 @@ export default function FeaturedListings() {
       try {
         const carRes = await fetch("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetAll");
         const carData = await carRes.json();
-
         const formattedCars = carData.map((car, index) => ({
           id: car.id,
           image:
-            car.carImagePaths.length > 0
-              ? car.carImagePaths[0].imagePath
-              : "https://via.placeholder.com/300x200",
+                car.carImagePaths.length > 0 && car.carImagePaths[0].mainImage
+                  ? car.carImagePaths[0].mainImage
+                  : "https://via.placeholder.com/300x200",
           tag:
             index % 4 === 0
               ? "Great Price"

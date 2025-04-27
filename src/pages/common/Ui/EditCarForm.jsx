@@ -2,7 +2,7 @@ import { Car, Calendar, Paintbrush, DollarSign, TextCursorInput, Gauge, Settings
 import { motion } from "framer-motion";
 import { Button } from "./button";
 import React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 
 const EditCarForm = ({ car }) => {
@@ -19,18 +19,40 @@ const EditCarForm = ({ car }) => {
   const textRef = useRef();
 
   const [showImages, setShowImages] = useState(false);
-  const [images, setImages] = useState(car?.carImagePaths?.map(img => img.imagePath) || []);
   const [editingImages, setEditingImages] = useState(false);
   const [mainImageIndex, setMainImageIndex] = useState(0);
+  const [selectedMainImageFile, setSelectedMainImageFile] = useState(null);
+
 
   const imageLabels = [
     "Main Image",
-    "Salon Image",
     "First Side Image",
     "Second Side Image",
-    "Engine Image"
+    "Engine Image",
+    "Salon Image"
   ];
   
+  const [images, setImages] = useState([
+    null, null, null, null, null
+  ]);
+  
+  useEffect(() => {
+    if (car?.carImagePaths?.length > 0) {
+      const imagesObj = car.carImagePaths[0];
+      const initialImages = [
+        imagesObj.mainImage || null,
+        imagesObj.firstSideImage || null,
+        imagesObj.secondSideImage || null,
+        imagesObj.engineImage || null,
+        imagesObj.salonImage || null,
+      ];
+      setImages(initialImages);
+    }
+  }, [car]);
+  
+  
+
+
   const handleSaveChanges = async () => {
     const formData = new FormData();
   
@@ -43,24 +65,31 @@ const EditCarForm = ({ car }) => {
     formData.append('Color', colorRef.current.value);
     formData.append('VIN', vinRef.current.value);
     formData.append('Text', textRef.current.value);
-  
-    // Enums
-    formData.append('Fuel', fuelRef.current.value); // Burada düz value getməlidir, yoxsa mapping error verəcək
+    formData.append('Fuel', fuelRef.current.value);
     formData.append('Transmission', transmissionRef.current.value);
     formData.append('Body', bodyRef.current.value);
   
-    // Şəkillər (images array-də şəkil URL-dir, real file-ları almalı)
-    images.forEach((img, index) => {
-      if (img instanceof File) {
-        formData.append('CarImagePaths', img); // backend-də `[FromForm]` olaraq gözləyir
-      }
-    });
+    // Şəkilləri yoxlayaq və yalnız FILE olanları yollayaq
+    if (images[0] instanceof File) {
+      formData.append('MainImage', images[0]);
+    }
+    if (images[1] instanceof File) {
+      formData.append('FirstSideImage', images[1]);
+    }
+    if (images[2] instanceof File) {
+      formData.append('SecondSideImage', images[2]);
+    }
+    if (images[3] instanceof File) {
+      formData.append('EngineImage', images[3]);
+    }
+    if (images[4] instanceof File) {
+      formData.append('SalonImage', images[4]);
+    }
   
     try {
       const response = await fetch('https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/CarUpdate', {
         method: 'PUT',
         body: formData,
-        // headers: { 'Content-Type': 'multipart/form-data' },  // multipart-da manual yazmaq lazım deyil!
       });
   
       if (!response.ok) {
@@ -69,7 +98,7 @@ const EditCarForm = ({ car }) => {
   
       const data = await response.json();
       console.log('Car updated successfully:', data);
-      // success notification və ya redirect ver
+      // success notification vs
     } catch (error) {
       console.error('Update failed:', error);
     }
@@ -172,22 +201,22 @@ const EditCarForm = ({ car }) => {
         >
           {img ? (
             <img
-            src={
-              img instanceof File
-                ? URL.createObjectURL(img)
-                : `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${img}`
-            }
+              src={img instanceof File ? URL.createObjectURL(img) : `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${img}`}
               alt={`Thumbnail ${index}`}
               className="object-cover w-full h-full"
             />
           ) : (
             <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer hover:bg-gray-200 transition">
               <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleFileChange(index, e)}
-                className="hidden"
-              />
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    handleFileChange(index, e);
+    
+  }}
+  className="hidden"
+/>
+
               <ImagePlus className="w-6 h-6 text-gray-400" />
               <span className="text-[10px] text-gray-400 mt-1 text-center">
               {imageLabels[index] || "Additional Image"}

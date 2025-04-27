@@ -21,18 +21,31 @@ const CarInfo = () => {
   useEffect(() => {
     if (carId) {
       axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${carId}`)
-        .then((res) => {
-          const carData = res.data.data;
-          setCar(carData);
-          setMainImage(carData.carImagePaths[0]?.imagePath);
-          setOtherImages(carData.carImagePaths.slice(1, 5));
-          const userId = carData.createdBy;
-          if (userId) {
-            axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`)
-              .then((userRes) => setUser(userRes.data.data))
-              .catch((err) => console.error("İstifadəçi məlumatları xətası:", err));
-          }
-        })
+      .then((res) => {
+        const carData = res.data.data;
+        setCar(carData);
+      
+        // Main image birinci şəkil olacaq
+        setMainImage(carData.carImagePaths[0]?.mainImage);
+      
+        // Digər şəkilləri array şəklində yığırıq:
+        setOtherImages([
+          { imagePath: carData.carImagePaths[0]?.firstSideImage },
+          { imagePath: carData.carImagePaths[0]?.secondSideImage },
+          { imagePath: carData.carImagePaths[0]?.engineImage },
+          { imagePath: carData.carImagePaths[0]?.salonImage },
+
+          // Əgər daha çox şəkil varsa onları da əlavə et
+        ]);
+      
+        const userId = carData.createdBy;
+        if (userId) {
+          axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`)
+            .then((userRes) => setUser(userRes.data.data))
+            .catch((err) => console.error("İstifadəçi məlumatları xətası:", err));
+        }
+      })
+      
         .catch((err) => console.error("API xətası:", err));
     }
   }, [carId]);
@@ -48,10 +61,11 @@ const CarInfo = () => {
 
   const handleImageClick = (imagePath, index) => {
     const updatedImages = [...otherImages];
-    updatedImages[index] = mainImage;
+    updatedImages[index] = { imagePath: mainImage };
     setMainImage(imagePath);
     setOtherImages(updatedImages);
   };
+  
 
   const currentUser = getUserFromToken();
   const isOwner = currentUser && String(currentUser.id) === String(car?.createdBy);

@@ -82,28 +82,29 @@ const CarInfoView = ({
 
           {/* Şəkillər */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mb-4">
-            <div className="lg:col-span-2 relative h-[420px]">
-              <img src={
-                    mainImage
-                      ? `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${mainImage}`
-                      : "https://via.placeholder.com/150"} alt={car.model} className="w-full h-full object-cover rounded-xl" />
-              <span className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                ${car.price}
-              </span>
-              
-            </div>
-            <div className="grid grid-cols-2 grid-rows-2 gap-2 h-[420px]">
-              {otherImages.map((img, index) => (
-                <img
-                  key={index}
-                  src={img.imagePath || img}
-                  className="w-full h-full object-cover rounded-xl cursor-pointer"
-                  alt={`car-${index + 1}`}
-                  onClick={() => handleImageClick(img.imagePath || img, index)}
-                />
-              ))}
-            </div>
-          </div>
+  <div className="lg:col-span-2 relative h-[420px]">
+    <img
+      src={mainImage || "https://via.placeholder.com/150"}
+      alt={car.model}
+      className="w-full h-full object-cover rounded-xl"
+    />
+    <span className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+      ${car.price}
+    </span>
+  </div>
+  <div className="grid grid-cols-2 grid-rows-2 gap-2 h-[420px]">
+  {otherImages.map((img, index) => (
+    <img
+      key={index}
+      src={img.imagePath}   // burada imagePath olacaq
+      alt={`car-${index + 1}`}
+      className="w-full h-full object-cover rounded-xl cursor-pointer"
+      onClick={() => handleImageClick(img.imagePath, index)}
+    />
+  ))}
+</div>
+</div>
+
 
           {/* Car Overview */}
           <div className="bg-white p-6 rounded-xl shadow-sm">
