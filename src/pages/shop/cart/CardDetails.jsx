@@ -70,15 +70,15 @@ const CardDetails = ({ total = 0 }) => {
       const data = await response.json();
   
       if (data.checkoutUrl) {
-        // checkoutUrl'den session_id çekelim
+       
         const url = new URL(data.checkoutUrl);
         const sessionId = url.searchParams.get("session_id");
   
         if (sessionId) {
-          localStorage.setItem("pendingSessionId", sessionId); // session_id'yi kaydet
+          localStorage.setItem("pendingSessionId", sessionId); 
         }
   
-        window.location.href = data.checkoutUrl; // yönlendirme
+        window.location.href = data.checkoutUrl; 
       }
     } catch (error) {
       console.error(error);
@@ -102,18 +102,16 @@ const CardDetails = ({ total = 0 }) => {
             console.log("Ödeme başarılı! Sepet temizlendi ve sipariş oluşturuldu.");
             alert("Ödeme başarılı! Siparişiniz oluşturuldu.");
   
-            // Temizlik
-            localStorage.removeItem("pendingSessionId"); // işimiz bitti
-            // dispatch(clearCart()); gibi sepet temizleme eklenebilir
+            localStorage.removeItem("pendingSessionId"); 
+            
           } else {
             console.error("Ödeme doğrulaması başarısız!");
           }
         } catch (error) {
           console.error("Hata oluştu:", error);
         }
-      }, 30000); // 30 saniye bekle
+      }, 30000);
   
-      // component unmount olursa timer iptali
       return () => clearTimeout(timeoutId);
     }
   }, []);
@@ -163,8 +161,8 @@ const CardDetails = ({ total = 0 }) => {
   return (
     <>
       <div className="bg-blue-600 text-white rounded-xl shadow-xl p-6 w-full md:w-96 text-center transition-transform duration-300 ease-in-out hover:scale-105">
-        <h2 className="text-xl font-semibold mb-4">Ödeme İşlemi</h2>
-        <p className="mb-6">Siparişinizi tamamlamak için devam butonuna tıklayın.</p>
+        <h2 className="text-xl font-semibold mb-4">Payment Process</h2>
+        <p className="mb-6">Click the continue button to complete your order..</p>
         <button
           onClick={() => setShowModal(true)}
           className="w-full bg-blue-400 hover:bg-blue-500 transition-all duration-300 ease-in-out transform hover:scale-105 text-white font-semibold py-3 rounded-lg"
@@ -238,7 +236,7 @@ const CardDetails = ({ total = 0 }) => {
               onClick={handleCheckout}
               className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg"
             >
-              ${finalTotal.toFixed(2)} - Ödemeyi Tamamla
+              ${finalTotal.toFixed(2)} - Complete Payment
             </button>
           </div>
         </div>
