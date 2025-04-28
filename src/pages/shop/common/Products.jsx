@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import getUserFromToken from "../../common/GetUserFromToken";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from 'react-toastify';
+import { motion } from 'framer-motion'; // Sadece gerekli animasyonlar için
 import 'react-toastify/dist/ReactToastify.css';
 
-
+// getCookie fonksiyonu aynı
 const getCookie = (name) => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(';').shift();
 };
-
 
 const Products = ({ selectedCategory, priceRange }) => {
   const [products, setProducts] = useState([]);
@@ -23,18 +23,13 @@ const Products = ({ selectedCategory, priceRange }) => {
 
   const accessToken = getCookie("accessToken");
 
-
-
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         let url = "https://localhost:7282/api/Product/GetAll";
-
         if (selectedCategory) {
           url = `https://localhost:7282/api/Product/GetProductsByCategoryId?categoryId=${selectedCategory.id}`;
         }
-
         const response = await fetch(url);
         const data = await response.json();
         setProducts(data);
@@ -43,25 +38,27 @@ const Products = ({ selectedCategory, priceRange }) => {
         setProducts([]);
       }
     };
-
     fetchProducts();
   }, [selectedCategory]);
 
   useEffect(() => {
     let filteredProducts = [...products];
-
-    if (priceRange) { filteredProducts = filteredProducts.filter((product) => product.unitPrice >= priceRange.minPrice && product.unitPrice <= priceRange.maxPrice); }
-
+    if (priceRange) {
+      filteredProducts = filteredProducts.filter((product) =>
+        product.unitPrice >= priceRange.minPrice && product.unitPrice <= priceRange.maxPrice
+      );
+    }
     sortProducts(filteredProducts, sortBy);
   }, [products, priceRange, sortBy]);
 
   const sortProducts = (productsToSort, sortOption) => {
     let sorted = [...productsToSort];
-
     switch (sortOption) {
-      case "price-asc": sorted.sort((a, b) => a.unitPrice - b.unitPrice);
+      case "price-asc":
+        sorted.sort((a, b) => a.unitPrice - b.unitPrice);
         break;
-      case "price-desc": sorted.sort((a, b) => b.unitPrice - a.unitPrice);
+      case "price-desc":
+        sorted.sort((a, b) => b.unitPrice - a.unitPrice);
         break;
       default:
         break;
@@ -80,11 +77,16 @@ const Products = ({ selectedCategory, priceRange }) => {
   };
 
   const handlePreviousPage = () => {
-    if (startProduct > 0) { setStartProduct(startProduct - productsPerPage); }
+    if (startProduct > 0) {
+      setStartProduct(startProduct - productsPerPage);
+    }
   };
 
-  const handleNextPage = () => { if (startProduct + productsPerPage < sortedProducts.length) { setStartProduct(startProduct + productsPerPage); } };
-
+  const handleNextPage = () => {
+    if (startProduct + productsPerPage < sortedProducts.length) {
+      setStartProduct(startProduct + productsPerPage);
+    }
+  };
 
   const fetchCartId = async () => {
     const user = getUserFromToken();
@@ -111,8 +113,7 @@ const Products = ({ selectedCategory, priceRange }) => {
       }
 
       const data = await response.json();
-      console.log("Cart API Raw Response:", data); // ✔️
-
+      console.log("Cart API Raw Response:", data);
 
       return data.cartId;
     } catch (error) {
@@ -120,7 +121,6 @@ const Products = ({ selectedCategory, priceRange }) => {
       return null;
     }
   };
-
 
   const handleAddToCart = async (productId) => {
     const accessToken = Cookies.get("accessToken");
@@ -174,18 +174,20 @@ const Products = ({ selectedCategory, priceRange }) => {
 
   return (
     <div className="pt-11 pl-9 pr-40">
-
       <div className="flex justify-between mb-4 items-center">
         <div style={{ marginTop: "5px" }}>
           Showing {startProduct + 1}–{Math.min(startProduct + productsPerPage, sortedProducts.length)} of {sortedProducts.length} results
         </div>
         <div className="flex items-center" style={{ marginTop: "5px" }}>
-
-          <button onClick={handleBasketClick} className="mr-4 hover:scale-110 transition-transform">
+          <motion.button
+            whileHover={{ scale: 1.2 }}
+            onClick={handleBasketClick}
+            className="mr-4 transition-transform"
+          >
             <span role="img" aria-label="cart" style={{ fontSize: "24px", color: "#3B82F6" }}>
               🛒
             </span>
-          </button>
+          </motion.button>
 
           <span className="text-gray-600 mr-1">Sort by:</span>
           <select
@@ -219,7 +221,7 @@ const Products = ({ selectedCategory, priceRange }) => {
                 className="text-sm font-bold truncate absolute"
                 style={{ width: 180.5, height: 21, top: "335px", left: "31px" }}
               >
-                {product.description}
+                {product.name}
               </div>
 
               <div
@@ -229,7 +231,16 @@ const Products = ({ selectedCategory, priceRange }) => {
                 ${product.unitPrice}
               </div>
 
-              <button
+              <motion.button
+                whileHover={{
+                  y: -4,        
+                  boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)", 
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+                whileTap={{
+                  scale: 0.95, 
+                  transition: { duration: 0.2 }
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleAddToCart(product.id);
@@ -246,7 +257,7 @@ const Products = ({ selectedCategory, priceRange }) => {
               >
                 <span style={{ fontSize: "20px", color: "#3B82F6" }}>&#128722;</span>
                 <span className="ml-2">Add to Cart</span>
-              </button>
+              </motion.button>
             </div>
           ))
         ) : (
@@ -257,27 +268,38 @@ const Products = ({ selectedCategory, priceRange }) => {
       </div>
 
       <div className="flex justify-center mt-6 items-center">
-
         {startProduct > 0 && (
-          <button onClick={handlePreviousPage} className="px-4 py-2 mx-2 font-bold rounded-full border border-[#E9E9E9] text-black"
-            style={{ backgroundColor: "#F9FBFC", width: "60px" }}> &lt;
-          </button>)}
-
+          <motion.button
+            whileHover={{ scale: 1.2 }}
+            onClick={handlePreviousPage}
+            className="px-4 py-2 mx-2 font-bold rounded-full border border-[#E9E9E9] text-black"
+            style={{ backgroundColor: "#F9FBFC", width: "60px" }}
+          > &lt;
+          </motion.button>
+        )}
 
         {Array.from({ length: totalPages }, (_, index) => (
-          <button key={index} onClick={() => handlePageChange(index + 1)}
-            className={`px-4 py-2 mx-1 font-bold rounded-full ${startProduct / productsPerPage === index ? "bg-black text-white" : "text-black bg-transparent"}`}>
+          <motion.button
+            whileHover={{ scale: 1.2 }}
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={`px-4 py-2 mx-1 font-bold rounded-full ${startProduct / productsPerPage === index ? "bg-black text-white" : "text-black bg-transparent"}`}
+          >
             {index + 1}
-          </button>
+          </motion.button>
         ))}
 
         {startProduct + productsPerPage < sortedProducts.length && (
-          <button onClick={handleNextPage}
+          <motion.button
+            whileHover={{ scale: 1.2 }}
+            onClick={handleNextPage}
             className="px-4 py-2 mx-2 font-bold rounded-full border border-[#E9E9E9] text-black"
             style={{ backgroundColor: "#F9FBFC", width: "60px" }}
           > &gt;
-          </button>)}
+          </motion.button>
+        )}
       </div>
+
       <ToastContainer
         position="top-center"
         autoClose={3000}

@@ -4,23 +4,12 @@ import getUserFromToken from '../../common/GetUserFromToken';
 import Cookies from "js-cookie";
 
 const CardDetails = ({ total = 0 }) => {
-  const shipping = 20;
-  const finalTotal = total + shipping;
+  const finalTotal = total;
 
   const [userData, setUserData] = useState(null);
   const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: '',
-    cardNumber: '',
-    expirationDate: '',
-    cvv: ''
+    firstName: '', lastName: '', email: '', phoneNumber: '',
+    address: '', city: '', state: '', zipCode: '', country: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -40,20 +29,19 @@ const CardDetails = ({ total = 0 }) => {
   const handleCheckout = async () => {
     const requiredFields = [
       'firstName', 'lastName', 'email', 'phoneNumber',
-      'address', 'city', 'state', 'zipCode', 'country',
-      'cardNumber', 'expirationDate', 'cvv'
+      'address', 'city', 'state', 'zipCode', 'country'
     ];
-
+  
     const newErrors = {};
     requiredFields.forEach(field => {
       if (!form[field]?.trim()) newErrors[field] = true;
     });
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
+  
     const payload = {
       userId,
       firstName: form.firstName,
@@ -66,13 +54,9 @@ const CardDetails = ({ total = 0 }) => {
       zipCode: form.zipCode,
       country: form.country,
       status: "Pending",
-      shippingAddress: `${form.address}, ${form.city}, ${form.state}`,
-      totalPrice: finalTotal,
-      cardNumber: form.cardNumber,
-      expirationDate: form.expirationDate,
-      cvv: form.cvv
+      shippingAddress: `${form.address}, ${form.city}, ${form.state}`
     };
-
+  
     try {
       const response = await fetch('https://localhost:7282/api/Order', {
         method: 'POST',
@@ -82,15 +66,59 @@ const CardDetails = ({ total = 0 }) => {
         },
         body: JSON.stringify(payload)
       });
-
+  
       const data = await response.json();
+  
       if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+        // checkoutUrl'den session_id çekelim
+        const url = new URL(data.checkoutUrl);
+        const sessionId = url.searchParams.get("session_id");
+  
+        if (sessionId) {
+          localStorage.setItem("pendingSessionId", sessionId); // session_id'yi kaydet
+        }
+  
+        window.location.href = data.checkoutUrl; // yönlendirme
       }
     } catch (error) {
-      // Sessiz geç
+      console.error(error);
     }
   };
+
+  useEffect(() => {
+    const sessionId = localStorage.getItem("pendingSessionId");
+  
+    if (sessionId) {
+      const timeoutId = setTimeout(async () => {
+        try {
+          const response = await fetch(`https://localhost:7282/api/Payment/payment-success?sessionId=${sessionId}`, {
+            method: 'GET',
+            headers: {
+              "Authorization": `Bearer ${accessToken}`
+            }
+          });
+  
+          if (response.ok) {
+            console.log("Ödeme başarılı! Sepet temizlendi ve sipariş oluşturuldu.");
+            alert("Ödeme başarılı! Siparişiniz oluşturuldu.");
+  
+            // Temizlik
+            localStorage.removeItem("pendingSessionId"); // işimiz bitti
+            // dispatch(clearCart()); gibi sepet temizleme eklenebilir
+          } else {
+            console.error("Ödeme doğrulaması başarısız!");
+          }
+        } catch (error) {
+          console.error("Hata oluştu:", error);
+        }
+      }, 30000); // 30 saniye bekle
+  
+      // component unmount olursa timer iptali
+      return () => clearTimeout(timeoutId);
+    }
+  }, []);
+  
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -101,7 +129,9 @@ const CardDetails = ({ total = 0 }) => {
         });
         const data = await response.json();
         setUserData(data.data);
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     fetchUserData();
@@ -113,17 +143,22 @@ const CardDetails = ({ total = 0 }) => {
         setShowModal(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [showModal]);
 
   const inputClass = (field) =>
     `w-full mb-3 px-4 py-2 rounded border ${
       errors?.[field] ? "border-red-500" : "border-blue-400"
     } bg-blue-500 placeholder-white focus:outline-none`;
-
-    
 
   return (
     <>
@@ -139,21 +174,22 @@ const CardDetails = ({ total = 0 }) => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 backdrop-blur-sm bg-white/10 flex items-center justify-center">
-         <div
-  ref={modalRef}
-  className="bg-blue-600 text-white rounded-xl shadow-xl p-8 w-full max-w-2xl relative overflow-hidden transform scale-100 transition duration-300 ease-out"
->       
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div
+            ref={modalRef}
+            className="bg-blue-600 text-white rounded-2xl shadow-2xl p-10 w-full max-w-4xl mx-4 relative transform transition-transform transition-opacity duration-500 ease-out scale-95 opacity-0 animate-fadeScale overflow-y-auto no-scrollbar"
+            style={{ maxHeight: "90vh" }}
+          >
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-2 right-2 text-white text-2xl font-bold"
+              className="absolute top-4 right-6 text-white text-3xl font-bold"
             >
               &times;
             </button>
 
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">
-                {userData ? `${userData.name} ${userData.surname}` : "Card Details"}
+                {userData ? `${userData.name} ${userData.surname}` : "Billing Details"}
               </h2>
               <img
                 src={
@@ -164,14 +200,6 @@ const CardDetails = ({ total = 0 }) => {
                 alt="User"
                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
               />
-            </div>
-
-            <p className="text-sm mb-2">Card type</p>
-            <div className="flex space-x-4 mb-6">
-              <FaCcMastercard size={28} />
-              <FaCcVisa size={28} />
-              <FaCcAmex size={28} />
-              <FaCcPaypal size={28} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -192,36 +220,6 @@ const CardDetails = ({ total = 0 }) => {
               ))}
             </div>
 
-            <input
-              type="text"
-              name="cardNumber"
-              placeholder="Card Number"
-              value={form.cardNumber}
-              onChange={handleChange}
-              required
-              className={inputClass("cardNumber")}
-            />
-            <div className="flex space-x-4 mb-6">
-              <input
-                type="text"
-                name="expirationDate"
-                placeholder="Expiration"
-                value={form.expirationDate}
-                onChange={handleChange}
-                required
-                className={inputClass("expirationDate")}
-              />
-              <input
-                type="text"
-                name="cvv"
-                placeholder="CVV"
-                value={form.cvv}
-                onChange={handleChange}
-                required
-                className={inputClass("cvv")}
-              />
-            </div>
-
             <hr className="border-blue-300 mb-4" />
 
             <div className="text-sm space-y-2 mb-6">
@@ -229,10 +227,7 @@ const CardDetails = ({ total = 0 }) => {
                 <span>Subtotal</span>
                 <span>${total.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Delivery</span>
-                <span>${shipping.toFixed(2)}</span>
-              </div>
+              
               <div className="flex justify-between font-semibold">
                 <span>Total (Incl. taxes)</span>
                 <span>${finalTotal.toFixed(2)}</span>
