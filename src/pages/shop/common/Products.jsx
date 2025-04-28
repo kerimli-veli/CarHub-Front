@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import getUserFromToken from "../../common/GetUserFromToken";
 import Cookies from "js-cookie";
 import { ToastContainer, toast } from 'react-toastify';
-import { motion } from 'framer-motion'; // Sadece gerekli animasyonlar için
+import { motion } from 'framer-motion'; 
 import 'react-toastify/dist/ReactToastify.css';
 
 // getCookie fonksiyonu aynı

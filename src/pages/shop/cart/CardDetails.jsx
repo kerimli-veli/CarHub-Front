@@ -99,16 +99,16 @@ const CardDetails = ({ total = 0 }) => {
           });
   
           if (response.ok) {
-            console.log("Ödeme başarılı! Sepet temizlendi ve sipariş oluşturuldu.");
-            alert("Ödeme başarılı! Siparişiniz oluşturuldu.");
+            console.log("Payment successful! Cart cleared and order created.");
+            alert("Payment successful! Your order has been created.");
   
             localStorage.removeItem("pendingSessionId"); 
             
           } else {
-            console.error("Ödeme doğrulaması başarısız!");
+            console.error("Payment verification failed!");
           }
         } catch (error) {
-          console.error("Hata oluştu:", error);
+          console.error("Error occurred:", error);
         }
       }, 30000);
   
