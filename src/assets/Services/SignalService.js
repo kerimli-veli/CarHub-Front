@@ -16,7 +16,7 @@ export const startConnection = async () => {
   }
 
   connection = new HubConnectionBuilder()
-    .withUrl("https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/chatHub", {
+    .withUrl("https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/chatHub", {
       accessTokenFactory: () => token, 
     })
     .build();

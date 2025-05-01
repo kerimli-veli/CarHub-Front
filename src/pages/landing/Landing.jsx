@@ -5,7 +5,7 @@ import PremiumBrands from './components/PremiumBrands';
 import FeaturedListings from './components/FeaturedListings'
 import ElectricVehicles from './components/ElectricVehicles'
 import Filter from './components/Filter';
-import Background from './../../assets/images/Background.svg'; 
+import Background from './../../assets/images/Background.mp4'; 
 import Footer from './components/Footer';
 import CarSaleSection from './components/CarSaleSection';
 import ActionCards from './components/ActionsCard';
@@ -14,21 +14,28 @@ const Landing = () => {
   return (
     <div className="relative min-h-screen flex flex-col">
       
-      <div className="absolute inset-0 p-5">
-        <img
+      <div className="w-full h-full">
+        <video
           src={Background}
-          alt="Background"
-          className="object-cover rounded-xl"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
         />
       </div>
+
       
-      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-full max-w-[85%] z-20">
-        <Header bgColor='bg-none'/>
-          <div className='grid gap-8 mt-[2%] ml-[1%]'>
-            <h1 className="text-xs sm:text-2xl md:text-3xl font-bold text-white">
+      <div className="absolute left-1/2 transform -translate-x-1/2 w-full max-w-[85%] z-20">
+        <Header bgColor=''/>
+          <div className='grid gap-8 mt-[20%] ml-[1%]'>
+
+            <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-white">
+                Dawn of a new era.
+            </h1>
+            <h1 className="text-xs md:text-xl font-bold text-white">
               Let’s Find Your  Perfect Car
             </h1>
-            <Filter />
           </div>
       </div>
     

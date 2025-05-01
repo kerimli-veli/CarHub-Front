@@ -36,22 +36,22 @@ const Message = () => {
       try {
         if (sender?.id) {
           const resSender = await axios.get(
-            `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${sender.id}`
+            `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetById?Id=${sender.id}`
           );
           const data = resSender.data?.data;
           if (data) {
-            setSenderAvatar(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${data.userImagePath}`);
+            setSenderAvatar(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/${data.userImagePath}`);
             setSenderInfo({ name: data.name, surname: data.surname });
           }
         }
     
         if (receiverId) {
           const resReceiver = await axios.get(
-            `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${receiverId}`
+            `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetById?Id=${receiverId}`
           );
           const data = resReceiver.data?.data;
           if (data) {
-            setReceiverAvatar(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${data.userImagePath}`);
+            setReceiverAvatar(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/${data.userImagePath}`);
             setReceiverInfo({ name: data.name, surname: data.surname });
           }
         }
@@ -102,7 +102,7 @@ const Message = () => {
       conn.on("ReceiveMessage", onMessage);
     
       const res = await axios.get(
-        `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Chat/getMessages?senderId=${sender.id}&receiverId=${receiverId}`,
+        `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Chat/getMessages?senderId=${sender.id}&receiverId=${receiverId}`,
         { withCredentials: true }
       );
     
@@ -146,7 +146,7 @@ const Message = () => {
   
     try {
       const response = await axios.post(
-        "https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Chat/send",
+        "https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Chat/send",
         {
           senderId: sender.id,
           receiverId: parseInt(receiverId),

@@ -20,27 +20,26 @@ const CarInfo = () => {
 
   useEffect(() => {
     if (carId) {
-      axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${carId}`)
+      axios.get(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${carId}`)
       .then((res) => {
         const carData = res.data.data;
         setCar(carData);
       
-        // Main image birinci şəkil olacaq
-        setMainImage(carData.carImagePaths[0]?.mainImage);
-      
-        // Digər şəkilləri array şəklində yığırıq:
-        setOtherImages([
-          { imagePath: carData.carImagePaths[0]?.firstSideImage },
-          { imagePath: carData.carImagePaths[0]?.secondSideImage },
-          { imagePath: carData.carImagePaths[0]?.engineImage },
-          { imagePath: carData.carImagePaths[0]?.salonImage },
+        const baseImageUrl = "https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/"; // backend server public URL
 
-          // Əgər daha çox şəkil varsa onları da əlavə et
-        ]);
+setMainImage(`${baseImageUrl}${carData.carImagePaths[0]?.mainImage}`);
+
+setOtherImages([
+  { imagePath: `${baseImageUrl}${carData.carImagePaths[0]?.firstSideImage}` },
+  { imagePath: `${baseImageUrl}${carData.carImagePaths[0]?.secondSideImage}` },
+  { imagePath: `${baseImageUrl}${carData.carImagePaths[0]?.engineImage}` },
+  { imagePath: `${baseImageUrl}${carData.carImagePaths[0]?.salonImage}` },
+]);
+
       
         const userId = carData.createdBy;
         if (userId) {
-          axios.get(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`)
+          axios.get(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`)
             .then((userRes) => setUser(userRes.data.data))
             .catch((err) => console.error("İstifadəçi məlumatları xətası:", err));
         }

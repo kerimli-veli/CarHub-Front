@@ -28,7 +28,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
       setLoading(true);
 
       try {
-        const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
+        const response = await fetch(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -57,7 +57,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
 
   const handleProductSearch = async () => {
     try {
-      const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${searchQuery}`);
+      const response = await fetch(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${searchQuery}`);
       const result = await response.json();
   
       if (Array.isArray(result)) {
@@ -206,7 +206,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                 <img
                 src={
                   user.userImagePath
-                    ? `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${user.userImagePath}`
+                    ? `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/${user.userImagePath}`
                     : "https://via.placeholder.com/150"}
                   alt="User"
                   className="w-15 h-15 rounded-full shadow-lg cursor-pointer transform transition-transform duration-500 hover:scale-110 hover:shadow-2xl"
@@ -222,7 +222,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                   <img
                   src={
                     user.userImagePath
-                      ? `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/${user.userImagePath}`
+                      ? `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/${user.userImagePath}`
                       : "https://via.placeholder.com/150"}
                     alt="User"
                     className="w-14 h-14 rounded-full"

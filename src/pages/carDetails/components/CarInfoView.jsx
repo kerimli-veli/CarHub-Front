@@ -43,7 +43,7 @@ const CarInfoView = ({
           {/* Başlıq */}
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold">{`${car.brand} ${car.model} New`}</h1>
+              <h1 className="text-3xl font-bold">{`${car.brand} ${car.model}`}</h1>
               <p className="text-gray-500 text-sm">{car.text}</p>
             </div>
             <div className="flex items-center gap-4">
@@ -120,12 +120,6 @@ const CarInfoView = ({
             </div>
           </div>
 
-          {/* Buy Now Button */}
-          <div className="mt-8">
-            <Button className="w-full py-3 text-white bg-green-500 hover:bg-green-600 font-bold text-lg rounded-lg shadow-md">
-              Buy Now
-            </Button>
-          </div>
         </div>
 
             {/* Sağ panel — Dealer və ya Mesaj */}

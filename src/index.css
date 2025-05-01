@@ -3,16 +3,4 @@
 @tailwind utilities;
 @import "tailwindcss";
 
-.scrollable-dropdown::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  .scrollable-dropdown::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 10px;
-  }
-  
-  .scrollable-dropdown::-webkit-scrollbar-track {
-    background: transparent;
-  }
   

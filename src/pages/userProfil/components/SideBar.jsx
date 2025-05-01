@@ -54,7 +54,7 @@ const Sidebar = () => {
         const token = Cookies.get("accessToken");
         if (!token) return;
 
-        const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userFromToken.id}`, {
+        const response = await fetch(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userFromToken.id}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,

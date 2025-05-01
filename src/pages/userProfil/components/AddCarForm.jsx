@@ -70,7 +70,7 @@ export default function AddCarForm() {
   
     try {
       await axios.post(
-        'https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Car',
+        'https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car',
         data
       );
       setShowSuccess(true); // ✅ Success banneri göstər

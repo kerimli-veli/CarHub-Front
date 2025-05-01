@@ -19,7 +19,7 @@ const TopBar = () => {
           return; 
         }
   
-        const response = await fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
+        const response = await fetch(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,

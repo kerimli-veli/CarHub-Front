@@ -18,7 +18,7 @@ export default function useFavoriteCars(initialCars = []) {
       return;
     }
 
-    fetch(`https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/User/GetById?Id=${user.id}`, {
+    fetch(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetById?Id=${user.id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -57,8 +57,8 @@ export default function useFavoriteCars(initialCars = []) {
 
     const isSaved = savedCars[carId];
     const url = isSaved
-      ? `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Favorite/RemoveFavoriteCar?UserId=${user.id}&CarId=${carId}`
-      : `https://carhubapp-hrbgdfgda5dadmaj.italynorth-01.azurewebsites.net/api/Favorite/AddUserFavorites?UserId=${user.id}&CarId=${carId}`;
+      ? `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Favorite/RemoveFavoriteCar?UserId=${user.id}&CarId=${carId}`
+      : `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Favorite/AddUserFavorites?UserId=${user.id}&CarId=${carId}`;
 
     fetch(url, {
       method: isSaved ? "DELETE" : "GET",
