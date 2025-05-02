@@ -1,10 +1,44 @@
 import React from "react";
+import { motion } from "framer-motion";
+
+const cardVariantsLeft = {
+  hidden: { opacity: 0, x: -60, y: 20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    transition: {
+      duration: 0.9,
+      ease: [0.25, 0.1, 0.25, 1], // smooth cubic-bezier
+    },
+  },
+};
+
+const cardVariantsRight = {
+  hidden: { opacity: 0, x: 60, y: 20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    transition: {
+      duration: 0.9,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
+};
+
 
 const ActionCards = () => {
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center gap-12 px-6 py-12">
-      {/* Card 1 */}
-      <div className="flex items-center justify-between bg-blue-50 rounded-3xl p-10 w-full max-w-3xl h-72 shadow-md">
+      {/* Card 1 – Sol tərəfdən sağa */}
+      <motion.div
+      variants={cardVariantsLeft}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.5 }} 
+        className="flex items-center justify-between bg-blue-50 rounded-3xl p-10 w-full max-w-3xl h-72 shadow-md"
+      >
         <div className="flex flex-col justify-between h-full max-w-[60%]">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4 leading-snug">
@@ -20,15 +54,21 @@ const ActionCards = () => {
         </div>
         <div className="ml-6">
           <img
-            src="https://i.postimg.cc/FsHJ6SQG/electric-car-svg.png" // ← buraya 1-ci ikonun linkini qoyacaqsan
+            src="https://i.postimg.cc/FsHJ6SQG/electric-car-svg.png"
             alt="Looking for Car"
             className="h-20 w-20 object-contain"
           />
         </div>
-      </div>
+      </motion.div>
 
-      {/* Card 2 */}
-      <div className="flex items-center justify-between bg-pink-100 rounded-3xl p-10 w-full max-w-3xl h-72 shadow-md">
+      {/* Card 2 – Sağ tərəfdən sola */}
+      <motion.div
+        variants={cardVariantsRight}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        className="flex items-center justify-between bg-pink-100 rounded-3xl p-10 w-full max-w-3xl h-72 shadow-md"
+      >
         <div className="flex flex-col justify-between h-full max-w-[60%]">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4 leading-snug">
@@ -44,12 +84,12 @@ const ActionCards = () => {
         </div>
         <div className="ml-6">
           <img
-            src="https://i.postimg.cc/3wNh5Kxs/electric-car2-svg.png" // ← buraya 2-ci ikonun linkini qoyacaqsan
+            src="https://i.postimg.cc/3wNh5Kxs/electric-car2-svg.png"
             alt="Sell Car"
             className="h-20 w-20 object-contain"
           />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -99,7 +99,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
   return (
     <nav className={`${bgColor} text-white p-4`}>
       <div className="container mx-auto flex justify-between items-center">
-        <a href="#" className="text-xl font-bold sm:text-2xl md:text-3xl">
+        <a href="#" className="text-xl font-bold sm:text-2xl md:text-4xl">
           CarHub
         </a>
 
