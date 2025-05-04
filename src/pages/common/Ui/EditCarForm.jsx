@@ -87,7 +87,7 @@ const EditCarForm = ({ car }) => {
     }
   
     try {
-      const response = await fetch('https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/CarUpdate', {
+      const response = await fetch('https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/CarUpdate', {
         method: 'PUT',
         body: formData,
       });
@@ -161,7 +161,7 @@ const EditCarForm = ({ car }) => {
             src={
     images[mainImageIndex] instanceof File
       ? URL.createObjectURL(images[mainImageIndex])
-      : `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/${images[mainImageIndex]}`
+      : `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${images[mainImageIndex]}`
   }
             alt={`Main Car Image`}
             className="object-cover w-full h-full"
@@ -201,7 +201,7 @@ const EditCarForm = ({ car }) => {
         >
           {img ? (
             <img
-              src={img instanceof File ? URL.createObjectURL(img) : `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/${img}`}
+              src={img instanceof File ? URL.createObjectURL(img) : `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${img}`}
               alt={`Thumbnail ${index}`}
               className="object-cover w-full h-full"
             />

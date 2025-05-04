@@ -7,28 +7,52 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCallback } from "react";
+import AuctionPriceDropdown from "./AuctionStartPrice";
+import getUserFromToken from "../common/GetUserFromToken";
 
 const AuctionFilterBar = ({ selectedCarId }) => {
   const navigate = useNavigate();
   const [active, setActive] = useState("");
-  console.log("test 1:", selectedCarId);
-  
-  const handleApply = () => {
-    if (!selectedCarId) {
-      alert("Please select a car first.");
-      return;
-    }
-  
-    console.log("test 2:", selectedCarId);
-  
-    axios
-      .get(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${selectedCarId}`)
-      .then(() => navigate("/AuctionSeller"))
-      .catch((error) => {
-        console.error("Apply click failed:", error);
-      });
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [price, setPrice] = useState(null);
+
+  // HandleApply funksiyasında
+const handleApply = async () => {
+  if (!selectedCarId || !startTime || !endTime || !price) {
+    alert("Zəhmət olmasa bütün sahələri doldurun.");
+    return;
+  }
+
+  const user = getUserFromToken();
+
+  if (!user || !user.id) {
+    alert("İstifadəçi tapılmadı.");
+    return;
+  }
+
+  const auctionData = {
+    carId: selectedCarId,
+    sellerId: user.id,
+    startTime: new Date(startTime).toISOString(),
+    endTime: new Date(endTime).toISOString(),
+    startingPrice: price,
   };
-  
+
+  try {
+    const response = await axios.post(
+      "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Auction",
+      auctionData
+    );
+
+    const car = response.data; // API-nın cavabından car məlumatını alın
+
+    navigate("/CreateAuction", { state: { car } }); // carData-ı keçirin
+  } catch (error) {
+    console.error("Auction creation failed:", error);
+    alert("Auction yaradılarkən xəta baş verdi.");
+  }
+};
 
 
   return (
@@ -51,19 +75,35 @@ const AuctionFilterBar = ({ selectedCarId }) => {
             {active === "date" && (
               <DateDropdown
                 onSave={(start, end) => {
-                  console.log("Saved Time in Parent:", start, end);
+                  setStartTime(start);
+                  setEndTime(end);
+                  setActive(""); // açılan menyunu bağla
                 }}
               />
             )}
           </AnimatePresence>
         </div>
 
-        <DropdownButton
-          icon={<FaGavel size={16} />}
-          label="Auction Number"
-          active={active === "auction"}
-          onClick={() => setActive("auction")}
-        />
+        <div className="relative">
+          <DropdownButton
+            icon={<FaGavel size={16} />}
+            label="Auction start price"
+            active={active === "auction"}
+            onClick={() => setActive(active === "auction" ? "" : "auction")}
+          />
+          <AnimatePresence>
+            {active === "auction" && (
+              <AuctionPriceDropdown
+                onSave={(value) => {
+                  setPrice(value);
+                  setActive(""); // menyunu bağla
+                }}
+              />
+            )}
+
+          </AnimatePresence>
+        </div>
+
         <DropdownButton
           icon={<FaHourglassHalf size={16} />}
           label="Status"

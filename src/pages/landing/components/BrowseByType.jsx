@@ -34,7 +34,7 @@ const BrowseByType = () => {
   useEffect(() => {
     const fetchBodyTypes = async () => {
       try {
-        const response = await fetch("https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/GetAllBodyTypes");
+        const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/GetAllBodyTypes");
         const result = await response.json();
   
         setBodyTypes(result);

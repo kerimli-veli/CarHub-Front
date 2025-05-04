@@ -12,7 +12,7 @@ const AuctionUserCars = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const normalizeImagePath = (path) => {
-    const baseImageUrl = "https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/";
+    const baseImageUrl = "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/";
 
     if (!path) return "https://via.placeholder.com/300x200";  
     return path.startsWith("http") ? path : `${baseImageUrl}${path}`;  
@@ -27,7 +27,7 @@ const AuctionUserCars = () => {
 
         const token = Cookies.get("accessToken");
 
-        const response = await fetch(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetUserCars?UserId=${user.id}`, {
+        const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetUserCars?UserId=${user.id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -76,6 +76,7 @@ const AuctionUserCars = () => {
 
   return (
     <div className="flex flex-col items-center">
+      <AuctionFilterBar selectedCarId={selectedCarId} />
       <AnimatePresence>
         {errorMessage && (
           <motion.div
@@ -100,12 +101,6 @@ const AuctionUserCars = () => {
           />
         ))}
       </div>
-
-      {/* Burada filter bar render edilir */}
-    <div className="mt-6 w-full max-w-md">
-    <AuctionFilterBar selectedCarId={selectedCarId} />
-
-    </div>
     </div>
   );
 };

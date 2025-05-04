@@ -49,10 +49,10 @@ export default function FeaturedListings() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const carRes = await fetch("https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/GetAll");
+        const carRes = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/GetAll");
         const carData = await carRes.json();
   
-        const baseImageUrl = "https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/";
+        const baseImageUrl = "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/";
   
         const normalizeImagePath = (path) => {
           if (!path) return "https://via.placeholder.com/300x200";

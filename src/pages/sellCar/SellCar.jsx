@@ -2,9 +2,7 @@ import React from 'react'
 import Header from '../landing/components/Header'
 import AuctionFilterBar from './AuctionFilterBar'
 import AuctionUserCars from './AuctionUserCars'
-import { useState } from 'react'
 const SellCar = () => {
-    const [selectedCarId, setSelectedCarId] = useState(null);
     return(
         <div className="relative min-h-screen flex flex-col">
       
@@ -12,9 +10,8 @@ const SellCar = () => {
                 <Header/>
             </div>
             
-            <div className='w-auto grid gap-10 mt-[5%]'>
-            <AuctionFilterBar selectedCarId={selectedCarId} /> 
-            <AuctionUserCars setSelectedCarId={setSelectedCarId} /> 
+            <div className='w-auto p-6 grid gap-10 mt-[5%]'>
+            <AuctionUserCars /> 
             </div>
 
          </div>

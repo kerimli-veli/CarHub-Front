@@ -29,10 +29,10 @@ const Products = ({ selectedCategory, priceRange }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = "https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Product/GetAll";
+        let url = "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/GetAll";
 
         if (selectedCategory) {
-          url = `https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Product/GetProductsByCategoryId?categoryId=${selectedCategory.id}`;
+          url = `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/GetProductsByCategoryId?categoryId=${selectedCategory.id}`;
         }
 
         const response = await fetch(url);

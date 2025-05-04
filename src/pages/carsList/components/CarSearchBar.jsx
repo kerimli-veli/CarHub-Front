@@ -61,7 +61,7 @@ const FilterSidebar = () => {
       ]);
     }
   
-    fetch("https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/GetAll")
+    fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/GetAll")
     .then((res) => res.json())
     .then((data) => {
       setCars(data);
@@ -75,7 +75,7 @@ const FilterSidebar = () => {
       ]);
     });
 
-  fetch("https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/GetAllBodyTypes")
+  fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/GetAllBodyTypes")
     .then((res) => res.json())
     .then((data) => setBodyTypes(data));
   }, []);

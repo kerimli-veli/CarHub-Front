@@ -50,7 +50,7 @@ const SignUp = () => {
   
     try {
       const response = await axios.post(
-        "https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/Register",
+        "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/Register",
         data,
         {
           headers: {

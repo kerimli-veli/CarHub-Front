@@ -12,7 +12,7 @@ const Filter = () => {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await fetch("https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/GetAll");
+        const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/GetAll");
         const data = await response.json();
 
         const brandMap = {};

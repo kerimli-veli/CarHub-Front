@@ -20,12 +20,12 @@ const CarInfo = () => {
 
   useEffect(() => {
     if (carId) {
-      axios.get(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${carId}`)
+      axios.get(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/GetById?Id=${carId}`)
       .then((res) => {
         const carData = res.data.data;
         setCar(carData);
       
-        const baseImageUrl = "https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/"; // backend server public URL
+        const baseImageUrl = "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/"; // backend server public URL
 
 setMainImage(`${baseImageUrl}${carData.carImagePaths[0]?.mainImage}`);
 
@@ -39,7 +39,7 @@ setOtherImages([
       
         const userId = carData.createdBy;
         if (userId) {
-          axios.get(`https://carhubnewappapp-a2bxhke3hwe6gvg0.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`)
+          axios.get(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`)
             .then((userRes) => setUser(userRes.data.data))
             .catch((err) => console.error("İstifadəçi məlumatları xətası:", err));
         }
