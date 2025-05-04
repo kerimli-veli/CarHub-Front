@@ -15,17 +15,19 @@ import AddCarForm from "./pages/userProfil/components/AddCarForm";
 import MyCars from "./pages/userProfil/components/MyCars";
 import Cart from "./pages/shop/cart";
 import Message from "./pages/message/Message";
+import SellCar from "./pages/sellCar/SellCar";
+import CreateAuction from "./pages/CreateAuction/CreateAuction";
 
-// 🆕 Yeni komponent lazımdır ki modal routing mümkün olsun
 function AppRoutes() {
   const location = useLocation();
   const state = location.state;
 
   return (
     <>
-      {/* Əsas route-lar */}
       <Routes location={state?.background || location}>
         <Route path="/" element={<Landing />} />
+        <Route path="/AuctionSeller" element={<CreateAuction/>}/>
+        <Route path="/createNewAuction" element={<SellCar/>}/>
         <Route path="/shopPage" element={<ShopPage />} />
         <Route path="/SignIn" element={<SignIn />} />
         <Route path="/SignUp" element={<SignUp />} />
@@ -42,7 +44,6 @@ function AppRoutes() {
         <Route path="/messages/:receiverId" element={<Message />} />
       </Routes>
 
-      {/* Əgər modal açılıbsa, burada göstərilir */}
       {state?.background && (
         <Routes>
           <Route path="/messages/:receiverId" element={<Message isModal />} />
