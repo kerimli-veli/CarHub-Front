@@ -3,6 +3,7 @@ import Header from '../landing/components/Header'
 import { useLocation } from "react-router-dom";
 import TopInfoBar from "./components/TopInfoBar"
 import CarInfoSection from './components/CarInfoSection';
+import JoinChat from './components/JoinChat';
 
 const CreateAuction = () => {
     const location = useLocation();
@@ -23,8 +24,9 @@ const CreateAuction = () => {
                 <TopInfoBar car={car} />
             </div>
 
-            <div className='w-auto p-10'>
+            <div className='w-auto p-10 grid grid-cols-2'>
                 <CarInfoSection car={car}/>
+                <JoinChat/>
             </div>
 
          </div>

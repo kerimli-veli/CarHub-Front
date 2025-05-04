@@ -2,7 +2,7 @@ import React from "react";
 
 const TopInfoBar = ({ car }) => {
   return (
-    <div className="flex justify-between items-center bg-white px-6 py-10 rounded-lg shadow mb-6 w-full">
+    <div className="flex justify-between items-center border border-gray-100 bg-white px-6 py-10 rounded-lg shadow mb-6 w-full">
       {/* Left */}
       <div className="flex flex-col">
         <p className="text-xs text-gray-500">{car.condition || "Used"}</p>

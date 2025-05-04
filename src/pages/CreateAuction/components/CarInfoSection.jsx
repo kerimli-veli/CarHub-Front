@@ -22,7 +22,7 @@ const CarInfoSection = ({ car }) => {
   };
 
   return (
-    <div className="flex bg-white p-4 rounded-lg shadow mb-6">
+    <div className="flex bg-white p-4 rounded-lg shadow border border-gray-100 mb-6">
       {/* Main Image */}
       <div className="w-4/5 flex flex-col items-center">
         <img
