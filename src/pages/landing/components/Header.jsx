@@ -159,7 +159,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
                         <img src={product.imagePath} alt={product.name} className="rounded-xl object-cover absolute"
                           style={{ width: "265.48px", height: "265.48px", top: "31px", left: "31px" }} />
                         <div
-                          className="text-2xl font-semibold font-bold absolute text-black"
+                          className="text-2xl font-semibold absolute text-black"
                           style={{ width: "45.26px", height: "37px", top: "369.27px", left: "31px" }} >
                           ${product.unitPrice}
                         </div>

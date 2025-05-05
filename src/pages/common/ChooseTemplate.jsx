@@ -40,7 +40,7 @@ export default function ChooseTemplate({ onClose }) {
     if (selected === "list") {
       navigate("/createNewAuction"); 
     } else if (selected === "compare") {
-      navigate("/buy"); 
+      navigate("/auctionList"); 
     }
   };
 

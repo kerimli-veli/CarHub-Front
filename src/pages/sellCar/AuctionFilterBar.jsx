@@ -46,7 +46,7 @@ const handleApply = async () => {
     );
 
     const car = response.data; // API-nın cavabından car məlumatını alın
-
+    console.log(car);
     navigate("/CreateAuction", { state: { car } }); // carData-ı keçirin
   } catch (error) {
     console.error("Auction creation failed:", error);

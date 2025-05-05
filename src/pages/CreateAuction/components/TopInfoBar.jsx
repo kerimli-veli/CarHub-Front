@@ -1,11 +1,45 @@
 import React from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-const TopInfoBar = ({ car }) => {
+const TopInfoBar = ({ car, auctionData }) => {
+  const handleStartAuction = async () => {
+    try {
+      const token = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("accessToken="))
+        ?.split("=")[1];
+
+      if (!token) {
+        toast.error("Token tapılmadı. Giriş etdiyinizə əmin olun.");
+        return;
+      }
+
+      const response = await axios.put(
+        `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Auction/SetIsActive?AuctionId=${auctionData.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data?.isSuccess) {
+        toast.success("Auksion uğurla aktiv edildi!");
+      } else {
+        toast.error("Auksion aktiv edilə bilmədi.");
+      }
+    } catch (error) {
+      console.error("Auksion aktiv edilərkən xəta:", error);
+      toast.error("Xəta baş verdi. Daha sonra yenidən cəhd edin.");
+    }
+  };
+
   return (
-    <div className="flex justify-between items-center border border-gray-100 bg-white px-6 py-10 rounded-lg shadow mb-6 w-full">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center border border-gray-100 bg-white px-6 py-6 md:py-6 rounded-lg shadow mb-6 w-full gap-6 md:gap-0">
       {/* Left */}
       <div className="flex flex-col">
-        <p className="text-xs text-gray-500">{car.condition || "Used"}</p>
         <h2 className="text-2xl font-semibold flex items-center gap-2">
           {car.year} {car.brand} {car.model}
           <span className="text-blue-600 text-lg">💙</span>
@@ -14,7 +48,7 @@ const TopInfoBar = ({ car }) => {
       </div>
 
       {/* Middle */}
-      <div className="flex gap-12 text-sm text-gray-700">
+      <div className="flex flex-wrap md:flex-nowrap gap-6 md:gap-12 text-sm text-gray-700">
         <div className="text-center">
           <p className="font-medium">Mileage</p>
           <p className="text-sm">{car.miles?.toLocaleString() || "—"}</p>
@@ -34,16 +68,16 @@ const TopInfoBar = ({ car }) => {
       </div>
 
       {/* Right */}
-      <div className="text-center">
+      <div className="flex flex-col items-center">
         <p className="text-sm text-gray-500">Start Price</p>
         <p className="text-2xl font-semibold text-gray-800">
-          ${car.price || 0} <span className="text-base font-normal"></span>
+          ${auctionData.startingPrice || 0}
         </p>
-      </div>
-
-      <div>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-2 rounded-md mt-2 text-[15px] font-medium">
-            Start
+        <button
+          onClick={handleStartAuction}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-2 rounded-md mt-2 text-[15px] font-medium"
+        >
+          Start
         </button>
       </div>
     </div>

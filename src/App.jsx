@@ -1,33 +1,57 @@
+import React, { useEffect, useRef  } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import ShopPage from "./pages/shop/ShopPage";
-import { useState } from 'react';
 import Landing from './pages/landing/Landing';
 import CarList from './pages/carsList/CarList';
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import React from "react";
 import SignIn from './pages/sign-in/SignIn';
 import SignUp from './pages/sign-up/SignUp';
-import { Toaster } from 'react-hot-toast';
 import UserProfile from './pages/userProfil/UserProfil';
 import CarFavorites from './pages/userProfil/components/CarFavorites';
 import Account from './pages/userProfil/components/Account';
-import CarDetail from './pages/carDetails/CarDetail';
 import AddCarForm from "./pages/userProfil/components/AddCarForm";
 import MyCars from "./pages/userProfil/components/MyCars";
 import Cart from "./pages/shop/cart";
 import Message from "./pages/message/Message";
 import SellCar from "./pages/sellCar/SellCar";
 import CreateAuction from "./pages/CreateAuction/CreateAuction";
+import CarDetail from './pages/carDetails/CarDetail';
+
+import { startConnection, registerOnNotification } from "./assets/Services/notificationService";
+import BuyCar from "./pages/buyCar/BuyCar";
 
 function AppRoutes() {
   const location = useLocation();
   const state = location.state;
+  const lastMessageRef = useRef(null);
+
+  useEffect(() => {
+    const setupNotifications = async () => {
+      const connection = await startConnection();
+      if (connection) {
+        registerOnNotification((message) => {
+          if (lastMessageRef.current !== message) {
+            toast.info(message);
+            lastMessageRef.current = message;
+          }
+        });
+      }
+    };
+
+    setupNotifications();
+  }, []);
 
   return (
     <>
+      <ToastContainer position="top-center" />
       <Routes location={state?.background || location}>
         <Route path="/" element={<Landing />} />
-        <Route path="/CreateAuction" element={<CreateAuction/>}/>
-        <Route path="/createNewAuction" element={<SellCar/>}/>
+        <Route path="/AuctionList" element={<BuyCar />} />
+        <Route path="/CreateAuction" element={<CreateAuction />} />
+        <Route path="/createNewAuction" element={<SellCar />} />
         <Route path="/shopPage" element={<ShopPage />} />
         <Route path="/SignIn" element={<SignIn />} />
         <Route path="/SignUp" element={<SignUp />} />
