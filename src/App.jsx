@@ -33,16 +33,14 @@ function AppRoutes() {
       const connection = await startConnection();
       if (connection) {
         registerOnNotification((message) => {
-          if (lastMessageRef.current !== message) {
-            toast.info(message);
-            lastMessageRef.current = message;
-          }
+          toast.info(message.message);
         });
       }
     };
-
+  
     setupNotifications();
   }, []);
+  
 
   return (
     <>

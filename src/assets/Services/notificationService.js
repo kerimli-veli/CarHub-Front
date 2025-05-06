@@ -29,19 +29,24 @@ export const startConnection = async () => {
   return connection;
 };
 
+const shownMessageIds = new Set();
+
 export const registerOnNotification = (callback) => {
-    if (!connection) {
-      console.error("SignalR bağlantısı yoxdur");
-      return;
-    }
-  
-    // Əvvəlki listener-i sil
-    connection.off("ReceiveNotification");
-  
-    // Yeni listener əlavə et
-    connection.on("ReceiveNotification", (message) => {
-      console.log("Yeni bildiriş gəldi:", message);
+  if (!connection) {
+    console.error("SignalR bağlantısı yoxdur");
+    return;
+  }
+
+  connection.off("ReceiveNotification");
+
+  connection.on("ReceiveNotification", (message) => {
+    console.log("Yeni bildiriş gəldi:", message);
+
+    if (!shownMessageIds.has(message.id)) {
       callback(message);
-    });
-  };
+      shownMessageIds.add(message.id);
+    }
+  });
+};
+
   

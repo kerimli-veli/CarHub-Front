@@ -52,9 +52,9 @@ const AuctionList = () => {
               key={label}
               className={`px-4 py-2 rounded-xl text-sm font-medium ${
                 selectedFilter === label
-                  ? 'bg-violet-100 text-blue-600'
+                  ? 'bg-blue-100 text-blue-600'
                   : 'bg-gray-100 text-gray-400'
-              } hover:bg-violet-200 transition`}
+              } hover:bg-blue-200 transition`}
               onClick={() => setSelectedFilter(label)}
             >
               {label}
