@@ -13,7 +13,7 @@ import {
   FaCog,
   FaPlusSquare,
   FaLifeRing,
-  FaSignOutAlt
+  FaSignOutAlt,
 } from "react-icons/fa";
 import getUserFromToken from "./../../common/GetUserFromToken";
 import CarFavorites from "./CarFavorites";
@@ -21,17 +21,22 @@ import Account from "./Account";
 import React from "react";
 import AddCarForm from "./AddCarForm";
 import MyCars from "./MyCars";
-import ShopPage from "../../shop/ShopPage";
+import Cart from "../../shop/cart/Cart";
+import UserBaskets from "../Admin/UserBaskets";
 
-const menuItems = [
-  { id: "shopPage", icon: <FaShoppingCart />, label: "Basket", path: "shopPage" },
+const getMenuItems = (isAdmin) => [
+  {
+    id: "cart",
+    icon: <FaShoppingCart />,
+    label: isAdmin ? "User Baskets" : "Basket",
+    path: "cart",
+  },
   { id: "cards", icon: <FaCreditCard />, label: "Card Manager", path: "cards" },
   { id: "account", icon: <FaUser />, label: "Account", path: "account" },
   { id: "transactions", icon: <FaExchangeAlt />, label: "Transactions", path: "transactions" },
   { id: "favorites", icon: <FaHeart />, label: "Favorites", path: "favorites" },
   { id: "myCars", icon: <FaCar />, label: "My Cars", path: "myCars" },
   { id: "addCar", icon: <FaPlusSquare />, label: "Add Car", path: "addCar" },
-
 ];
 
 const otherMenu = [
@@ -63,8 +68,12 @@ const Sidebar = () => {
         });
 
         if (response.ok) {
-          const userData = await response.json();
-          setUser(userData.data);
+          const result = await response.json();
+          const data = result.data;
+          setUser({
+            ...data,
+            isAdmin: data.userRole?.toLowerCase() === "admin",
+          });
         }
       } catch (err) {
         console.error("User fetch error:", err);
@@ -78,6 +87,8 @@ const Sidebar = () => {
     navigate(`/userProfile/${path}`);
   };
 
+  const menuItems = getMenuItems(user?.isAdmin);
+
   return (
     <div className="flex min-h-screen bg-gray-100 transition-colors duration-300">
       {/* Sidebar */}
@@ -88,7 +99,6 @@ const Sidebar = () => {
         className="w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col justify-between"
       >
         <div>
-          
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -96,12 +106,17 @@ const Sidebar = () => {
             className="p-6 flex items-center space-x-3"
           >
             <div className="w-12 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow">
-              <img className="rounded-full" src="https://wallpapers.com/images/hd/netflix-profile-pictures-1000-x-1000-88wkdmjrorckekha.jpg" alt="" />
+              <img
+                className="rounded-full"
+                src="https://wallpapers.com/images/hd/netflix-profile-pictures-1000-x-1000-88wkdmjrorckekha.jpg"
+                alt="Profile"
+              />
             </div>
-            <span className="text-xl font-semibold text-gray-800 dark:text-gray-100">{user.name} {user.surname}</span>
+            <span className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+              {user.name} {user.surname}
+            </span>
           </motion.div>
 
-          
           <nav className="px-4">
             <span className="text-xs text-gray-400 uppercase mb-2 block">Menu</span>
             {menuItems.map((item) => {
@@ -124,7 +139,11 @@ const Sidebar = () => {
                       className="absolute left-0 top-0 h-full w-1 bg-blue-600 rounded-r"
                     />
                   )}
-                  <span className={`${isActive ? "text-white" : "text-gray-600 dark:text-gray-300"} text-lg`}>
+                  <span
+                    className={`${
+                      isActive ? "text-white" : "text-gray-600 dark:text-gray-300"
+                    } text-lg`}
+                  >
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
@@ -132,7 +151,6 @@ const Sidebar = () => {
               );
             })}
 
-            
             <span className="text-xs text-gray-400 uppercase mt-6 mb-2 block">Other Menu</span>
             {otherMenu.map((item) => (
               <motion.div
@@ -148,7 +166,6 @@ const Sidebar = () => {
           </nav>
         </div>
 
-        
         <motion.div
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.97 }}
@@ -161,7 +178,7 @@ const Sidebar = () => {
         </motion.div>
       </motion.aside>
 
-      
+      {/* Main content */}
       <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -176,7 +193,8 @@ const Sidebar = () => {
           className="bg-blue-400 text-white text-center py-3 rounded text-lg font-semibold shadow"
         >
           {location.pathname === "/userProfile/favorites" && "View your favorites"}
-          {location.pathname === "/userProfile/shopPage" && "Welcome to Shop"}
+          {location.pathname === "/userProfile/cart" &&
+            (user?.isAdmin ? "View Users' Baskets" : "Your basket")}
           {location.pathname === "/userProfile/cards" && "Manage Your Cards"}
           {location.pathname === "/userProfile/account" && "View Account Details"}
           {location.pathname === "/userProfile/transactions" && "Track Your Transactions"}
@@ -188,9 +206,10 @@ const Sidebar = () => {
           <AnimatePresence mode="wait">
             {location.pathname === "/userProfile/favorites" && <CarFavorites />}
             {location.pathname === "/userProfile/account" && <Account />}
-            {location.pathname === "/userProfile/addCar" && <AddCarForm/>}
-            {location.pathname === "/userProfile/myCars" && <MyCars/>}
-            {location.pathname === "/userProfile/shopPage" && <ShopPage/>}
+            {location.pathname === "/userProfile/addCar" && <AddCarForm />}
+            {location.pathname === "/userProfile/myCars" && <MyCars />}
+            {location.pathname === "/userProfile/cart" &&
+              (user?.isAdmin ? <UserBaskets /> : <Cart />)}
           </AnimatePresence>
         </div>
       </motion.main>

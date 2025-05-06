@@ -3,7 +3,7 @@ import CategorySidebar from './common/CategorySidebar';
 import Products from './common/Products';
 import Footer from '../landing/components/Footer';
 import Header from '../landing/components/Header';
-import Cart from './cart';
+import Cart from './cart/Cart';
 
 const ShopPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);

@@ -3,4 +3,53 @@
 @tailwind utilities;
 @import "tailwindcss";
 
+.scrollable-dropdown::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollable-dropdown::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+  }
+  
+  .scrollable-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  @layer utilities {
+    @keyframes fadeScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  
+    .animate-fadeScale {
+      animation: fadeScale 0.4s ease-out forwards;
+    }
+  }
+
+
+  @layer utilities {
+    @keyframes fadeScale {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .animate-fadeScale {
+      animation: fadeScale 0.4s ease-out forwards;
+    }
+  
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  }
+  
+
   

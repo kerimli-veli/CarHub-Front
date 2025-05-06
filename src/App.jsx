@@ -14,11 +14,19 @@ import CarFavorites from './pages/userProfil/components/CarFavorites';
 import Account from './pages/userProfil/components/Account';
 import AddCarForm from "./pages/userProfil/components/AddCarForm";
 import MyCars from "./pages/userProfil/components/MyCars";
-import Cart from "./pages/shop/cart";
+
+
 import Message from "./pages/message/Message";
 import SellCar from "./pages/sellCar/SellCar";
 import CreateAuction from "./pages/CreateAuction/CreateAuction";
 import CarDetail from './pages/carDetails/CarDetail';
+
+import Cart from "./pages/shop/cart/Cart";
+import CartPayment from "./pages/shop/CartPaymetn";
+import CartEmpty from "./pages/shop/cart/CartEmpty";
+import ProductDetails from "./pages/shop/ProductDetails";
+import AboutUs from "./pages/aboutus/AboutUs";
+
 
 import { startConnection, registerOnNotification } from "./assets/Services/notificationService";
 import BuyCar from "./pages/buyCar/BuyCar";
@@ -64,6 +72,13 @@ function AppRoutes() {
         <Route path="cart" element={<Cart />} />
         <Route path="/carDetails/:carId" element={<CarDetail />} />
         <Route path="/messages/:receiverId" element={<Message />} />
+
+        {/* Veli's code */}
+        <Route path="/cart" element={<CartPayment />} />
+          <Route path='/carDetails/:carId' element={<CarDetail />} />
+          <Route path="/cartEmpty" element={<CartEmpty />} />
+          <Route path="/product-details/:id" element={<ProductDetails />} />
+          <Route path="/aboutus" element={<AboutUs />} />
       </Routes>
 
       {state?.background && (

@@ -3,6 +3,7 @@ import Header from '../landing/components/Header'
 import OptionsPanel from './components/OptionsPanel'
 import Sidebar from './components/SideBar'
 import TopBar from './components/TopBar'
+import UserBaskets from './Admin/UserBaskets'
 
 const UserProfile = () => {
     return(
@@ -15,6 +16,8 @@ const UserProfile = () => {
             <div className='w-auto'>
                 <Sidebar/>
             </div>
+            
+            
 
          </div>
     )
