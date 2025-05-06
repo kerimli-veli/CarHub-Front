@@ -299,6 +299,8 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
                   <i className="fas fa-user-cog mr-3"></i> Account settings
                 </button>
 
+             
+
                 <button
                   onClick={() => (window.location.href = "/userProfile/favorites")}
                   className="flex items-center w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-300">

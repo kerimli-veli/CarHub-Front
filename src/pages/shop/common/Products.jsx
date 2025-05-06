@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { motion } from 'framer-motion'; 
 import 'react-toastify/dist/ReactToastify.css';
 
-// getCookie fonksiyonu aynı
+
 const getCookie = (name) => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -212,7 +212,7 @@ const Products = ({ selectedCategory, priceRange }) => {
               onClick={() => navigate(`/product-details/${product.id}`, { state: product })}
             >
               <img
-                src={product.imagePath}
+                src={Array.isArray(product.imagePath) ? product.imagePath[0] : product.imagePath}
                 alt={product.name}
                 className="rounded-xl object-cover absolute"
                 style={{ width: 265.48, height: 265.48, top: "31px", left: "31px" }}
