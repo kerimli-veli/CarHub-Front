@@ -1,35 +1,91 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect, useRef  } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+import ShopPage from "./pages/shop/ShopPage";
+import Landing from './pages/landing/Landing';
+import CarList from './pages/carsList/CarList';
+import SignIn from './pages/sign-in/SignIn';
+import SignUp from './pages/sign-up/SignUp';
+import UserProfile from './pages/userProfil/UserProfil';
+import CarFavorites from './pages/userProfil/components/CarFavorites';
+import Account from './pages/userProfil/components/Account';
+import AddCarForm from "./pages/userProfil/components/AddCarForm";
+import MyCars from "./pages/userProfil/components/MyCars";
+import Cart from "./pages/shop/cart";
+import Message from "./pages/message/Message";
+import SellCar from "./pages/sellCar/SellCar";
+import CreateAuction from "./pages/CreateAuction/CreateAuction";
+import CarDetail from './pages/carDetails/CarDetail';
+
+import { startConnection, registerOnNotification } from "./assets/Services/notificationService";
+import BuyCar from "./pages/buyCar/BuyCar";
+
+function AppRoutes() {
+  const location = useLocation();
+  const state = location.state;
+  const lastMessageRef = useRef(null);
+
+  useEffect(() => {
+    const setupNotifications = async () => {
+      const connection = await startConnection();
+      if (connection) {
+        registerOnNotification((message) => {
+          toast.info(message.message);
+        });
+      }
+    };
+  
+    setupNotifications();
+  }, []);
+  
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ToastContainer position="top-center" />
+      <Routes location={state?.background || location}>
+        <Route path="/" element={<Landing />} />
+        <Route path="/AuctionList" element={<BuyCar />} />
+        <Route path="/CreateAuction" element={<CreateAuction />} />
+        <Route path="/createNewAuction" element={<SellCar />} />
+        <Route path="/shopPage" element={<ShopPage />} />
+        <Route path="/SignIn" element={<SignIn />} />
+        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/carList" element={<CarList />} />
+        <Route path="/userProfile" element={<UserProfile />}>
+          <Route path="favorites" element={<CarFavorites />} />
+          <Route path="account" element={<Account />} />
+          <Route path="addCar" element={<AddCarForm />} />
+          <Route path="myCars" element={<MyCars />} />
+          <Route path="shopPage" element={<ShopPage />} />
+        </Route>
+        <Route path="cart" element={<Cart />} />
+        <Route path="/carDetails/:carId" element={<CarDetail />} />
+        <Route path="/messages/:receiverId" element={<Message />} />
+      </Routes>
+
+      {state?.background && (
+        <Routes>
+          <Route path="/messages/:receiverId" element={<Message isModal />} />
+        </Routes>
+      )}
     </>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <>
+      <div>
+        <Toaster position="top-center" />
+      </div>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </>
+  );
+}
+
+export default App;
