@@ -1,10 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { startAuctionConnection, joinAuction } from "./../../../assets/Services/auctionHubService"
+import getUserFromToken from '../../common/GetUserFromToken';
 
 const AuctionList = () => {
   const [auctions, setAuctions] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState('All Auctions');
   const [selectedAuctionId, setSelectedAuctionId] = useState(null);
+  const navigate = useNavigate();
+
+
+  const handleJoinAuction = async (auctionId) => {
+    try {
+      const userInfo = getUserFromToken();
+      if (!userInfo) {
+        console.error("Token tapılmadı və ya istifadəçi məlumatı alınmadı.");
+        return;
+      }
+  
+      const response = await fetch(
+        `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userInfo.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+  
+      const user = await response.json();
+      const fullName = `${user.name} ${user.surname}`;
+  
+      const connection = await startAuctionConnection(userInfo.token);
+      await joinAuction(userInfo.id, fullName);
+  
+      navigate(`/auction/${auctionId}`);
+    } catch (error) {
+      console.error("Auction-a qoşulmaq mümkün olmadı:", error);
+    }
+  };
+
 
 
   const normalizeImagePath = (path) => {
@@ -62,15 +99,7 @@ const AuctionList = () => {
           ))}
         </div>
 
-        <div className="relative">
-          <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-sm hover:bg-gray-200 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 13.414V17a1 1 0 01-.447.832l-4 2.5A1 1 0 019 19.5V13.414L3.293 6.707A1 1 0 013 6V4z" />
-            </svg>
-            All Filters
-            <span className="ml-2 bg-violet-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">3</span>
-          </button>
-        </div>
+        
       </div>
 
       <h1 className="text-2xl font-semibold mb-4">Auctions</h1>
@@ -105,10 +134,14 @@ const AuctionList = () => {
             </div>
 
             <div className="flex flex-col items-end gap-2">
-              <div className="text-lg font-semibold text-green-500">${auction.startingPrice}</div>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-violet-700 text-sm">
-                Join Auction
-              </button>
+              <div className="text-lg font-semibold text-black">${auction.startingPrice}</div>
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-700 text-sm"
+                  onClick={() => handleJoinAuction(auction.id)}
+                >
+                  Join Auction
+                </button>
+
             </div>
           </div>
         ))}

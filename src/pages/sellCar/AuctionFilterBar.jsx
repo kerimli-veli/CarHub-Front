@@ -17,7 +17,6 @@ const AuctionFilterBar = ({ selectedCarId }) => {
   const [endTime, setEndTime] = useState(null);
   const [price, setPrice] = useState(null);
 
-  // HandleApply funksiyasında
 const handleApply = async () => {
   if (!selectedCarId || !startTime || !endTime || !price) {
     alert("Zəhmət olmasa bütün sahələri doldurun.");
@@ -45,9 +44,9 @@ const handleApply = async () => {
       auctionData
     );
 
-    const car = response.data; // API-nın cavabından car məlumatını alın
+    const car = response.data; 
     console.log(car);
-    navigate("/CreateAuction", { state: { car } }); // carData-ı keçirin
+    navigate("/CreateAuction", { state: { car } });
   } catch (error) {
     console.error("Auction creation failed:", error);
     alert("Auction yaradılarkən xəta baş verdi.");
@@ -77,7 +76,7 @@ const handleApply = async () => {
                 onSave={(start, end) => {
                   setStartTime(start);
                   setEndTime(end);
-                  setActive(""); // açılan menyunu bağla
+                  setActive(""); 
                 }}
               />
             )}
@@ -96,7 +95,7 @@ const handleApply = async () => {
               <AuctionPriceDropdown
                 onSave={(value) => {
                   setPrice(value);
-                  setActive(""); // menyunu bağla
+                  setActive(""); 
                 }}
               />
             )}
