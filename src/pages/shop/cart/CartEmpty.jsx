@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Background from '../../../assets/images/Background.svg'; 
 import getUserFromToken from '../../common/GetUserFromToken';
 
 const CartEmpty = () => {

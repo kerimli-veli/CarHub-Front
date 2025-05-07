@@ -240,7 +240,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
 
           <div className="relative group">
             <button className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out">
-              Shop
+              Pages
             </button>
             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
 
@@ -251,8 +251,6 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
           e.preventDefault();
           onAuctionClick();
         }} className="block px-4 py-3 hover:bg-blue-50">Auction</a>
-              <a href="/page3" className="block px-4 py-3 hover:bg-blue-50 rounded-b-xl">Page Three</a>
-=======
               <button
                 onClick={handleBasketClick}
                 className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Basket
