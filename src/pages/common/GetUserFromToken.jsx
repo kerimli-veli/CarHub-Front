@@ -9,6 +9,7 @@ const getUserFromToken = () => {
       const decoded = jwt_decode(token); 
       return {
         id: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+        userRole: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role"],
         // name: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || "",
         // surname: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"] || "",
         // imagePath: decoded.imagePath || "default-profile.jpg"

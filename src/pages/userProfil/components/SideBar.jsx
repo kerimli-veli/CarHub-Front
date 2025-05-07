@@ -23,6 +23,7 @@ import AddCarForm from "./AddCarForm";
 import MyCars from "./MyCars";
 import Cart from "../../shop/cart/Cart";
 import UserBaskets from "../Admin/UserBaskets";
+import CategoryController from "../Admin/CategoryController";
 
 const getMenuItems = (isAdmin) => [
   {
@@ -31,7 +32,9 @@ const getMenuItems = (isAdmin) => [
     label: isAdmin ? "User Baskets" : "Basket",
     path: "cart",
   },
-  { id: "cards", icon: <FaCreditCard />, label: "Card Manager", path: "cards" },
+  isAdmin
+    ? { id: "category", icon: <FaCog />, label: "Category Controller", path: "category" }
+    : { id: "cards", icon: <FaCreditCard />, label: "Card Manager", path: "cards" },
   { id: "account", icon: <FaUser />, label: "Account", path: "account" },
   { id: "transactions", icon: <FaExchangeAlt />, label: "Transactions", path: "transactions" },
   { id: "favorites", icon: <FaHeart />, label: "Favorites", path: "favorites" },
@@ -203,14 +206,15 @@ const Sidebar = () => {
         </motion.div>
 
         <div className="mt-6">
-          <AnimatePresence mode="wait">
-            {location.pathname === "/userProfile/favorites" && <CarFavorites />}
-            {location.pathname === "/userProfile/account" && <Account />}
-            {location.pathname === "/userProfile/addCar" && <AddCarForm />}
-            {location.pathname === "/userProfile/myCars" && <MyCars />}
-            {location.pathname === "/userProfile/cart" &&
-              (user?.isAdmin ? <UserBaskets /> : <Cart />)}
-          </AnimatePresence>
+        <AnimatePresence mode="wait">
+  {location.pathname === "/userProfile/favorites" && <CarFavorites />}
+  {location.pathname === "/userProfile/account" && <Account />}
+  {location.pathname === "/userProfile/addCar" && <AddCarForm />}
+  {location.pathname === "/userProfile/myCars" && <MyCars />}
+  {location.pathname === "/userProfile/cart" &&
+    (user?.isAdmin ? <UserBaskets /> : <Cart />)}
+  {location.pathname === "/userProfile/category" && <CategoryController />}
+</AnimatePresence>
         </div>
       </motion.main>
     </div>

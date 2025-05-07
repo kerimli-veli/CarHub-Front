@@ -26,6 +26,8 @@ import CartPayment from "./pages/shop/CartPaymetn";
 import CartEmpty from "./pages/shop/cart/CartEmpty";
 import ProductDetails from "./pages/shop/ProductDetails";
 import AboutUs from "./pages/aboutus/AboutUs";
+import CategoryController from "./pages/userProfil/Admin/CategoryController";
+
 
 
 import { startConnection, registerOnNotification } from "./assets/Services/notificationService";
@@ -69,12 +71,13 @@ function AppRoutes() {
           <Route path="myCars" element={<MyCars />} />
           <Route path="shopPage" element={<ShopPage />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="category" element={<CategoryController />} />
         </Route>
         
         <Route path="/carDetails/:carId" element={<CarDetail />} />
         <Route path="/messages/:receiverId" element={<Message />} />
 
-        {/* Veli's code */}
+        
         <Route path="/cart" element={<CartPayment />} />
           <Route path='/carDetails/:carId' element={<CarDetail />} />
           <Route path="/cartEmpty" element={<CartEmpty />} />
