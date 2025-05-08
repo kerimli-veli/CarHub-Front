@@ -36,7 +36,7 @@ const AuctionList = () => {
       const connection = await startAuctionConnection(userInfo.token);
       await joinAuction(userInfo.id, fullName);
   
-      navigate(`/auction/${auctionId}`);
+      navigate(`/CreateAuction/${auctionId}`);
     } catch (error) {
       console.error("Auction-a qoşulmaq mümkün olmadı:", error);
     }

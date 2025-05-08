@@ -71,7 +71,7 @@ const TopInfoBar = ({ car, auctionData }) => {
       <div className="flex flex-col items-center">
         <p className="text-sm text-gray-500">Start Price</p>
         <p className="text-2xl font-semibold text-gray-800">
-          ${auctionData.startingPrice || 0}
+          ${auctionData.data.startingPrice || 0}
         </p>
         <button
           onClick={handleStartAuction}
