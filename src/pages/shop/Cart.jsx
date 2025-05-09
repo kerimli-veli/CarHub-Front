@@ -14,7 +14,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchCart = async () => {
       if (!userId || !accessToken) {
-        console.error("Kullanıcı ID veya token bulunamadı!");
+        console.error("User ID or token not found!");
         return;
       }
 
@@ -107,7 +107,7 @@ const Cart = () => {
             ))
           ) : (
             <p className="text-center text-lg text-gray-500 py-10">
-              🛒 Sepetiniz şu anda boş. Alışverişe başlayın!
+              🛒 Your cart is currently empty. Start shopping!
             </p>
           )}
         </div>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const BASE_URL = 'https://localhost:7282/api/User';
+const BASE_URL = 'https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User';
 
 const Tag = ({ label, color }) => {
   const colorMap = {
