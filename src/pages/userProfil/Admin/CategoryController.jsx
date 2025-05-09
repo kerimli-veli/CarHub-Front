@@ -6,6 +6,7 @@ import { Transition } from "@headlessui/react";
 const CategoryController = () => {
   const [categories, setCategories] = useState([]);
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryDescription, setNewCategoryDescription] = useState("");
   const [showInput, setShowInput] = useState(false);
   const [expandedDescriptionId, setExpandedDescriptionId] = useState(null);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
@@ -18,7 +19,7 @@ const CategoryController = () => {
   const fetchCategories = async () => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await fetch("https://localhost:7282/api/Category/GetAll", {
+      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Category/GetAll", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -26,50 +27,59 @@ const CategoryController = () => {
         setCategories(data);
       }
     } catch (err) {
-      console.error("Kategori yükleme hatası:", err);
+      console.error("Upload category error:", err);
     }
   };
 
   const addCategory = async () => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await fetch("https://localhost:7282/api/Category", {
+      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Category/Add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ name: newCategoryName }),
+        body: JSON.stringify({
+          name: newCategoryName,
+          description: newCategoryDescription,
+        }),
       });
       if (response.ok) {
         setNewCategoryName("");
+        setNewCategoryDescription("");
         fetchCategories();
         setShowInput(false);
+      } else {
+        const errData = await response.json();
+        console.error("Could not add category:", errData);
       }
     } catch (err) {
-      console.error("Kategori ekleme hatası:", err);
+      console.error("Error adding category:", err);
     }
   };
 
   const deleteCategory = async (id) => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await fetch(`https://localhost:7282/api/Category/${id}`, {
+      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Category/Remove?id=${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
         fetchCategories();
+      } else {
+        console.error("Delete failed:", await response.text());
       }
     } catch (err) {
-      console.error("Silme hatası:", err);
+      console.error("Delete error:", err);
     }
   };
 
   const updateCategory = async (data) => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await fetch("https://localhost:7282/api/Category/Update", {
+      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Category/Update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -77,12 +87,14 @@ const CategoryController = () => {
         },
         body: JSON.stringify(data),
       });
+  
       if (response.ok) {
-        fetchCategories();
-        setEditingCategoryId(null);
+        window.location.reload();
+      } else {
+        console.error("Update failed:", await response.text());
       }
     } catch (err) {
-      console.error("Güncelleme hatası:", err);
+      console.error("Update error:", err);
     }
   };
 
@@ -90,7 +102,6 @@ const CategoryController = () => {
     getUserFromToken();
     fetchCategories();
   }, []);
-
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -135,25 +146,33 @@ const CategoryController = () => {
             Add Category
           </button>
         ) : (
-          <div className="flex gap-2 mt-4">
+          <div className="flex flex-col gap-3 mt-4">
             <input
               value={newCategoryName}
               onChange={(e) => setNewCategoryName(e.target.value)}
               placeholder="Kategori adı girin"
               className="border border-gray-300 p-2 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
-            <button
-              onClick={addCategory}
-              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
-            >
-              Add
-            </button>
-            <button
-              onClick={() => setShowInput(false)}
-              className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
-            >
-              ✖️
-            </button>
+            <textarea
+              value={newCategoryDescription}
+              onChange={(e) => setNewCategoryDescription(e.target.value)}
+              placeholder="Açıklama girin"
+              className="border border-gray-300 p-2 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={addCategory}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+              >
+                Add
+              </button>
+              <button
+                onClick={() => setShowInput(false)}
+                className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+              >
+                ✖️
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -232,7 +251,6 @@ const CategoryController = () => {
           </li>
         ))}
       </ul>
-
 
       <div className="flex justify-center mt-10">
         <div className="flex items-center gap-4 bg-white px-6 py-3 rounded-full shadow-lg">

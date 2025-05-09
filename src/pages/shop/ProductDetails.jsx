@@ -19,7 +19,7 @@ const ProductDetails = () => {
 
     const fetchProductById = async () => {
       try {
-        const response = await fetch(`https://localhost:7282/api/Product/Get/${id}`);
+        const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/Get/${id}`);
         if (!response.ok) {
           throw new Error(`Product not found. HTTP ${response.status}`);
         }
@@ -41,7 +41,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("https://localhost:7282/api/Product/GetAll");
+        const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/GetAll");
         const data = await response.json();
         setAllProducts(data);
       } catch (error) {

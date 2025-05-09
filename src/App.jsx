@@ -27,6 +27,8 @@ import CartEmpty from "./pages/shop/cart/CartEmpty";
 import ProductDetails from "./pages/shop/ProductDetails";
 import AboutUs from "./pages/aboutus/AboutUs";
 import CategoryController from "./pages/userProfil/Admin/CategoryController";
+import ProductController from "./pages/userProfil/Admin/ProductController";
+import UserController from "./pages/userProfil/Admin/UserController";
 
 
 
@@ -72,6 +74,8 @@ function AppRoutes() {
           <Route path="shopPage" element={<ShopPage />} />
           <Route path="cart" element={<Cart />} />
           <Route path="category" element={<CategoryController />} />
+          <Route path="product" element={<ProductController />} />
+          <Route path="userController" element={<UserController />} />
         </Route>
         
         <Route path="/carDetails/:carId" element={<CarDetail />} />

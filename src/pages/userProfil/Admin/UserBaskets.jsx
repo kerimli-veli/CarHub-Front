@@ -23,7 +23,7 @@ const UserBaskets = () => {
 
   useEffect(() => {
     if (!token) return;
-    fetch("https://localhost:7282/api/User/GetAll", {
+    fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetAll", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -35,7 +35,7 @@ const UserBaskets = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `https://localhost:7282/api/Cart/GetCartWithLinesByUserId?userId=${userId}`,
+        `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -74,7 +74,7 @@ const UserBaskets = () => {
 
   const handleQuantityChange = async (item, change) => {
     try {
-      const res = await fetch("https://localhost:7282/api/Cart/UpdateProductQuantityInCart", {
+      const res = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/UpdateProductQuantityInCart", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -100,7 +100,7 @@ const UserBaskets = () => {
 
   const handleRemoveItem = async (item) => {
     try {
-      const res = await fetch("https://localhost:7282/api/Cart/RemoveProductFromCart", {
+      const res = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/RemoveProductFromCart", {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -121,7 +121,7 @@ const UserBaskets = () => {
 
   const handleClearCart = async () => {
     try {
-      const res = await fetch("https://localhost:7282/api/Cart/ClearCartLines", {
+      const res = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/ClearCartLines", {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
