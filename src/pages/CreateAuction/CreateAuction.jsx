@@ -43,7 +43,7 @@ const CreateAuction = () => {
 
       <div className="w-auto p-10 gap-4 -mt-[5%] grid grid-cols-1 md:grid-cols-2">
         <CarInfoSection car={car} auctionData={auctionData}/>
-        <JoinChat />
+        <JoinChat auctionId={auctionId}/>
       </div>
     </div>
   );
