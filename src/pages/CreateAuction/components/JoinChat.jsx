@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-
 const JoinChat = ({ auctionId }) => {
-  const [connection, setConnection] = useState(null);
   const [participantMessages, setParticipantMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [joined, setJoined] = useState(false); 
-  const navigate = useNavigate(); 
+  const [joined, setJoined] = useState(false);
+
+  const connectionRef = useRef(null);
+  const hasConnected = useRef(false);
+  const navigate = useNavigate();
 
   const getUserId = () => {
     const token = document.cookie
@@ -23,6 +24,19 @@ const JoinChat = ({ auctionId }) => {
     return decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
   };
 
+  const safeStartConnection = async (connection) => {
+    if (connection.state === signalR.HubConnectionState.Disconnected) {
+      try {
+        await connection.start();
+        console.log("SignalR connection started");
+      } catch (err) {
+        console.error("SignalR bağlantı xətası (safeStartConnection):", err);
+      }
+    } else {
+      console.warn("Start çağırılmadı. Mövcud vəziyyət:", connection.state);
+    }
+  };
+
   useEffect(() => {
     const token = document.cookie
       .split("; ")
@@ -31,65 +45,68 @@ const JoinChat = ({ auctionId }) => {
 
     if (!token) return;
 
-    const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/auctionHub", {
-        accessTokenFactory: () => token,
-      })
-      .withAutomaticReconnect()
-      .build();
+    if (!connectionRef.current) {
+      const newConnection = new signalR.HubConnectionBuilder()
+        .withUrl("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/auctionHub", {
+          accessTokenFactory: () => token,
+        })
+        .withAutomaticReconnect()
+        .build();
 
-    setConnection(newConnection);
-  }, []);
+      connectionRef.current = newConnection;
+    }
 
-  useEffect(() => {
-    if (!connection) return;
+    const connection = connectionRef.current;
 
-    connection.start()
-      .then(() => {
-        console.log("SignalR bağlantısı uğurla yaradıldı.");
+    const setupConnection = async () => {
+      if (!hasConnected.current) {
+        await safeStartConnection(connection);
+        hasConnected.current = true;
 
-        connection.on("ParticipantJoined", (participantMessage) => {
-          console.log("Real-time mesaj:", participantMessage);
-          setParticipantMessages((prev) => {
-            if (prev.includes(participantMessage)) return prev;
-            return [...prev, participantMessage];
-          });
+        connection.off("ParticipantJoined");
+        connection.off("ParticipantLeft");
+
+        connection.on("ParticipantJoined", (msg) => {
+          setParticipantMessages(prev => [...prev, msg]);
         });
 
-        connection.on("ParticipantLeft", (leaveMessage) => {
-          console.log("Participant left:", leaveMessage);
-          setParticipantMessages((prev) => [...prev, leaveMessage]);
+        connection.on("ParticipantLeft", (msg) => {
+          setParticipantMessages(prev => [...prev, msg]);
         });
 
-        const joinAuction = async () => {
-          const userId = getUserId();
-          if (!userId) return;
-
+        const userId = getUserId();
+        if (userId) {
           try {
             await connection.invoke("JoinAuction", parseInt(auctionId), parseInt(userId));
-            setJoined(true); 
-            console.log("Auction-a SignalR ilə qoşuldu");
+            setJoined(true);
           } catch (err) {
-            console.error("SignalR JoinAuction xətası:", err);
+            console.error("JoinAuction invoke xətası:", err);
           }
-        };
+        }
+      }
+    };
 
-        joinAuction();
-      })
-      .catch((err) => console.error("SignalR bağlantı xətası:", err));
-  }, [connection, auctionId]);
+    setupConnection();
+
+    return () => {
+      if (connection && connection.state === signalR.HubConnectionState.Connected) {
+        connection.stop();
+        console.log("Unmount zamanı bağlantı dayandırıldı.");
+        hasConnected.current = false;
+      }
+    };
+  }, [auctionId]);
 
   const handleLeave = async () => {
+    const connection = connectionRef.current;
     const userId = getUserId();
     if (!userId || !connection) return;
-  
+
     try {
-      // 1. SignalR ilə qrupdan çıx
       await connection.invoke("LeaveAuction", parseInt(auctionId), parseInt(userId));
       setJoined(false);
       setMessage("Auction-dan çıxıldı.");
-  
-      // 2. HTTP DELETE ilə backend-ə məlumat ötür
+
       await axios.delete(
         "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/AuctionParticipant/LeaveAuction",
         {
@@ -99,16 +116,16 @@ const JoinChat = ({ auctionId }) => {
           },
         }
       );
-  
-      // 3. İstifadəçini yönləndir
+
+      await connection.stop(); // <-- çox vacibdir!
+      hasConnected.current = false;
+
       navigate("/auctionList");
     } catch (err) {
       console.error("LeaveAuction xətası:", err);
       setMessage("Auction-dan çıxmaq alınmadı.");
     }
   };
-  
-  
 
   return (
     <div className="p-4 border border-blue-300 rounded-xl bg-blue-50 text-blue-700 text-sm">
