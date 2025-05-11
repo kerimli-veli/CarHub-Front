@@ -15,8 +15,8 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAuctionClick = (e) => {
-    e.preventDefault(); 
-    setIsModalOpen(true); 
+    e.preventDefault();
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
     try {
       const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${query}`);
       const result = await response.json();
-  
+
       if (Array.isArray(result)) {
         setSearchResults(result);
       } else if (result.data && Array.isArray(result.data)) {
@@ -77,7 +77,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
     }
   };
 
-  
+
 
   useEffect(() => {
     if (!showSearchInput) {
@@ -99,9 +99,9 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
     };
   }, []);
 
-  
 
- const handleBasketClick = () => {
+
+  const handleBasketClick = () => {
     navigate("/cart");
   };
 
@@ -137,103 +137,114 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
             Home
             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
           </a>
-          
 
 
-          
+
+
           <div className="relative group" id="search-box">
-  <button
-    onClick={() => setShowSearchInput(!showSearchInput)}
-    className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out"
-  >
-    Product Search
-    <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
-  </button>
+            <button
+              onClick={() => setShowSearchInput(!showSearchInput)}
+              className="text-lg font-medium text-white hover:text-blue-300 transition duration-300 ease-in-out"
+            >
+              Product Search
+              <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
+            </button>
 
-  {showSearchInput && (
-    <div
-      className="absolute top-full mt-3 right-0 w-[420px] z-50 bg-white p-4 rounded-lg shadow-lg max-h-[500px] overflow-y-auto scrollbar-hide"
-      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-    >
-      <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          placeholder="Product search..."
-          value={searchQuery}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSearchQuery(value);
-            if (value.trim() !== "") {
-              handleProductSearch(value);
-            } else {
-              setSearchResults([]);
-            }
-          }}
-          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 text-black"
-        />
-        <button
-          onClick={() => handleProductSearch(searchQuery)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-        >
-          Search
-        </button>
-      </div>
-
-      {searchQuery.trim() !== "" ? (
-        searchResults.length > 0 &&
-        searchResults.some(
-          (product) => product.name && product.unitPrice !== undefined && product.unitPrice !== null
-        ) ? (
-          <div className="space-y-3">
-            {searchResults
-              .filter(
-                (product) =>
-                  product.name &&
-                  product.unitPrice !== undefined &&
-                  product.unitPrice !== null
-              )
-              .map((product) => (
-                <div
-                  key={product.id}
-                  className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-gray-200 shadow-sm hover:shadow-md transition-all"
-                >
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={product.imagePath || "/placeholder.jpg"}
-                      alt={product.name}
-                      className="w-10 h-10 object-cover rounded bg-gray-200 shadow-sm"
-                    />
-                    <div>
-                      <h3 className="text-sm font-semibold text-gray-900">
-                        {product.name}
-                      </h3>
-                      <p className="text-xs text-gray-500">
-                        ${product.unitPrice?.toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-
+            {showSearchInput && (
+              <div
+                className="absolute top-full mt-3 right-0 w-[420px] z-50 bg-white p-4 rounded-lg shadow-lg max-h-[500px] overflow-y-auto scrollbar-hide"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
+                <div className="flex gap-2 mb-4">
+                  <input
+                    type="text"
+                    placeholder="Product search..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setSearchQuery(value);
+                      if (value.trim() !== "") {
+                        handleProductSearch(value);
+                      } else {
+                        setSearchResults([]);
+                      }
+                    }}
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300 text-black"
+                  />
                   <button
-                    onClick={() =>
-                      navigate(`/product-details/${product.id}`, {
-                        state: product,
-                      })
-                    }
-                    className="text-xs px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                    onClick={() => handleProductSearch(searchQuery)}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
                   >
-                    Details
+                    Search
                   </button>
                 </div>
-              ))}
 
+                {searchQuery.trim() !== "" ? (
+                  searchResults.length > 0 &&
+                    searchResults.some(
+                      (product) => product.name && product.unitPrice !== undefined && product.unitPrice !== null
+                    ) ? (
+                    <div className="space-y-3">
+                      {searchResults
+                        .filter(
+                          (product) =>
+                            product.name &&
+                            product.unitPrice !== undefined &&
+                            product.unitPrice !== null
+                        )
+                        .map((product) => (
+                          <div
+                            key={product.id}
+                            className="flex items-center justify-between p-2 bg-gray-50 rounded-md border border-gray-200 shadow-sm hover:shadow-md transition-all"
+                          >
+                            <div className="flex items-center gap-3">
+                              <img
+                                src={
+                                  Array.isArray(product.imagePath)
+                                    ? product.imagePath[0]
+                                    : (() => {
+                                      try {
+                                        const parsed = JSON.parse(product.imagePath);
+                                        return Array.isArray(parsed) ? parsed[0] : "/placeholder.jpg";
+                                      } catch {
+                                        return "/placeholder.jpg";
+                                      }
+                                    })()
+                                }
+                                alt={product.name}
+                                className="w-10 h-10 object-cover rounded bg-gray-200 shadow-sm"
+                              />
+                              <div>
+                                <h3 className="text-sm font-semibold text-gray-900">
+                                  {product.name}
+                                </h3>
+                                <p className="text-xs text-gray-500">
+                                  ${product.unitPrice?.toFixed(2)}
+                                </p>
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() =>
+                                navigate(`/product-details/${product.id}`, {
+                                  state: product,
+                                })
+                              }
+                              className="text-xs px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                            >
+                              Details
+                            </button>
+                          </div>
+                        ))}
+
+                    </div>
+                  ) : (
+                    <div className="text-gray-500 text-sm">No products found.</div>
+                  )
+                ) : null}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="text-gray-500 text-sm">No products found.</div>
-        )
-      ) : null}
-    </div>
-  )}
-</div>
 
 
           <div className="relative group">
@@ -246,25 +257,25 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
               <a href="/shopPage" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Shop</a>
 
               <a href="#" onClick={(e) => {
-          e.preventDefault();
-          onAuctionClick();
-        }} className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Auction</a>
-              
+                e.preventDefault();
+                onAuctionClick();
+              }} className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Auction</a>
+
               <button
                 onClick={handleBasketClick}
                 className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Basket
               </button>
-              
+
             </div>
           </div>
 
           <button
-      onClick={handleNavigate}
-      className="text-lg font-medium text-white hover:text-blue-300 relative group"
-    >
-      About
-      <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
-    </button>
+            onClick={handleNavigate}
+            className="text-lg font-medium text-white hover:text-blue-300 relative group"
+          >
+            About
+            <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-blue-400 via-sky-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500"></span>
+          </button>
 
           <a href="#" className="text-lg font-medium text-white hover:text-blue-300 relative group">
             Contact
@@ -275,10 +286,10 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
             <div className="relative group z-20">
               {user.userImagePath ? (
                 <img
-                src={
-                  user.userImagePath
-                    ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
-                    : "https://via.placeholder.com/150"}
+                  src={
+                    user.userImagePath
+                      ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
+                      : "https://via.placeholder.com/150"}
                   alt="User"
                   className="w-15 h-15 rounded-full shadow-lg cursor-pointer transform transition-transform duration-500 hover:scale-110 hover:shadow-2xl"
                 />
@@ -291,10 +302,10 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
               <div className="absolute top-14 right-0 w-64 bg-white shadow-lg rounded-xl p-4 opacity-0 transform scale-95 translate-y-4 group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-500 ease-in-out pointer-events-none group-hover:pointer-events-auto">
                 <div className="flex items-center space-x-3 border-b pb-3 mb-3">
                   <img
-                  src={
-                    user.userImagePath
-                      ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
-                      : "https://via.placeholder.com/150"}
+                    src={
+                      user.userImagePath
+                        ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
+                        : "https://via.placeholder.com/150"}
                     alt="User"
                     className="w-14 h-14 rounded-full"
                   />
@@ -313,7 +324,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
                   <i className="fas fa-user-cog mr-3"></i> Account settings
                 </button>
 
-             
+
 
                 <button
                   onClick={() => (window.location.href = "/userProfile/favorites")}
