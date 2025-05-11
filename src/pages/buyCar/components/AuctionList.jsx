@@ -14,7 +14,6 @@ const AuctionList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // SignalR bağlantısını qururuq
     const connectToSignalR = async () => {
       const userInfo = getUserFromToken();
       if (!userInfo) {
@@ -63,16 +62,28 @@ const AuctionList = () => {
         console.error("Token tapılmadı və ya istifadəçi məlumatı alınmadı.");
         return;
       }
-
+  
+      const userId = parseInt(userInfo.id);
+  
+      // 🔁 1. API-yə POST istəyi atırıq
+      await axios.post("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/AuctionParticipant/JoinAuction", {
+        auctionId: auctionId,
+        userId: userId,
+      });
+  
+      // 🔁 2. SignalR vasitəsilə real-time qoşuluruq
       if (connection) {
-        await connection.invoke('JoinAuction', parseInt(auctionId), parseInt(userInfo.id)); // auctionId və userId integer tipinə çevrilir
+        await connection.invoke('JoinAuction', auctionId, userId);
       }
-
+  
+      // 🔁 3. Yönləndirmə
       navigate(`/CreateAuction/${auctionId}`);
+  
     } catch (error) {
       console.error("Auction-a qoşulmaq mümkün olmadı:", error);
     }
   };
+  
 
   const normalizeImagePath = (path) => {
     const baseUrl = "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/";

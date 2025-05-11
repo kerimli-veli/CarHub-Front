@@ -38,6 +38,7 @@ const CreateAuction = () => {
       </div>
 
       <div className='w-auto p-10'>
+        
         <TopInfoBar car={car} auctionData={auctionData} />
       </div>
 
