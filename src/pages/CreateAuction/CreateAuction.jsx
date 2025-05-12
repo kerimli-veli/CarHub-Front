@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Header from '../landing/components/Header';
 import TopInfoBar from "./components/TopInfoBar";
 import CarInfoSection from './components/CarInfoSection';
-import JoinChat from './components/JoinChat';
+import JoinChat from './components/auctionComponents/JoinChat';
 import axios from 'axios';
 
 const CreateAuction = () => {
