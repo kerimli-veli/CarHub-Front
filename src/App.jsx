@@ -70,8 +70,9 @@ function AppRoutes() {
           <Route path="addCar" element={<AddCarForm />} />
           <Route path="myCars" element={<MyCars />} />
           <Route path="shopPage" element={<ShopPage />} />
+          <Route path="cart" element={<Cart />} />
         </Route>
-        <Route path="cart" element={<Cart />} />
+        
         <Route path="/carDetails/:carId" element={<CarDetail />} />
         <Route path="/messages/:receiverId" element={<Message />} />
 
