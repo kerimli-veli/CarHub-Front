@@ -1,8 +1,11 @@
-import React from "react";
+import React, { use } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import  getUserFromToken  from "./../../common/GetUserFromToken"; 
 
 const TopInfoBar = ({ car, auctionData }) => {
+  const [isActive, setIsActive] = React.useState(auctionData?.data?.isActive);
+
   const handleStartAuction = async () => {
     try {
       const token = document.cookie
@@ -16,7 +19,7 @@ const TopInfoBar = ({ car, auctionData }) => {
       }
 
       const response = await axios.put(
-        `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Auction/SetIsActive?AuctionId=${auctionData.id}`,
+        `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Auction/SetIsActive?AuctionId=${auctionData.data.id}`,
         {},
         {
           headers: {
@@ -27,6 +30,7 @@ const TopInfoBar = ({ car, auctionData }) => {
 
       if (response.data?.isSuccess) {
         toast.success("Auksion uğurla aktiv edildi!");
+        setIsActive(true); // auction aktiv oldu
       } else {
         toast.error("Auksion aktiv edilə bilmədi.");
       }
@@ -35,6 +39,13 @@ const TopInfoBar = ({ car, auctionData }) => {
       toast.error("Xəta baş verdi. Daha sonra yenidən cəhd edin.");
     }
   };
+
+  const userId = getUserFromToken(); // 
+
+  // Conditional rendering: Show button only if auctionData.data.sellerId matches userId
+  const shouldShowButton = auctionData?.data?.sellerId === parseInt(userId.id);
+ 
+
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center border border-gray-100 bg-white px-6 py-6 md:py-6 rounded-lg shadow mb-6 w-full gap-6 md:gap-0">
@@ -71,14 +82,19 @@ const TopInfoBar = ({ car, auctionData }) => {
       <div className="flex flex-col items-center">
         <p className="text-sm text-gray-500">Start Price</p>
         <p className="text-2xl font-semibold text-gray-800">
-          ${auctionData.startingPrice || 0}
+          ${auctionData.data.startingPrice || 0}
         </p>
-        <button
-          onClick={handleStartAuction}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-2 rounded-md mt-2 text-[15px] font-medium"
-        >
-          Start
-        </button>
+        {shouldShowButton && (
+          <button
+            onClick={handleStartAuction}
+            disabled={isActive}
+            className={`${
+              isActive ? "bg-red-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+            } text-white px-10 py-2 rounded-md mt-2 text-[15px] font-medium`}
+          >
+            {isActive ? "Stop" : "Start"}
+          </button>
+        )}
       </div>
     </div>
   );

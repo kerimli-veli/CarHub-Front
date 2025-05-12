@@ -60,7 +60,9 @@ function AppRoutes() {
       <Routes location={state?.background || location}>
         <Route path="/" element={<Landing />} />
         <Route path="/AuctionList" element={<BuyCar />} />
-        <Route path="/CreateAuction" element={<CreateAuction />} />
+        
+        <Route path="/CreateAuction/:auctionId" element={<CreateAuction />} />
+
         <Route path="/createNewAuction" element={<SellCar />} />
         <Route path="/shopPage" element={<ShopPage />} />
         <Route path="/SignIn" element={<SignIn />} />

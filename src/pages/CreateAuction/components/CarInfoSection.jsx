@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import AuctionTimeSide from "./AuctionTimeSide";
-import { useLocation } from "react-router";
 
-const CarInfoSection = ({ car }) => {
+const CarInfoSection = ({ car , auctionData}) => {
   const imageData = car?.carImagePaths?.[0];
-  const location = useLocation();
-  const auctionData = location.state?.car?.data;
-
   const imageList = [
     imageData?.mainImage,
     imageData?.firstSideImage,

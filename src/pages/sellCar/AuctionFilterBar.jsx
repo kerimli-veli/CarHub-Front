@@ -17,8 +17,7 @@ const AuctionFilterBar = ({ selectedCarId }) => {
   const [endTime, setEndTime] = useState(null);
   const [price, setPrice] = useState(null);
 
-  // HandleApply funksiyasında
-const handleApply = async () => {
+  const handleApply = async () => {
   if (!selectedCarId || !startTime || !endTime || !price) {
     alert("Zəhmət olmasa bütün sahələri doldurun.");
     return;
@@ -45,9 +44,12 @@ const handleApply = async () => {
       auctionData
     );
 
-    const car = response.data; // API-nın cavabından car məlumatını alın
-    console.log(car);
-    navigate("/CreateAuction", { state: { car } }); // carData-ı keçirin
+    const auctionId = response.data.data.id; 
+    console.log("Auction created:", response.data.data);
+    
+    console.log(auctionId);
+    navigate(`/CreateAuction/${auctionId}`);
+
   } catch (error) {
     console.error("Auction creation failed:", error);
     alert("Auction yaradılarkən xəta baş verdi.");
@@ -77,7 +79,7 @@ const handleApply = async () => {
                 onSave={(start, end) => {
                   setStartTime(start);
                   setEndTime(end);
-                  setActive(""); // açılan menyunu bağla
+                  setActive(""); 
                 }}
               />
             )}
@@ -96,7 +98,7 @@ const handleApply = async () => {
               <AuctionPriceDropdown
                 onSave={(value) => {
                   setPrice(value);
-                  setActive(""); // menyunu bağla
+                  setActive(""); 
                 }}
               />
             )}
@@ -115,10 +117,12 @@ const handleApply = async () => {
       <div className="flex items-center gap-3">
       <button
         onClick={handleApply}
-        className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+        disabled={!selectedCarId}
+        className={`px-6 py-2 rounded-md transition text-white ${!selectedCarId ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
       >
         Apply
       </button>
+
       </div>
     </motion.div>
   );
