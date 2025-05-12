@@ -42,7 +42,7 @@ const CreateAuction = () => {
         <TopInfoBar car={car} auctionData={auctionData} />
       </div>
 
-      <div className="w-auto p-10 gap-4 -mt-[5%] grid grid-cols-1 md:grid-cols-2">
+      <div className="w-auto p-10 gap-15 -mt-[2%] grid grid-cols-1 md:grid-cols-2">
         <CarInfoSection car={car} auctionData={auctionData}/>
         <JoinChat auctionId={auctionId}/>
       </div>

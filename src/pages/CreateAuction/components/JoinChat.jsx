@@ -10,6 +10,8 @@ const JoinChat = ({ auctionId }) => {
 
   const connectionRef = useRef(null);
   const hasConnected = useRef(false);
+  const messagesEndRef = useRef(null);
+
   const navigate = useNavigate();
 
   const getUserId = () => {
@@ -67,11 +69,11 @@ const JoinChat = ({ auctionId }) => {
         connection.off("ParticipantLeft");
 
         connection.on("ParticipantJoined", (msg) => {
-          setParticipantMessages(prev => [...prev, msg]);
+          setParticipantMessages((prev) => [...prev, msg]);
         });
 
         connection.on("ParticipantLeft", (msg) => {
-          setParticipantMessages(prev => [...prev, msg]);
+          setParticipantMessages((prev) => [...prev, msg]);
         });
 
         const userId = getUserId();
@@ -97,6 +99,10 @@ const JoinChat = ({ auctionId }) => {
     };
   }, [auctionId]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [participantMessages]);
+
   const handleLeave = async () => {
     const connection = connectionRef.current;
     const userId = getUserId();
@@ -117,10 +123,11 @@ const JoinChat = ({ auctionId }) => {
         }
       );
 
-      await connection.stop(); // <-- çox vacibdir!
+      await connection.stop();
       hasConnected.current = false;
 
       navigate("/auctionList");
+      window.location.reload();
     } catch (err) {
       console.error("LeaveAuction xətası:", err);
       setMessage("Auction-dan çıxmaq alınmadı.");
@@ -128,22 +135,41 @@ const JoinChat = ({ auctionId }) => {
   };
 
   return (
-    <div className="p-4 border border-blue-300 rounded-xl bg-blue-50 text-blue-700 text-sm">
-      <h2 className="font-semibold mb-2">Auction-a qoşulanlar:</h2>
+    <div className="relative p-4 border border-gray-100 rounded-xl bg-white text-sm h-[97%]">
+      <h2 className="font-semibold mb-2 text-blue-700">Auction-a qoşulanlar:</h2>
 
-      {participantMessages.length > 0 && (
-        <div className="mt-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <h3 className="font-semibold mb-2 text-gray-800">Real-time mesajlar:</h3>
-          <ul className="list-disc list-inside text-sm text-gray-700">
-            {participantMessages.map((msg, index) => (
-              <li key={index}>{msg}</li>
-            ))}
+      <div className="overflow-y-auto h-[230px] pr-2">
+        {participantMessages.length > 0 && (
+          <ul className="list-disc list-inside space-y-1">
+            {participantMessages.map((msg, index) => {
+              const isJoin = msg.toLowerCase().includes("join");
+              const isLeave = msg.toLowerCase().includes("left");
+
+              const textColor = isJoin
+                ? "text-green-500 font-semibold"
+                : isLeave
+                ? "text-red-500 font-semibold"
+                : "text-gray-700";
+
+              return (
+                <li
+                key={index}
+                className={`relative pl-6 ${textColor} list-none left-0 top-1 h-5 bg-no-repeat bg-contain`} // list-none default bullet-i ləğv edir
+                style={{ backgroundImage: "url('https://i.postimg.cc/bwffRW8k/Screenshot-2025-05-12-151133.png')" }}
+              >
+                {msg}
+              </li>
+              
+
+              );
+            })}
+            <div ref={messagesEndRef} />
           </ul>
-        </div>
-      )}
+        )}
+      </div>
 
       {message && (
-        <div className="mt-4 p-2 bg-green-100 text-green-700 rounded-lg">
+        <div className="absolute top-2 right-2 p-2 bg-green-100 text-green-700 rounded-lg text-xs">
           {message}
         </div>
       )}
@@ -151,9 +177,9 @@ const JoinChat = ({ auctionId }) => {
       {joined && (
         <button
           onClick={handleLeave}
-          className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          className="absolute bottom-4 left-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
         >
-          Auction-dan çıx
+          Leave Auction
         </button>
       )}
     </div>

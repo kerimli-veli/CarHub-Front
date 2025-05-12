@@ -44,8 +44,7 @@ const TopInfoBar = ({ car, auctionData }) => {
 
   // Conditional rendering: Show button only if auctionData.data.sellerId matches userId
   const shouldShowButton = auctionData?.data?.sellerId === parseInt(userId.id);
-  console.log(typeof userId.id);
-  console.log(typeof auctionData.data.sellerId);
+ 
 
 
   return (

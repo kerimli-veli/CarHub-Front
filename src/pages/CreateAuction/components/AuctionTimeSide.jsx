@@ -11,10 +11,14 @@ const formatTime = (datetime) => {
   return new Date(datetime).toLocaleTimeString(undefined, options);
 };
 
+
+
 const AuctionTimeSide = ({ auctionData }) => {
   if (!auctionData) return null;
+
+  console.log(`ISACTIVE: ${auctionData.data.isActive}`);
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white px-6 py-8 rounded-lg shadow-md w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white px-6 py-8 w-full">
       {/* Start Date */}
       <div className="flex items-center gap-4">
         <FaCalendarAlt className="text-blue-500 text-xl" />
@@ -44,14 +48,15 @@ const AuctionTimeSide = ({ auctionData }) => {
 
       {/* Status */}
       <div className="flex items-center gap-4">
-        <FaCheckCircle className={`text-xl ${auctionData.data.isActive === "True" ? "text-green-600" : "text-gray-400"}`} />
+        <FaCheckCircle className={`text-xl ${auctionData.data.isActive ? "text-green-500" : "text-gray-400"}`} />
         <div>
           <p className="text-gray-500 text-sm">Status</p>
-          <p className={`font-semibold ${auctionData.data.isActive === "True" ? "text-green-700" : "text-gray-700"}`}>
-            {auctionData.data.isActive}
+          <p className={`font-semibold ${auctionData.data.isActive ? "text-green-500" : "text-gray-700"}`}>
+            {auctionData.data.isActive ? "Active" : "Inactive"}
           </p>
         </div>
       </div>
+
     </div>
   );
 };
