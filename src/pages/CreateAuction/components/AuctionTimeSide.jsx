@@ -11,17 +11,20 @@ const formatTime = (datetime) => {
   return new Date(datetime).toLocaleTimeString(undefined, options);
 };
 
+
+
 const AuctionTimeSide = ({ auctionData }) => {
   if (!auctionData) return null;
 
+  console.log(`ISACTIVE: ${auctionData.data.isActive}`);
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white px-6 py-8 rounded-lg shadow-md w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white px-6 py-8 w-full">
       {/* Start Date */}
       <div className="flex items-center gap-4">
         <FaCalendarAlt className="text-blue-500 text-xl" />
         <div>
           <p className="text-gray-500 text-sm">Start Date</p>
-          <p className="text-gray-800 font-medium">{formatDate(auctionData.startTime)}</p>
+          <p className="text-gray-800 font-medium">{formatDate(auctionData.data.startTime)}</p>
         </div>
       </div>
 
@@ -30,7 +33,7 @@ const AuctionTimeSide = ({ auctionData }) => {
         <FaClock className="text-green-500 text-xl" />
         <div>
           <p className="text-gray-500 text-sm">Start Time</p>
-          <p className="text-gray-800 font-medium">{formatTime(auctionData.startTime)}</p>
+          <p className="text-gray-800 font-medium">{formatTime(auctionData.data.startTime)}</p>
         </div>
       </div>
 
@@ -39,20 +42,21 @@ const AuctionTimeSide = ({ auctionData }) => {
         <FaHourglassHalf className="text-yellow-500 text-xl" />
         <div>
           <p className="text-gray-500 text-sm">End Time</p>
-          <p className="text-gray-800 font-medium">{formatTime(auctionData.endTime)}</p>
+          <p className="text-gray-800 font-medium">{formatTime(auctionData.data.endTime)}</p>
         </div>
       </div>
 
       {/* Status */}
       <div className="flex items-center gap-4">
-        <FaCheckCircle className={`text-xl ${auctionData.isActive === "True" ? "text-green-600" : "text-gray-400"}`} />
+        <FaCheckCircle className={`text-xl ${auctionData.data.isActive ? "text-green-500" : "text-gray-400"}`} />
         <div>
           <p className="text-gray-500 text-sm">Status</p>
-          <p className={`font-semibold ${auctionData.isActive === "True" ? "text-green-700" : "text-gray-700"}`}>
-            {auctionData.isActive}
+          <p className={`font-semibold ${auctionData.data.isActive ? "text-green-500" : "text-gray-700"}`}>
+            {auctionData.data.isActive ? "Active" : "Inactive"}
           </p>
         </div>
       </div>
+
     </div>
   );
 };
