@@ -100,7 +100,7 @@ const Products = ({ selectedCategory, priceRange }) => {
     }
 
     try {
-      const response = await fetch(`https://localhost:7282/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
+      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${accessToken}`
@@ -145,7 +145,7 @@ const Products = ({ selectedCategory, priceRange }) => {
     }
 
     try {
-      const response = await fetch("https://localhost:7282/api/Cart/AddProductToCart", {
+      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/AddProductToCart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

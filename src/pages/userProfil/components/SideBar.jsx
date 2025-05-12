@@ -23,6 +23,9 @@ import AddCarForm from "./AddCarForm";
 import MyCars from "./MyCars";
 import Cart from "../../shop/cart/Cart";
 import UserBaskets from "../Admin/UserBaskets";
+import CategoryController from "../Admin/CategoryController";
+import ProductController from "../Admin/ProductController";
+import UserController from "../Admin/UserController"; // ✅ Eklendi
 
 const getMenuItems = (isAdmin) => [
   {
@@ -31,18 +34,22 @@ const getMenuItems = (isAdmin) => [
     label: isAdmin ? "User Baskets" : "Basket",
     path: "cart",
   },
-  { id: "cards", icon: <FaCreditCard />, label: "Card Manager", path: "cards" },
+  isAdmin
+    ? { id: "category", icon: <FaCog />, label: "Category Controller", path: "category" }
+    : { id: "cards", icon: <FaCreditCard />, label: "Card Manager", path: "cards" },
   { id: "account", icon: <FaUser />, label: "Account", path: "account" },
-  { id: "transactions", icon: <FaExchangeAlt />, label: "Transactions", path: "transactions" },
+  isAdmin
+    ? { id: "productController", icon: <FaCog />, label: "Product Controller", path: "product" }
+    : { id: "transactions", icon: <FaExchangeAlt />, label: "Transactions", path: "transactions" },
   { id: "favorites", icon: <FaHeart />, label: "Favorites", path: "favorites" },
   { id: "myCars", icon: <FaCar />, label: "My Cars", path: "myCars" },
   { id: "addCar", icon: <FaPlusSquare />, label: "Add Car", path: "addCar" },
 ];
 
-const otherMenu = [
-  { id: "search", icon: <FaSearch />, label: "Search" },
-  { id: "settings", icon: <FaCog />, label: "Settings" },
-  { id: "help", icon: <FaLifeRing />, label: "Help Center" },
+const getOtherMenu = (isAdmin) => [
+  isAdmin
+    ? { id: "userController", icon: <FaUser />, label: "User Controller", path: "userController" }
+    : { id: "help", icon: <FaLifeRing />, label: "Help Center", path: "help" },
 ];
 
 const Sidebar = () => {
@@ -59,13 +66,16 @@ const Sidebar = () => {
         const token = Cookies.get("accessToken");
         if (!token) return;
 
-        const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userFromToken.id}`, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/json",
-          },
-        });
+        const response = await fetch(
+          `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userFromToken.id}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
 
         if (response.ok) {
           const result = await response.json();
@@ -88,6 +98,7 @@ const Sidebar = () => {
   };
 
   const menuItems = getMenuItems(user?.isAdmin);
+  const otherMenu = getOtherMenu(user?.isAdmin);
 
   return (
     <div className="flex min-h-screen bg-gray-100 transition-colors duration-300">
@@ -152,17 +163,25 @@ const Sidebar = () => {
             })}
 
             <span className="text-xs text-gray-400 uppercase mt-6 mb-2 block">Other Menu</span>
-            {otherMenu.map((item) => (
-              <motion.div
-                key={item.id}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg mb-1 text-sm cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300"
-              >
-                <span className="text-lg">{item.icon}</span>
-                {item.label}
-              </motion.div>
-            ))}
+            {otherMenu.map((item) => {
+              const isActive = location.pathname === `/userProfile/${item.path}`;
+              return (
+                <motion.div
+                  key={item.id}
+                  onClick={() => handleItemClick(item.path)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg mb-1 text-sm cursor-pointer transition-all duration-300 ${
+                    isActive
+                      ? "bg-blue-500 text-white shadow-md"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  <span className="text-lg">{item.icon}</span>
+                  <span>{item.label}</span>
+                </motion.div>
+              );
+            })}
           </nav>
         </div>
 
@@ -197,9 +216,12 @@ const Sidebar = () => {
             (user?.isAdmin ? "View Users' Baskets" : "Your basket")}
           {location.pathname === "/userProfile/cards" && "Manage Your Cards"}
           {location.pathname === "/userProfile/account" && "View Account Details"}
-          {location.pathname === "/userProfile/transactions" && "Track Your Transactions"}
+          {location.pathname === "/userProfile/product" &&
+            (user?.isAdmin ? "Manage All Products" : "Track Your Transactions")}
           {location.pathname === "/userProfile/myCars" && "Manage your cars"}
           {location.pathname === "/userProfile/addCar" && "Add your car"}
+          {location.pathname === "/userProfile/userController" && "User Management Panel"}
+          {location.pathname === "/userProfile/help" && "Help Center"}
         </motion.div>
 
         <div className="mt-6">
@@ -210,6 +232,15 @@ const Sidebar = () => {
             {location.pathname === "/userProfile/myCars" && <MyCars />}
             {location.pathname === "/userProfile/cart" &&
               (user?.isAdmin ? <UserBaskets /> : <Cart />)}
+            {location.pathname === "/userProfile/category" && <CategoryController />}
+            {location.pathname === "/userProfile/product" &&
+              (user?.isAdmin ? <ProductController /> : <div>Transactions Component</div>)}
+            {location.pathname === "/userProfile/userController" && user?.isAdmin && (
+              <UserController />
+            )}
+            {location.pathname === "/userProfile/help" && !user?.isAdmin && (
+              <div>Help Center İçeriği</div>
+            )}
           </AnimatePresence>
         </div>
       </motion.main>

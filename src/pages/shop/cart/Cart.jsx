@@ -32,7 +32,7 @@ const Cart = ({ onTotalChange }) => {
     }
   
     try {
-      const response = await fetch(`https://localhost:7282/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
+      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
         headers: { "Authorization": `Bearer ${accessToken}` }
       });
   
@@ -64,7 +64,7 @@ const Cart = ({ onTotalChange }) => {
     }
 
     try {
-      const response = await fetch(`https://localhost:7282/api/Cart/ClearCartLines`, {
+      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/ClearCartLines`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
@@ -106,7 +106,7 @@ const Cart = ({ onTotalChange }) => {
     if (!cartId || !item?.product?.id) return;
 
     try {
-      const response = await fetch("https://localhost:7282/api/Cart/RemoveProductFromCart", {
+      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/RemoveProductFromCart", {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
@@ -159,7 +159,7 @@ const Cart = ({ onTotalChange }) => {
     const productId = item.product.id;
 
     try {
-      const response = await fetch("https://localhost:7282/api/Cart/UpdateProductQuantityInCart", {
+      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/UpdateProductQuantityInCart", {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
@@ -217,17 +217,16 @@ const Cart = ({ onTotalChange }) => {
       className="flex items-center justify-between py-4 px-4 mb-4 bg-gray-50 rounded-lg border border-gray-200 shadow transition-all duration-300 hover:shadow-md hover:border-gray-400"
     >
       <div className="flex items-center space-x-4">
-        <img
-          src={item.product.imagePath || "/placeholder.jpg"}
-          alt={item.product.name}
-          className="w-16 h-16 object-cover rounded-lg bg-gray-200 shadow-md"
-        />
-        <div>
-          <h3 className="text-md font-semibold">{item.product.name}</h3>
-          <p className="text-sm text-gray-500">{item.product.description || '—'}</p>
-        </div>
-      </div>
-
+  <img
+    src={(item.product.imagePath?.[0]) || "/placeholder.jpg"}
+    alt={item.product.name}
+    className="w-16 h-16 object-cover rounded-lg bg-gray-200 shadow-md"
+  />
+  <div>
+    <h3 className="text-md font-semibold">{item.product.name}</h3>
+    <p className="text-sm text-gray-500">{item.product.description || '—'}</p>
+  </div>
+</div>
       <div className="flex items-center space-x-6">
         <div className="flex items-center gap-2">
           <button
@@ -271,7 +270,7 @@ const Cart = ({ onTotalChange }) => {
       {cartItems.length > 0 && (
         <div className="flex justify-between items-center mt-8 w-full flex-wrap">
 
-          {/* 🧭 Ortada: Sayfa kontrol alanı */}
+          
           {cartItems.length > itemsPerPage ? (
             <div className="w-full lg:w-auto mx-auto flex items-center gap-3 justify-center mb-4">
               <button
@@ -298,7 +297,7 @@ const Cart = ({ onTotalChange }) => {
             <div className="w-full lg:w-auto"></div>
           )}
 
-          {/* 🗑 Sağda: Delete All */}
+          
           <div className="w-full lg:w-auto flex justify-end">
             <button
               onClick={() => setShowConfirm(true)}
@@ -324,13 +323,13 @@ const Cart = ({ onTotalChange }) => {
                 }}
                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
               >
-                Evet
+                Yes
               </button>
               <button
                 onClick={() => setShowConfirm(false)}
                 className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
               >
-                Hayır
+                No
               </button>
             </div>
           </div>

@@ -9,9 +9,10 @@ const getUserFromToken = () => {
     const decoded = jwt_decode(token);
     return {
       id: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+      userRole: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role"],
       name: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || "",
       surname: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"] || "",
-      token: token, // <== token-i də əlavə et
+      token: token, 
     };
   } catch (error) {
     console.error("Token decode error:", error);
