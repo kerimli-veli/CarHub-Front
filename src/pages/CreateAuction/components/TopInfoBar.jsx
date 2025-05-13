@@ -19,7 +19,7 @@ const TopInfoBar = ({ car, auctionData }) => {
       }
 
       const response = await axios.put(
-        `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Auction/SetIsActive?AuctionId=${auctionData.data.id}`,
+        `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/SetIsActive?AuctionId=${auctionData.data.id}`,
         {},
         {
           headers: {

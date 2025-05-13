@@ -14,7 +14,7 @@ const CreateAuction = () => {
   useEffect(() => {
   const fetchAuctionDetails = async () => {
     try {
-      const response = await axios.get(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Auction/AuctionGetById?AuctionId=${auctionId}`);
+      const response = await axios.get(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/AuctionGetById?AuctionId=${auctionId}`);
       const data = response.data.data;
       setAuctionData(response.data);
       setCar(data.car);

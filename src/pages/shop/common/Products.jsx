@@ -26,10 +26,10 @@ const Products = ({ selectedCategory, priceRange }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/GetAll";
+        let url = "https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Product/GetAll";
 
         if (selectedCategory) {
-          url = `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/GetProductsByCategoryId?categoryId=${selectedCategory.id}`;
+          url = `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Product/GetProductsByCategoryId?categoryId=${selectedCategory.id}`;
         }
         const response = await fetch(url);
         const data = await response.json();
@@ -100,7 +100,7 @@ const Products = ({ selectedCategory, priceRange }) => {
     }
 
     try {
-      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
+      const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${accessToken}`
@@ -145,7 +145,7 @@ const Products = ({ selectedCategory, priceRange }) => {
     }
 
     try {
-      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/AddProductToCart", {
+      const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/AddProductToCart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

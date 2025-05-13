@@ -40,7 +40,7 @@ const AuctionFilterBar = ({ selectedCarId }) => {
 
   try {
     const response = await axios.post(
-      "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Auction",
+      "https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction",
       auctionData
     );
 

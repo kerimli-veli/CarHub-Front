@@ -32,7 +32,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
       setLoading(true);
 
       try {
-        const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
+        const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -61,7 +61,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
 
   const handleProductSearch = async (query) => {
     try {
-      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${query}`);
+      const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${query}`);
       const result = await response.json();
 
       if (Array.isArray(result)) {
@@ -288,7 +288,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
                 <img
                   src={
                     user.userImagePath
-                      ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
+                      ? `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${user.userImagePath}`
                       : "https://via.placeholder.com/150"}
                   alt="User"
                   className="w-15 h-15 rounded-full shadow-lg cursor-pointer transform transition-transform duration-500 hover:scale-110 hover:shadow-2xl"
@@ -304,7 +304,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
                   <img
                     src={
                       user.userImagePath
-                        ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
+                        ? `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${user.userImagePath}`
                         : "https://via.placeholder.com/150"}
                     alt="User"
                     className="w-14 h-14 rounded-full"

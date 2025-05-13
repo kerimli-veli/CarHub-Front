@@ -17,7 +17,7 @@ export const startConnection = async () => {
 
   connection = new HubConnectionBuilder()
     .withUrl(
-      "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/notificationHub",
+      "https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/notificationHub",
       {
         accessTokenFactory: () => token,
       }

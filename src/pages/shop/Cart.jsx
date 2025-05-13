@@ -19,7 +19,7 @@ const Cart = () => {
       }
 
       try {
-        const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
+        const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${accessToken}`

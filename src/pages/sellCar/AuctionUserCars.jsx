@@ -12,7 +12,7 @@ const AuctionUserCars = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const normalizeImagePath = (path) => {
-    const baseImageUrl = "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/";
+    const baseImageUrl = "https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/";
 
     if (!path) return "https://via.placeholder.com/300x200";  
     return path.startsWith("http") ? path : `${baseImageUrl}${path}`;  
@@ -27,7 +27,7 @@ const AuctionUserCars = () => {
 
         const token = Cookies.get("accessToken");
 
-        const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetUserCars?UserId=${user.id}`, {
+        const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User/GetUserCars?UserId=${user.id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

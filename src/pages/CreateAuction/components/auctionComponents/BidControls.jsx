@@ -2,7 +2,7 @@ import React from "react";
 
 const BidControls = ({ onBid }) => {
     return (
-      <div className="flex gap-3 mt-[20%] justify-center">
+      <div className="flex gap-3 mt-[9%] justify-center">
         {[100, 250, 350].map((amount) => (
           <button
             key={amount}

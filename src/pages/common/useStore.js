@@ -21,7 +21,7 @@ const Header = ({ bgColor = "bg-[#050B20]" }) => {
       try {
         const email = localStorage.getItem("email");
         if (email) {
-          const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
+          const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`, {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`,

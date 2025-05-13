@@ -17,6 +17,8 @@ const JoinChat = ({ auctionId }) => {
   const navigate = useNavigate();
   const [lastBidder, setLastBidder] = useState("");
   const [currentPrice, setCurrentPrice] = useState(0);
+  const [topBidder, setTopBidder] = useState(null);
+
 
   const getUserId = () => {
     const token = document.cookie
@@ -48,11 +50,12 @@ const JoinChat = ({ auctionId }) => {
 
     if (!connectionRef.current) {
       const conn = new signalR.HubConnectionBuilder()
-        .withUrl("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/auctionHub", {
+        .withUrl("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/auctionHub", {
           accessTokenFactory: () => token,
         })
         .withAutomaticReconnect()
         .build();
+        
 
       connectionRef.current = conn;
     }
@@ -67,10 +70,19 @@ const JoinChat = ({ auctionId }) => {
         connection.off("ParticipantJoined");
         connection.off("ParticipantLeft");
         connection.off("BidPlaced");
+        
+        connection.on("ParticipantJoined", (msg) => {
+          setParticipantMessages((prev) => {
+            if (prev[prev.length - 1] === msg) return prev;
+            return [...prev, msg];
+          });
+        });
 
-        connection.on("ParticipantJoined", (msg) =>
-          setParticipantMessages((prev) => [...prev, msg])
-        );
+        connection.on("InitialAuctionState", (data) => {
+        if (data?.topBidder && data?.price) {
+            setTopBidder({ name: data.topBidder, price: data.price });
+          }
+        });
         
         connection.on("ParticipantLeft", (msg) =>
           setParticipantMessages((prev) => [...prev, msg])
@@ -82,19 +94,28 @@ const JoinChat = ({ auctionId }) => {
             `${data.bidder} placed a bid of ${data.newPrice} AZN.`,
           ]);
           setRemainingSeconds(data.remainingSeconds);
+          setTopBidder({ name: data.bidder, price: data.newPrice });
+
         });
 
-        connection.on("AuctionEnded", (data) => {
-          const winnerMsg = `🎉 Təbriklər ${data.winner}, maşını qazandınız! Son təklif: ${data.finalPrice} AZN`;
-          setParticipantMessages((prev) => [...prev, winnerMsg]);
-          setRemainingSeconds(0);
-          setMessage("⚡ Auction bitdi! Sizi yönləndiririk...");
         
-          setTimeout(() => {
-            navigate("/auctionList");
-            window.location.reload();
-          }, 2000); 
-        });
+        connection.on("AuctionEnded", async (data) => {
+        const winnerMsg = `🎉 Təbriklər ${data.winner}, maşını qazandınız! Son təklif: ${data.finalPrice} AZN`;
+        setParticipantMessages((prev) => [...prev, winnerMsg]);
+        setRemainingSeconds(0);
+        setMessage("⚡ Auction bitdi! Sizi yönləndiririk...");
+
+        //  try {
+        //   await axios.delete(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/DeleteAuction?id=${auctionId}`);
+        // } catch (err) {
+        //   console.error("Auction silinərkən xəta baş verdi:", err);
+        // }
+
+        // setTimeout(() => {
+        //   navigate("/auctionList");
+        //   window.location.reload();
+        // }, 2000);
+      });
         
 
         const userId = getUserId();
@@ -151,7 +172,7 @@ const JoinChat = ({ auctionId }) => {
       setMessage("Left the auction.");
 
       await axios.delete(
-        "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/AuctionParticipant/LeaveAuction",
+        "https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/AuctionParticipant/LeaveAuction",
         {
           data: {
             auctionId: parseInt(auctionId),
@@ -171,20 +192,30 @@ const JoinChat = ({ auctionId }) => {
   };
 
   return (
-    <div className="relative p-4 border border-gray-100 rounded-xl bg-white text-sm h-[50%]">
-      <h2 className="font-semibold mb-2 text-blue-700">Auction Participants:</h2>
+    <div className="relative p-4 border border-gray-100 rounded-xl bg-white text-sm h-[70%]">
+      <h2 className="font-semibold mb-2 text-gray-500 text-end">Auction Participants</h2>
 
-      <AuctionParticipants messages={participantMessages} />
-      <AuctionTimer seconds={remainingSeconds} />
+      <div className="mt-[5%]">
+        <AuctionParticipants messages={participantMessages} />
+      </div>
+      
 
       {joined && (
         <button
           onClick={handleLeave}
-          className="absolute bottom-4 left-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          className="absolute bottom-8 left-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
         >
           Leave Auction
         </button>
       )}
+
+
+      <AuctionTimer seconds={remainingSeconds} />
+      {topBidder && (
+      <div className="absolute top-3 z-10 bg-white text-gray-800 border border-gray-300 px-5 py-2 rounded-lg shadow-md text-sm font-medium animate-pulse">
+       ⌛ Last offer: <span className="font-semibold">{topBidder.name}</span> — {topBidder.price} AZN
+      </div>
+)}
       <div className="mt-4">
         <BidControls onBid={handleBid} />
       </div>
