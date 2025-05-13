@@ -30,7 +30,7 @@ const CarInfoSection = ({ car , auctionData}) => {
           <img
             src={`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${imageList[selectedIndex]}`}
             alt="Selected"
-            className="w-full h-[250px] md:h-[350px] object-contain rounded-lg"
+            className="w-full h-[350px] md:h-[450px] object-contain rounded-lg"
           />
           {/* Controls */}
           <div className="flex justify-center gap-4 mt-4">

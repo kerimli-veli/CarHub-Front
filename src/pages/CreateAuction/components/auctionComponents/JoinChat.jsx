@@ -16,8 +16,7 @@ const JoinChat = ({ auctionId }) => {
   const hasConnected = useRef(false);
   const navigate = useNavigate();
   const [lastBidder, setLastBidder] = useState("");
-const [currentPrice, setCurrentPrice] = useState(0);
-
+  const [currentPrice, setCurrentPrice] = useState(0);
 
   const getUserId = () => {
     const token = document.cookie
@@ -35,7 +34,7 @@ const [currentPrice, setCurrentPrice] = useState(0);
       try {
         await connection.start();
       } catch (err) {
-        console.error("SignalR start xətası:", err);
+        console.error("SignalR start error:", err);
       }
     }
   };
@@ -80,10 +79,23 @@ const [currentPrice, setCurrentPrice] = useState(0);
         connection.on("BidPlaced", (data) => {
           setParticipantMessages((prev) => [
             ...prev,
-            `${data.bidder} ${data.newPrice} AZN ilə təklif verdi.`,
+            `${data.bidder} placed a bid of ${data.newPrice} AZN.`,
           ]);
           setRemainingSeconds(data.remainingSeconds);
         });
+
+        connection.on("AuctionEnded", (data) => {
+          const winnerMsg = `🎉 Təbriklər ${data.winner}, maşını qazandınız! Son təklif: ${data.finalPrice} AZN`;
+          setParticipantMessages((prev) => [...prev, winnerMsg]);
+          setRemainingSeconds(0);
+          setMessage("⚡ Auction bitdi! Sizi yönləndiririk...");
+        
+          setTimeout(() => {
+            navigate("/auctionList");
+            window.location.reload();
+          }, 2000); 
+        });
+        
 
         const userId = getUserId();
         if (userId) {
@@ -103,7 +115,6 @@ const [currentPrice, setCurrentPrice] = useState(0);
     };
   }, [auctionId]);
 
-  // Timer azaldıcı effekt
   useEffect(() => {
     if (remainingSeconds === null) return;
     const interval = setInterval(() => {
@@ -125,7 +136,7 @@ const [currentPrice, setCurrentPrice] = useState(0);
     try {
       await connection.invoke("PlaceBid", parseInt(auctionId), parseInt(userId), increment);
     } catch (err) {
-      console.error("PlaceBid xətası:", err);
+      console.error("PlaceBid error:", err);
     }
   };
 
@@ -137,7 +148,7 @@ const [currentPrice, setCurrentPrice] = useState(0);
     try {
       await connection.invoke("LeaveAuction", parseInt(auctionId), parseInt(userId));
       setJoined(false);
-      setMessage("Auction-dan çıxıldı.");
+      setMessage("Left the auction.");
 
       await axios.delete(
         "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/AuctionParticipant/LeaveAuction",
@@ -154,21 +165,17 @@ const [currentPrice, setCurrentPrice] = useState(0);
       navigate("/auctionList");
       window.location.reload();
     } catch (err) {
-      console.error("LeaveAuction xətası:", err);
-      setMessage("Auction-dan çıxmaq alınmadı.");
+      console.error("LeaveAuction error:", err);
+      setMessage("Failed to leave the auction.");
     }
   };
 
   return (
-    <div className="relative p-4 border border-gray-100 rounded-xl bg-white text-sm h-[97%]">
-      <h2 className="font-semibold mb-2 text-blue-700">Auction-a qoşulanlar:</h2>
+    <div className="relative p-4 border border-gray-100 rounded-xl bg-white text-sm h-[50%]">
+      <h2 className="font-semibold mb-2 text-blue-700">Auction Participants:</h2>
 
       <AuctionParticipants messages={participantMessages} />
       <AuctionTimer seconds={remainingSeconds} />
-
-      <div className="mt-4">
-        <BidControls onBid={handleBid} />
-      </div>
 
       {joined && (
         <button
@@ -178,6 +185,9 @@ const [currentPrice, setCurrentPrice] = useState(0);
           Leave Auction
         </button>
       )}
+      <div className="mt-4">
+        <BidControls onBid={handleBid} />
+      </div>
 
       {message && (
         <div className="absolute top-2 right-2 p-2 bg-green-100 text-green-700 rounded-lg text-xs">
