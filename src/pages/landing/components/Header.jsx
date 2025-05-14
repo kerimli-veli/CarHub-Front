@@ -257,8 +257,8 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
               <a href="/shopPage" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Shop</a>
 
               <a href="#" onClick={(e) => {
-                e.preventDefault();
-                onAuctionClick();
+                
+                window.openGlobalModal()
               }} className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Auction</a>
 
               <button

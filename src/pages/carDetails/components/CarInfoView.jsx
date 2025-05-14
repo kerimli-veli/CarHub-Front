@@ -58,9 +58,6 @@ const CarInfoView = ({
               >
                 <FaHeart /> {savedCars[car.id] ? "Saved" : "Save"}
               </button>
-              <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-black px-2 py-1 rounded-md">
-                <FaBalanceScale /> Compare
-              </button>
             </div>
           </div>
 
