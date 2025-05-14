@@ -1,5 +1,5 @@
 import React, { useEffect, useRef  } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate  } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -39,6 +39,7 @@ function AppRoutes() {
   const location = useLocation();
   const state = location.state;
   const lastMessageRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const setupNotifications = async () => {
@@ -46,6 +47,10 @@ function AppRoutes() {
       if (connection) {
         registerOnNotification((message) => {
           toast.info(message.message);
+
+          if (message.message?.toLowerCase().includes("auction stoped")) {
+            navigate("/auctionList");
+          }          
         });
       }
     };

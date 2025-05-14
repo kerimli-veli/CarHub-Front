@@ -6,8 +6,9 @@ import axios from "axios";
 import AuctionParticipants from "./AuctionParticipants";
 import BidControls from "./BidControls";
 import AuctionTimer from "./AuctionTimer";
+import GetUserFromToken from "./../../../common/GetUserFromToken"
 
-const JoinChat = ({ auctionId }) => {
+const JoinChat = ({ auctionId, auctionData }) => {
   const [participantMessages, setParticipantMessages] = useState([]);
   const [remainingSeconds, setRemainingSeconds] = useState(null);
   const [joined, setJoined] = useState(false);
@@ -30,6 +31,12 @@ const JoinChat = ({ auctionId }) => {
     const decoded = JSON.parse(atob(token.split(".")[1]));
     return decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
   };
+
+  const currentUser = GetUserFromToken();
+  const userName = currentUser?.name;
+  const isTopBidder = topBidder?.name?.toLowerCase().includes(userName?.toLowerCase());
+  const shouldShowButton = auctionData?.data?.sellerId === parseInt(getUserId());
+
 
   const safeStartConnection = async (connection) => {
     if (connection.state === signalR.HubConnectionState.Disconnected) {
@@ -103,20 +110,19 @@ const JoinChat = ({ auctionId }) => {
         const winnerMsg = `🎉 Təbriklər ${data.winner}, maşını qazandınız! Son təklif: ${data.finalPrice} AZN`;
         setParticipantMessages((prev) => [...prev, winnerMsg]);
         setRemainingSeconds(0);
-        setMessage("⚡ Auction bitdi! Sizi yönləndiririk...");
 
-        //  try {
-        //   await axios.delete(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/DeleteAuction?id=${auctionId}`);
-        // } catch (err) {
-        //   console.error("Auction silinərkən xəta baş verdi:", err);
-        // }
-
-        // setTimeout(() => {
-        //   navigate("/auctionList");
-        //   window.location.reload();
-        // }, 2000);
+        try {
+          await axios.delete(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/DeleteAuction?id=${auctionId}`);
+        } catch (err) {
+          console.error("Auction silinərkən xəta baş verdi:", err);
+        }
+  
+        setTimeout(() => {
+          navigate("/auctionList");
+          window.location.reload();
+        }, 2000);
       });
-        
+
 
         const userId = getUserId();
         if (userId) {
@@ -183,6 +189,7 @@ const JoinChat = ({ auctionId }) => {
 
       await connection.stop();
       hasConnected.current = false;
+      sessionStorage.removeItem(`joined_auction_${auctionId}`);
       navigate("/auctionList");
       window.location.reload();
     } catch (err) {
@@ -192,34 +199,56 @@ const JoinChat = ({ auctionId }) => {
   };
 
   return (
-    <div className="relative p-4 border border-gray-100 rounded-xl bg-white text-sm h-[70%]">
-      <h2 className="font-semibold mb-2 text-gray-500 text-end">Auction Participants</h2>
-
+    <div
+      className={`relative p-4 border border-gray-100 rounded-xl bg-white text-sm ${
+        !shouldShowButton ? "h-[70%]" : "h-[60%]"
+      }`}
+    >
+      <h2 className="font-semibold mb-2 text-gray-500 text-end">
+        Auction Participants
+      </h2>
+  
       <div className="mt-[5%]">
         <AuctionParticipants messages={participantMessages} />
       </div>
-      
-
-      {joined && (
+  
+      {!shouldShowButton && joined && (
         <button
           onClick={handleLeave}
-          className="absolute bottom-8 left-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          disabled={isTopBidder}
+          className={`absolute bottom-4 left-4 px-4 py-2 rounded transition font-medium 
+            ${
+              isTopBidder
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-red-500 text-white hover:bg-red-600"
+            }
+          `}
+          title={
+            isTopBidder
+              ? "Ən son təklif verən istifadəçi auction-dan çıxa bilməz"
+              : ""
+          }
         >
           Leave Auction
         </button>
       )}
-
-
+  
       <AuctionTimer seconds={remainingSeconds} />
+  
       {topBidder && (
-      <div className="absolute top-3 z-10 bg-white text-gray-800 border border-gray-300 px-5 py-2 rounded-lg shadow-md text-sm font-medium animate-pulse">
-       ⌛ Last offer: <span className="font-semibold">{topBidder.name}</span> — {topBidder.price} AZN
-      </div>
-)}
-      <div className="mt-4">
-        <BidControls onBid={handleBid} />
-      </div>
-
+        <div className="absolute top-3 z-10 bg-white text-gray-800 border border-gray-300 px-5 py-2 rounded-lg shadow-md text-sm font-medium animate-pulse">
+          ⌛ Last offer:{" "}
+          <span className="font-semibold">{topBidder.name}</span> —{" "}
+          {topBidder.price} AZN
+        </div>
+      )}
+  
+      {!shouldShowButton && (
+        <div>
+          <BidControls onBid={handleBid} />
+        </div>
+      )}
+  
       {message && (
         <div className="absolute top-2 right-2 p-2 bg-green-100 text-green-700 rounded-lg text-xs">
           {message}
@@ -227,6 +256,7 @@ const JoinChat = ({ auctionId }) => {
       )}
     </div>
   );
+  
 };
 
 export default JoinChat;

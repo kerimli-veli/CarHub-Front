@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 
 const AuctionListCard = ({
   auction,
@@ -7,6 +8,9 @@ const AuctionListCard = ({
   handleJoinAuction,
   normalizeImagePath,
 }) => {
+  const navigate = useNavigate();
+  const hasJoined = sessionStorage.getItem(`joined_auction_${auction.id}`) === 'true';
+
   return (
     <div
       onClick={() => setSelectedAuctionId(auction.id)}
@@ -36,22 +40,26 @@ const AuctionListCard = ({
 
       <div className="flex flex-col items-end gap-2">
         <div className="text-lg font-semibold text-black">${auction.startingPrice}</div>
-            <button
-                className={`px-4 py-2 rounded-xl text-sm 
-                    ${auction.isActive 
-                    ? 'bg-blue-500 text-white hover:bg-blue-700 cursor-pointer' 
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
-                `}
-                onClick={(e) => {
-                    if (!auction.isActive) return; // klikləməyə icazə vermə
-                    e.stopPropagation();
-                    handleJoinAuction(auction.id);
-                }}
-                disabled={!auction.isActive} // texniki olaraq da deaktiv et
-                >
-                {auction.isActive ? 'Join Auction' : 'Waiting...'}
-            </button>
+        <button
+          className={`px-4 py-2 rounded-xl text-sm transition 
+            ${auction.isActive
+              ? 'bg-blue-500 text-white hover:bg-blue-600'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
+          `}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!auction.isActive) return;
 
+            if (hasJoined) {
+              navigate(`/CreateAuction/${auction.id}`); // 🔁 Sadəcə yönləndir
+            } else {
+              handleJoinAuction(auction.id); // 🔁 API + SignalR
+            }
+          }}
+          disabled={!auction.isActive}
+        >
+          {auction.isActive ? (hasJoined ? 'Continue Auction' : 'Join Auction') : 'Waiting...'}
+        </button>
       </div>
     </div>
   );

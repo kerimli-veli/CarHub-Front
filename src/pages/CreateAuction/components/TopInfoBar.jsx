@@ -2,9 +2,36 @@ import React, { use } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import  getUserFromToken  from "./../../common/GetUserFromToken"; 
+import { useNavigate } from "react-router-dom";
+import { startConnection } from "./../../../assets/Services/notificationService";
+
 
 const TopInfoBar = ({ car, auctionData }) => {
   const [isActive, setIsActive] = React.useState(auctionData?.data?.isActive);
+
+  const navigate = useNavigate();
+
+  const handleStopAuction = async () => {
+    try {
+      const token = getUserFromToken();
+  
+      await axios.delete(
+        `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/DeleteAuction?id=${auctionData.data.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      toast.success("Auksion dayandırıldı");
+  
+      navigate("/auctionList"); 
+    } catch (error) {
+      console.error("Stop zamanı xəta:", error);
+      toast.error("Auksion dayandırıla bilmədi.");
+    }
+  };
 
   const handleStartAuction = async () => {
     try {
@@ -85,16 +112,17 @@ const TopInfoBar = ({ car, auctionData }) => {
           ${auctionData.data.startingPrice || 0}
         </p>
         {shouldShowButton && (
-          <button
-            onClick={handleStartAuction}
-            disabled={isActive}
-            className={`${
-              isActive ? "bg-red-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-            } text-white px-10 py-2 rounded-md mt-2 text-[15px] font-medium`}
-          >
-            {isActive ? "Stop" : "Start"}
-          </button>
-        )}
+        <button
+          onClick={isActive ? handleStopAuction : handleStartAuction}
+          className={`${
+            isActive
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-blue-600 hover:bg-blue-700"
+          } text-white px-10 py-2 rounded-md mt-2 text-[15px] font-medium`}
+        >
+          {isActive ? "Stop" : "Start"}
+        </button>
+      )}
       </div>
     </div>
   );

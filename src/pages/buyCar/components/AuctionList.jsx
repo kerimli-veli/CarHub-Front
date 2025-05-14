@@ -66,18 +66,16 @@ const AuctionList = () => {
   
       const userId = parseInt(userInfo.id);
   
-      // 🔁 1. API-yə POST istəyi atırıq
       await axios.post("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/AuctionParticipant/JoinAuction", {
         auctionId: auctionId,
         userId: userId,
       });
   
-      // 🔁 2. SignalR vasitəsilə real-time qoşuluruq
       if (connection) {
         await connection.invoke('JoinAuction', auctionId, userId);
       }
-  
-      // 🔁 3. Yönləndirmə
+      
+      sessionStorage.setItem(`joined_auction_${auctionId}`, 'true');
       navigate(`/CreateAuction/${auctionId}`);
   
     } catch (error) {
@@ -121,7 +119,6 @@ const AuctionList = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen rounded-2xl">
-      
       {/* Filter buttons */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div className="flex flex-wrap gap-2">
@@ -138,22 +135,34 @@ const AuctionList = () => {
           ))}
         </div>
       </div>
-
+  
       <h1 className="text-2xl font-semibold mb-4">Auctions</h1>
-      <div className="grid gap-6">
-      {auctions.map((auction) => (
-        <AuctionListCard
-          key={auction.id}
-          auction={auction}
-          selectedAuctionId={selectedAuctionId}
-          setSelectedAuctionId={setSelectedAuctionId}
-          handleJoinAuction={handleJoinAuction}
-          normalizeImagePath={normalizeImagePath}
-        />
-      ))}
+  
+      {auctions.length === 0 ? (
+        <div className="flex justify-center items-center mt-[7%]">
+          <img 
+            src="https://i.postimg.cc/k52DkBDz/Screenshot-2025-05-14-175206.png"
+            alt="No auctions found"
+            className="max-w-md w-[11%] h-auto opacity-80"
+          />
+        </div>
+      ) : (
+        <div className="grid gap-6">
+          {auctions.map((auction) => (
+            <AuctionListCard
+              key={auction.id}
+              auction={auction}
+              selectedAuctionId={selectedAuctionId}
+              setSelectedAuctionId={setSelectedAuctionId}
+              handleJoinAuction={handleJoinAuction}
+              normalizeImagePath={normalizeImagePath}
+              hasJoined={sessionStorage.getItem(`joined_auction_${auction.id}`) === 'true'}
+            />
+          ))}
+        </div>
+      )}
     </div>
-    </div>
-  );
+  );  
 };
 
 export default AuctionList;
