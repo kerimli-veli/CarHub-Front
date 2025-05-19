@@ -30,11 +30,18 @@ const AuctionFilterBar = ({ selectedCarId }) => {
     return;
   }
 
+  function formatLocalDateTime(date) {
+  // "yyyy-MM-ddTHH:mm:ss" formatı qaytarır (UTC deyil!)
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+
   const auctionData = {
     carId: selectedCarId,
     sellerId: user.id,
-    startTime: new Date(startTime).toISOString(),
-    endTime: new Date(endTime).toISOString(),
+    startTime: formatLocalDateTime(startTime),
+    endTime: formatLocalDateTime(endTime),
     startingPrice: price,
   };
 

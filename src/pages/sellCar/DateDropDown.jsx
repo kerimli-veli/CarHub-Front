@@ -25,15 +25,16 @@ export default function DateDropdown({ onSave }) {
 
   const handleSave = () => {
     if (!isReadyToSave()) return;
-
-    const startDateTime = `${startDate} ${startTime}:00`;
-    const endDateTime = `${endDate} ${endTime}:00`;
-
+  
+    const startDateTime = new Date(`${startDate}T${startTime}:00`);
+    const endDateTime = new Date(`${endDate}T${endTime}:00`);
+  
     if (onSave) onSave(startDateTime, endDateTime);
-
+  
     setMessage("Time saved!");
     setTimeout(() => setMessage(""), 3000);
   };
+  
 
   return (
     <motion.div
@@ -43,7 +44,7 @@ export default function DateDropdown({ onSave }) {
       transition={{ duration: 0.3 }}
       className="absolute left-0 top-[60px] w-[320px] bg-white shadow-md rounded-xl z-50 p-4 text-sm space-y-3"
     >
-      {/* Start and End Date/Time Inputs */}
+
       <div className="space-y-3">
         <div>
           <label className="block text-gray-500 mb-1 ml-1">Start Date & Time</label>
@@ -90,7 +91,7 @@ export default function DateDropdown({ onSave }) {
         </div>
       </div>
 
-      {/* Shortcut Buttons */}
+
       {shortcuts.map((label) => (
         <button
           key={label}
@@ -105,7 +106,7 @@ export default function DateDropdown({ onSave }) {
         </button>
       ))}
 
-      {/* Save Button */}
+
       <div className="pt-2">
         <button
           disabled={!isReadyToSave()}
@@ -120,7 +121,7 @@ export default function DateDropdown({ onSave }) {
         </button>
       </div>
 
-      {/* Success Message */}
+
       {message && (
         <motion.div
           initial={{ y: -40, opacity: 0 }}
