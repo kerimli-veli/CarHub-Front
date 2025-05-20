@@ -112,15 +112,27 @@ const JoinChat = ({ auctionId, auctionData }) => {
         setRemainingSeconds(0);
 
         try {
-          await axios.delete(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/DeleteAuction?id=${auctionId}`);
+          const winnerId = data?.userId || 0;
+          const messageReason = winnerId !== 0 ? "win" : "time";
+
+          await axios.delete(
+            `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/DeleteAuction`,
+            {
+              data: {
+                id: auctionId,
+                userId: winnerId,
+                messageReason: messageReason
+              }
+            }
+          );
         } catch (err) {
           console.error("Auction silinərkən xəta baş verdi:", err);
         }
-  
-        setTimeout(() => {
-          navigate("/auctionList");
-          window.location.reload();
-        }, 2000);
+
+        // setTimeout(() => {
+        //   navigate("/auctionList");
+        //   window.location.reload();
+        // }, 2000);
       });
 
 
