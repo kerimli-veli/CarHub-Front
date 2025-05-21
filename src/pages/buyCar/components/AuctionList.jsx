@@ -119,7 +119,7 @@ const AuctionList = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen rounded-2xl">
-      {/* Filter buttons */}
+
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <div className="flex flex-wrap gap-2">
           {['All Auctions', 'Ongoing', 'Not Started'].map((label) => (

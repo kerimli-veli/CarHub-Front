@@ -86,10 +86,14 @@ const JoinChat = ({ auctionId, auctionData }) => {
         });
 
         connection.on("InitialAuctionState", (data) => {
-        if (data?.topBidder && data?.price) {
+          if (data?.topBidder && data?.price) {
             setTopBidder({ name: data.topBidder, price: data.price });
           }
+          if (data?.remainingSeconds) {
+            setRemainingSeconds(data.remainingSeconds);
+          }
         });
+        
         
         connection.on("ParticipantLeft", (msg) =>
           setParticipantMessages((prev) => [...prev, msg])
@@ -113,6 +117,7 @@ const JoinChat = ({ auctionId, auctionData }) => {
 
         try {
           const winnerId = data?.userId || 0;
+          console.log(data);
           const messageReason = winnerId !== 0 ? "win" : "time";
 
           await axios.delete(
@@ -129,10 +134,10 @@ const JoinChat = ({ auctionId, auctionData }) => {
           console.error("Auction silinərkən xəta baş verdi:", err);
         }
 
-        // setTimeout(() => {
-        //   navigate("/auctionList");
-        //   window.location.reload();
-        // }, 2000);
+        setTimeout(() => {
+          navigate("/auctionList");
+          window.location.reload();
+        }, 2000);
       });
 
 
@@ -209,7 +214,7 @@ const JoinChat = ({ auctionId, auctionData }) => {
       setMessage("Failed to leave the auction.");
     }
   };
-
+  
   return (
     <div
       className={`relative p-4 border border-gray-100 rounded-xl bg-white text-sm ${

@@ -15,23 +15,28 @@ const TopInfoBar = ({ car, auctionData }) => {
   const handleStopAuction = async () => {
     try {
       const token = getUserFromToken();
-
+  
       await axios.delete(
-        `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/DeleteAuction?id=${auctionData.data.id}`,
+        `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction/DeleteAuction`,
         {
+          data: {
+            id: auctionData.data.id,
+            userId: 0, 
+            messageReason: "time"
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
-      toast.success("Auksion dayandırıldı");
+  
       navigate("/auctionList");
     } catch (error) {
       console.error("Stop zamanı xəta:", error);
       toast.error("Auksion dayandırıla bilmədi.");
     }
   };
+  
 
   const handleStartAuction = async () => {
     try {

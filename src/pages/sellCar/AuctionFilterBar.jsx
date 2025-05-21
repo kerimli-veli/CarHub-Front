@@ -54,7 +54,6 @@ const AuctionFilterBar = ({ selectedCarId }) => {
     const auctionId = response.data.data.id; 
     console.log("Auction created:", response.data.data);
     
-    console.log(auctionId);
     navigate(`/CreateAuction/${auctionId}`);
 
   } catch (error) {
@@ -70,7 +69,7 @@ const AuctionFilterBar = ({ selectedCarId }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.4 }}
-      className="relative mx-auto my-10 bg-[#2F3B52] px-8 py-4 rounded-2xl shadow-md w-[80%] flex items-center gap-4 justify-center"
+      className="relative mx-auto my-10 bg-[#2F3B52] px-8 py-4 rounded-2xl shadow-md w-[82.5%] flex items-center gap-4 justify-center"
     >
       <div className="flex items-center gap-5 flex-grow relative">
         <div className="relative">
