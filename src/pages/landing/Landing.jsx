@@ -14,7 +14,6 @@ import ChooseTemplateModal from '../common/modals/ChooseTemplateModal';
 import { useState } from 'react';
 
 const Landing = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="relative min-h-screen flex flex-col">
       
@@ -31,7 +30,7 @@ const Landing = () => {
 
       
       <div className="absolute left-1/2 transform -translate-x-1/2 w-full max-w-[85%] z-20">
-      <Header bgColor='' onAuctionClick={() => setIsModalOpen(true)} />
+      <Header bgColor=''/>
       <motion.div
         initial={{ opacity: 0, y: -40, x: -20, blur: 10 }}
         whileInView={{ opacity: 1, y: 0, x: 0, blur: 0 }}
@@ -73,7 +72,6 @@ const Landing = () => {
         <Footer />
       </div>
 
-      <ChooseTemplateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

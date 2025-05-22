@@ -67,7 +67,7 @@ const Sidebar = () => {
         if (!token) return;
 
         const response = await fetch(
-          `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userFromToken.id}`,
+          `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userFromToken.id}`,
           {
             method: "GET",
             headers: {

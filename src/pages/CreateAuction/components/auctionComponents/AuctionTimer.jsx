@@ -1,14 +1,13 @@
 import React from "react";
 
 const AuctionTimer = ({ seconds }) => {
-    return (
-      <div className="mt-2 text-center">
-        <span className="inline-block bg-yellow-100 text-yellow-800 px-4 py-1 rounded-full text-xs font-semibold">
-        {seconds}
-        </span>
+  return (
+    <div className="absolute ">
+      <div className="bg-white border border-gray-300 px-4 py-1 rounded-md shadow-sm text-gray-800 text-sm font-medium">
+        ⏱ {seconds}s
       </div>
-    );
-  };
-  
-  export default AuctionTimer;
-  
+    </div>
+  );
+};
+
+export default AuctionTimer;

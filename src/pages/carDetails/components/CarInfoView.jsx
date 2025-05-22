@@ -58,9 +58,6 @@ const CarInfoView = ({
               >
                 <FaHeart /> {savedCars[car.id] ? "Saved" : "Save"}
               </button>
-              <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-black px-2 py-1 rounded-md">
-                <FaBalanceScale /> Compare
-              </button>
             </div>
           </div>
 
@@ -122,7 +119,6 @@ const CarInfoView = ({
 
         </div>
 
-            {/* Sağ panel — Dealer və ya Mesaj */}
             <div className="w-full lg:w-1/3">
                     {isOwner ? (
             <div className="mt-10">

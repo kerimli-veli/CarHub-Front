@@ -58,7 +58,7 @@ const CardDetails = ({ total = 0 }) => {
     };
   
     try {
-      const response = await fetch('https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Order', {
+      const response = await fetch('https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Order', {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +91,7 @@ const CardDetails = ({ total = 0 }) => {
     if (sessionId) {
       const timeoutId = setTimeout(async () => {
         try {
-          const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Payment/payment-success?sessionId=${sessionId}`, {
+          const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Payment/payment-success?sessionId=${sessionId}`, {
             method: 'GET',
             headers: {
               "Authorization": `Bearer ${accessToken}`
@@ -122,7 +122,7 @@ const CardDetails = ({ total = 0 }) => {
     const fetchUserData = async () => {
       if (!userId || !accessToken) return;
       try {
-        const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`, {
+        const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userId}`, {
           headers: { "Authorization": `Bearer ${accessToken}` }
         });
         const data = await response.json();
@@ -193,7 +193,7 @@ const CardDetails = ({ total = 0 }) => {
                 src={
                   userData?.userImagePath?.startsWith("http")
                     ? userData.userImagePath
-                    : `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net${userData?.userImagePath || ""}`
+                    : `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net${userData?.userImagePath || ""}`
                 }
                 alt="User"
                 className="w-10 h-10 rounded-full border-2 border-white object-cover"

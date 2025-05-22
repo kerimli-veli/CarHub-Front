@@ -28,7 +28,7 @@ const CarInfoSection = ({ car , auctionData}) => {
         {/* Main Image */}
         <div className="w-full md:w-4/5 flex flex-col items-center">
           <img
-            src={`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${imageList[selectedIndex]}`}
+            src={`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${imageList[selectedIndex]}`}
             alt="Selected"
             className="w-full h-[350px] md:h-[450px] object-contain rounded-lg"
           />
@@ -54,7 +54,7 @@ const CarInfoSection = ({ car , auctionData}) => {
           {imageList.map((img, index) => (
             <img
               key={index}
-              src={`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${img}`}
+              src={`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${img}`}
               alt={`Thumb ${index}`}
               onClick={() => setSelectedIndex(index)}
               className={`w-[60px] h-[50px] md:w-[80px] md:h-[60px] object-cover rounded cursor-pointer mb-2 md:mb-2 md:mr-0 mr-2 border-2 ${

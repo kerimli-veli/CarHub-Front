@@ -32,7 +32,7 @@ const Cart = ({ onTotalChange }) => {
     }
   
     try {
-      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
+      const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
         headers: { "Authorization": `Bearer ${accessToken}` }
       });
   
@@ -64,7 +64,7 @@ const Cart = ({ onTotalChange }) => {
     }
 
     try {
-      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/ClearCartLines`, {
+      const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/ClearCartLines`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
@@ -106,7 +106,7 @@ const Cart = ({ onTotalChange }) => {
     if (!cartId || !item?.product?.id) return;
 
     try {
-      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/RemoveProductFromCart", {
+      const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/RemoveProductFromCart", {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${accessToken}`,
@@ -159,7 +159,7 @@ const Cart = ({ onTotalChange }) => {
     const productId = item.product.id;
 
     try {
-      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/UpdateProductQuantityInCart", {
+      const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/UpdateProductQuantityInCart", {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${accessToken}`,

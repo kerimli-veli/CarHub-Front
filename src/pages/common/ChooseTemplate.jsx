@@ -42,6 +42,8 @@ export default function ChooseTemplate({ onClose }) {
     } else if (selected === "compare") {
       navigate("/auctionList"); 
     }
+
+    onClose();
   };
 
   return (

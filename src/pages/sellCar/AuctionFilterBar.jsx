@@ -30,24 +30,39 @@ const AuctionFilterBar = ({ selectedCarId }) => {
     return;
   }
 
+  function formatLocalDateTime(date) {
+  // "yyyy-MM-ddTHH:mm:ss" formatı qaytarır (UTC deyil!)
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
+
   const auctionData = {
     carId: selectedCarId,
     sellerId: user.id,
-    startTime: new Date(startTime).toISOString(),
-    endTime: new Date(endTime).toISOString(),
+    startTime: formatLocalDateTime(startTime),
+    endTime: formatLocalDateTime(endTime),
     startingPrice: price,
   };
 
   try {
     const response = await axios.post(
-      "https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Auction",
+      "https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Auction",
       auctionData
     );
 
     const auctionId = response.data.data.id; 
     console.log("Auction created:", response.data.data);
     
-    console.log(auctionId);
+    localStorage.setItem("activeAuction", JSON.stringify({
+      id: auctionId,
+      carId: selectedCarId,
+      sellerId: user.id,
+      startTime: auctionData.startTime,
+      endTime: auctionData.endTime,
+      startingPrice: price
+    }));
+    
     navigate(`/CreateAuction/${auctionId}`);
 
   } catch (error) {
@@ -63,7 +78,7 @@ const AuctionFilterBar = ({ selectedCarId }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.4 }}
-      className="relative mx-auto my-10 bg-[#2F3B52] px-8 py-4 rounded-2xl shadow-md w-[80%] flex items-center gap-4 justify-center"
+      className="relative mx-auto my-10 bg-[#2F3B52] px-8 py-4 rounded-2xl shadow-md w-[82.5%] flex items-center gap-4 justify-center"
     >
       <div className="flex items-center gap-5 flex-grow relative">
         <div className="relative">

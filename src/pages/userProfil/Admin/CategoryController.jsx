@@ -19,7 +19,7 @@ const CategoryController = () => {
   const fetchCategories = async () => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Category/GetAll", {
+      const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Category/GetAll", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -34,7 +34,7 @@ const CategoryController = () => {
   const addCategory = async () => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Category/Add", {
+      const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Category/Add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const CategoryController = () => {
   const deleteCategory = async (id) => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Category/Remove?id=${id}`, {
+      const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Category/Remove?id=${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -79,7 +79,7 @@ const CategoryController = () => {
   const updateCategory = async (data) => {
     try {
       const token = Cookies.get("accessToken");
-      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Category/Update", {
+      const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Category/Update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

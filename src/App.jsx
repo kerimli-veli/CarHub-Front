@@ -1,5 +1,5 @@
-import React, { useEffect, useRef  } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import React, { useEffect, useRef, useState  } from "react";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -31,14 +31,20 @@ import ProductController from "./pages/userProfil/Admin/ProductController";
 import UserController from "./pages/userProfil/Admin/UserController";
 
 
+import Header from "./pages/landing/components/Header";
+import ChooseTemplateModal from "./pages/common/modals/ChooseTemplateModal";
 
 import { startConnection, registerOnNotification } from "./assets/Services/notificationService";
 import BuyCar from "./pages/buyCar/BuyCar";
+import MiniAuctionTimer from "./pages/common/modals/MiniAuctionTimer"
 
 function AppRoutes() {
   const location = useLocation();
   const state = location.state;
   const lastMessageRef = useRef(null);
+  const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);  
 
   useEffect(() => {
     const setupNotifications = async () => {
@@ -46,6 +52,10 @@ function AppRoutes() {
       if (connection) {
         registerOnNotification((message) => {
           toast.info(message.message);
+
+          if (message.message?.toLowerCase().includes("auction stoped")) {
+            navigate("/auctionList");
+          }          
         });
       }
     };
@@ -54,9 +64,15 @@ function AppRoutes() {
   }, []);
   
 
+  useEffect(() => {
+    window.openGlobalModal = () => setIsModalOpen(true);
+    window.closeGlobalModal = () => setIsModalOpen(false);
+  }, []);
+
   return (
     <>
       <ToastContainer position="top-center" />
+      
       <Routes location={state?.background || location}>
         <Route path="/" element={<Landing />} />
         <Route path="/AuctionList" element={<BuyCar />} />
@@ -96,9 +112,13 @@ function AppRoutes() {
           <Route path="/messages/:receiverId" element={<Message isModal />} />
         </Routes>
       )}
+      
+      <ChooseTemplateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <MiniAuctionTimer />
     </>
   );
 }
+
 
 function App() {
   return (

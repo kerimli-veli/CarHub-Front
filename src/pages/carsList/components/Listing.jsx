@@ -18,12 +18,12 @@ const CarListing = () => {
         let data = null;
 
         if ([...params].length > 0) {
-          url = `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/CarFilter?${params.toString()}`;
+          url = `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Car/CarFilter?${params.toString()}`;
           const response = await fetch(url);
           const result = await response.json();
           data = result?.data;
         } else {
-          const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Car/GetAll");
+          const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Car/GetAll");
           const result = await response.json();
           data = Array.isArray(result) ? result : result?.data;
         }

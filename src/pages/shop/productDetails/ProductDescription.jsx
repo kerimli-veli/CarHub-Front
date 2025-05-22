@@ -16,7 +16,7 @@ const ProductDescription = ({ product }) => {
     if (!userId || !accessToken) return null;
 
     try {
-      const response = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
+      const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/GetCartWithLinesByUserId?userId=${userId}`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${accessToken}`
@@ -24,7 +24,7 @@ const ProductDescription = ({ product }) => {
       });
 
       if (response.status === 404) {
-        const createRes = await fetch(`https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/Create`, {
+        const createRes = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/Create`, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${accessToken}`,
@@ -63,7 +63,7 @@ const ProductDescription = ({ product }) => {
     }
 
     try {
-      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Cart/AddProductToCart", {
+      const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Cart/AddProductToCart", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${accessToken}`,

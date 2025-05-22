@@ -19,7 +19,7 @@ export default function Account() {
         setToken(token);
 
         const response = await fetch(
-          `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userInfo.id}`,
+          `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User/GetById?Id=${userInfo.id}`,
           {
             method: "GET",
             headers: {
@@ -61,7 +61,7 @@ export default function Account() {
         formData.append("UserImage", updatedUser.userImage);
       }
   
-      const response = await fetch("https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/Update", {
+      const response = await fetch("https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User/Update", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -110,7 +110,7 @@ export default function Account() {
       updatedUser.userImage
         ? URL.createObjectURL(updatedUser.userImage)
         : user.userImagePath
-        ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
+        ? `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${user.userImagePath}`
         : "https://via.placeholder.com/150"
     }
     alt="Profile"
