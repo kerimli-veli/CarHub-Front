@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 const MiniAuctionTimer = () => {
   const [timeLeft, setTimeLeft] = useState({});
   const [auction, setAuction] = useState(null);
-  const [position, setPosition] = useState({ x: window.innerWidth - 300, y: window.innerHeight - 160 });
+  const [position, setPosition] = useState({ x: window.innerWidth - 360, y: window.innerHeight - 160 });
   const [dragging, setDragging] = useState(false);
   const offset = useRef({ x: 0, y: 0 });
   const timerRef = useRef(null);
@@ -30,6 +30,9 @@ const MiniAuctionTimer = () => {
           minutes: "00",
           seconds: "00",
         });
+        
+        localStorage.removeItem("activeAuction");
+        setAuction(null);
         return;
       }
 

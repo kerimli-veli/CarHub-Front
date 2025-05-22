@@ -124,7 +124,8 @@ export default function DateDropdown({ onSave }) {
     setMessageWithType("Time saved!", "success");
   };
 
-  const maxDate = today.toISOString().slice(0, 10);
+  const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const maxDate = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(lastDayOfMonth).padStart(2, "0")}`;
   const minDate = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-01`;
 
   return (
