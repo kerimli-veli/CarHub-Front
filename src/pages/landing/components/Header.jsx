@@ -10,7 +10,13 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
-  
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleAuctionClick = (e) => {
+    e.preventDefault();
+    setIsModalOpen(true);
+  };
 
   // ESC veya backdrop tıklanınca drawer'ı kapat
   useEffect(() => {
@@ -38,7 +44,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`,
+          `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User/GetUserByEmail?Email=${email}`,
           {
             method: "GET",
             headers: {
@@ -65,7 +71,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
   const handleProductSearch = async (query) => {
     try {
       const response = await fetch(
-        `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${query}`
+        `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${query}`
       );
       const result = await response.json();
       if (Array.isArray(result)) {
@@ -271,13 +277,12 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
                 hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.7)]
               ">
                 Pages
-                <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500 group-hover:shadow-[0_0_8px_#0ff]"></span>
               </button>
+                <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500 group-hover:shadow-[0_0_8px_#0ff]"></span>
               <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-48 bg-white text-black rounded-xl shadow-xl scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 origin-top z-50">
                 <a href="/shopPage" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Shop</a>
                 <a href="#" onClick={(e) => {
-                  e.preventDefault();
-                  onAuctionClick();
+                    window.openGlobalModal()
                 }} className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Auction</a>
                 <button
                   onClick={handleBasketClick}
@@ -304,7 +309,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
       <img
         src={
           user.userImagePath
-            ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
+            ? `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${user.userImagePath}`
             : "https://via.placeholder.com/150"
         }
         alt="User"
@@ -355,7 +360,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
         <img
           src={
             user.userImagePath
-              ? `https://carhubwebapp-cfbqhfawa9g9b4bh.italynorth-01.azurewebsites.net/${user.userImagePath}`
+              ? `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${user.userImagePath}`
               : "https://via.placeholder.com/150"
           }
           alt="User"
