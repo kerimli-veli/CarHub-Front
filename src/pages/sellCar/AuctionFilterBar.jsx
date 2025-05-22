@@ -54,6 +54,15 @@ const AuctionFilterBar = ({ selectedCarId }) => {
     const auctionId = response.data.data.id; 
     console.log("Auction created:", response.data.data);
     
+    localStorage.setItem("activeAuction", JSON.stringify({
+      id: auctionId,
+      carId: selectedCarId,
+      sellerId: user.id,
+      startTime: auctionData.startTime,
+      endTime: auctionData.endTime,
+      startingPrice: price
+    }));
+    
     navigate(`/CreateAuction/${auctionId}`);
 
   } catch (error) {

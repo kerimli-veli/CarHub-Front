@@ -36,6 +36,7 @@ import ChooseTemplateModal from "./pages/common/modals/ChooseTemplateModal";
 
 import { startConnection, registerOnNotification } from "./assets/Services/notificationService";
 import BuyCar from "./pages/buyCar/BuyCar";
+import MiniAuctionTimer from "./pages/common/modals/MiniAuctionTimer"
 
 function AppRoutes() {
   const location = useLocation();
@@ -111,7 +112,9 @@ function AppRoutes() {
           <Route path="/messages/:receiverId" element={<Message isModal />} />
         </Routes>
       )}
+      
       <ChooseTemplateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <MiniAuctionTimer />
     </>
   );
 }
