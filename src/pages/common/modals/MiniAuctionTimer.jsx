@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const MiniAuctionTimer = () => {
   const [timeLeft, setTimeLeft] = useState({});
@@ -30,9 +32,21 @@ const MiniAuctionTimer = () => {
           minutes: "00",
           seconds: "00",
         });
-        
-        localStorage.removeItem("activeAuction");
-        setAuction(null);
+
+        toast.info("Your auction has ended", {
+          position: "top-center",
+          autoClose: 20000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        setTimeout(() => {
+          localStorage.removeItem("activeAuction");
+          setAuction(null);
+        }, 1000);
         return;
       }
 
@@ -45,6 +59,16 @@ const MiniAuctionTimer = () => {
     }, 1000);
   };
 
+  // useEffect(() => {
+  //   const stored = localStorage.getItem("activeAuction");
+  //   const parsed = stored ? JSON.parse(stored) : null;
+  
+  //   if (parsed && parsed.status === "ended" && parsed.auctionId !== currentAuctionId) {
+  //     localStorage.removeItem("activeAuction");
+  //   }
+  // }, [currentAuctionId]);
+  
+
   const handleMouseDown = (e) => {
     setDragging(true);
     offset.current = {
@@ -55,25 +79,23 @@ const MiniAuctionTimer = () => {
 
   const handleMouseMove = (e) => {
     if (!dragging) return;
-  
+
     const margin = 15;
     const componentWidth = timerRef.current?.offsetWidth || 250;
     const componentHeight = timerRef.current?.offsetHeight || 160;
-  
+
     const maxX = window.innerWidth - componentWidth - margin;
     const maxY = window.innerHeight - componentHeight - margin;
-  
+
     const newX = Math.max(margin, Math.min(e.clientX - offset.current.x, maxX));
     const newY = Math.max(margin, Math.min(e.clientY - offset.current.y, maxY));
-  
+
     setPosition({ x: newX, y: newY });
   };
-  
 
   const handleMouseUp = () => {
     setDragging(false);
   };
-  
 
   useEffect(() => {
     document.addEventListener("mousemove", handleMouseMove);
@@ -87,49 +109,52 @@ const MiniAuctionTimer = () => {
   if (!auction) return null;
 
   return (
-    <div
-      ref={timerRef}
-      onMouseDown={handleMouseDown}
-      className="z-50 cursor-move select-none"
-      style={{
-        position: "fixed",
-        left: position.x,
-        top: position.y,
-      }}
-    >
-      <div className="flex flex-col items-center">
-        {/* Timer */}
-        <div className="flex bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl px-4 py-3 gap-3 shadow-lg backdrop-blur-sm w-fit">
-          {[
-            { label: "DAYS", value: timeLeft.days },
-            { label: "HOURS", value: timeLeft.hours },
-            { label: "MINUTES", value: timeLeft.minutes },
-            { label: "SECONDS", value: timeLeft.seconds },
-          ].map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center justify-center bg-white/10 backdrop-blur-md px-3 py-2 rounded-lg text-white w-16"
-            >
-              <span className="text-lg font-bold">{item.value}</span>
-              <span className="text-[10px] tracking-wide">{item.label}</span>
-            </div>
-          ))}
-        </div>
+    <>
+      <div
+        ref={timerRef}
+        onMouseDown={handleMouseDown}
+        className="z-50 cursor-move select-none"
+        style={{
+          position: "fixed",
+          left: position.x,
+          top: position.y,
+        }}
+      >
+        <div className="flex flex-col items-center">
+          {/* Timer */}
+          <div className="flex bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl px-4 py-3 gap-3 shadow-lg backdrop-blur-sm w-fit">
+            {[
+              { label: "DAYS", value: timeLeft.days },
+              { label: "HOURS", value: timeLeft.hours },
+              { label: "MINUTES", value: timeLeft.minutes },
+              { label: "SECONDS", value: timeLeft.seconds },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center justify-center bg-white/10 backdrop-blur-md px-3 py-2 rounded-lg text-white w-16"
+              >
+                <span className="text-lg font-bold">{item.value}</span>
+                <span className="text-[10px] tracking-wide">{item.label}</span>
+              </div>
+            ))}
+          </div>
 
-        {/* Continue Auction button */}
-        <button
-          onClick={() => {
-            if (auction) {
-              window.location.href = `/CreateAuction/${auction.id}`;
-            }
-          }}
-          className="mt-3 w-full px-4 py-2 rounded-lg text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md transition-all font-medium"
-          style={{ width: "calc(4 * 4rem + 3 * 0.75rem + 2rem)" }}
-        >
-          Continue Auction
-        </button>
+          {/* Continue Auction button */}
+          <button
+            onClick={() => {
+              if (auction) {
+                window.location.href = `/CreateAuction/${auction.id}`;
+              }
+            }}
+            className="mt-3 w-full px-4 py-2 rounded-lg text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md transition-all font-medium"
+            style={{ width: "calc(4 * 4rem + 3 * 0.75rem + 2rem)" }}
+          >
+            Continue Auction
+          </button>
+        </div>
       </div>
-    </div>
+      <ToastContainer />
+    </>
   );
 };
 

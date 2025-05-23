@@ -137,6 +137,7 @@ const JoinChat = ({ auctionId, auctionData }) => {
         setTimeout(() => {
           navigate("/auctionList");
           window.location.reload();
+
         }, 2000);
       });
 

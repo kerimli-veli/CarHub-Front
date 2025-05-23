@@ -147,7 +147,6 @@ const CarInfoView = ({
                 <p className="text-sm text-gray-500 mb-2">{user?.address || "943 Broadway, Brooklyn"}</p>
                 <Button variant="link" className="text-blue-600 underline">Get Direction</Button>
                 <p className="text-sm text-gray-700 mt-2"><IoMdCall className="inline mr-1" /> {user.phone}</p>
-                <p className="text-sm text-gray-700 mt-2"><FaWhatsapp className="inline mr-1" /> {user.whatsapp}</p>
                 <Button
                   onClick={handleSendMessage}
                   className="mt-4 w-full py-2 text-white bg-blue-600 hover:bg-blue-700"

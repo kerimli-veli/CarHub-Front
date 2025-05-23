@@ -56,11 +56,8 @@ const AuctionFilterBar = ({ selectedCarId }) => {
     
     localStorage.setItem("activeAuction", JSON.stringify({
       id: auctionId,
-      carId: selectedCarId,
-      sellerId: user.id,
       startTime: auctionData.startTime,
       endTime: auctionData.endTime,
-      startingPrice: price
     }));
     
     navigate(`/CreateAuction/${auctionId}`);

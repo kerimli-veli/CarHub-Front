@@ -37,13 +37,14 @@ import ChooseTemplateModal from "./pages/common/modals/ChooseTemplateModal";
 import { startConnection, registerOnNotification } from "./assets/Services/notificationService";
 import BuyCar from "./pages/buyCar/BuyCar";
 import MiniAuctionTimer from "./pages/common/modals/MiniAuctionTimer"
+import getUserFromToken from "./pages/common/GetUserFromToken";
 
 function AppRoutes() {
   const location = useLocation();
   const state = location.state;
   const lastMessageRef = useRef(null);
   const navigate = useNavigate();
-
+  const token = getUserFromToken();
   const [isModalOpen, setIsModalOpen] = useState(false);  
 
   useEffect(() => {
@@ -53,7 +54,7 @@ function AppRoutes() {
         registerOnNotification((message) => {
           toast.info(message.message);
 
-          if (message.message?.toLowerCase().includes("auction stoped")) {
+          if (message.message?.toLowerCase().includes("auction time out")) {
             navigate("/auctionList");
           }          
         });
@@ -74,16 +75,21 @@ function AppRoutes() {
       <ToastContainer position="top-center" />
       
       <Routes location={state?.background || location}>
+        <Route path="/product-details/:id" element={<ProductDetails />} />
+        <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/" element={<Landing />} />
-        <Route path="/AuctionList" element={<BuyCar />} />
-        
-        <Route path="/CreateAuction/:auctionId" element={<CreateAuction />} />
-
-        <Route path="/createNewAuction" element={<SellCar />} />
         <Route path="/shopPage" element={<ShopPage />} />
         <Route path="/SignIn" element={<SignIn />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/carList" element={<CarList />} />
+        <Route path="/carDetails/:carId" element={<CarDetail />} />
+
+        {token &&
+          <>
+            <Route path="/AuctionList" element={<BuyCar />} />
+        <Route path="/CreateAuction/:auctionId" element={<CreateAuction />} />
+        <Route path="/createNewAuction" element={<SellCar />} />
+        
         <Route path="/userProfile" element={<UserProfile />}>
           <Route path="favorites" element={<CarFavorites />} />
           <Route path="account" element={<Account />} />
@@ -96,15 +102,14 @@ function AppRoutes() {
           <Route path="userController" element={<UserController />} />
         </Route>
         
-        <Route path="/carDetails/:carId" element={<CarDetail />} />
         <Route path="/messages/:receiverId" element={<Message />} />
 
         
         <Route path="/cart" element={<CartPayment />} />
-          <Route path='/carDetails/:carId' element={<CarDetail />} />
           <Route path="/cartEmpty" element={<CartEmpty />} />
-          <Route path="/product-details/:id" element={<ProductDetails />} />
-          <Route path="/aboutus" element={<AboutUs />} />
+          </>
+        }
+          
       </Routes>
 
       {state?.background && (
@@ -123,9 +128,6 @@ function AppRoutes() {
 function App() {
   return (
     <>
-      <div>
-        <Toaster position="top-center" />
-      </div>
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>

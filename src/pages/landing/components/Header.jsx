@@ -18,7 +18,6 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
     setIsModalOpen(true);
   };
 
-  // ESC veya backdrop tıklanınca drawer'ı kapat
   useEffect(() => {
     if (!isProfileDrawerOpen) return;
     const handleKeyDown = (e) => { if (e.key === "Escape") setIsProfileDrawerOpen(false); };
@@ -114,7 +113,6 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
     navigate('/aboutus');
   };
 
-  // NAVBAR LINK COMPONENT
   const NavbarLink = ({ href, children, onClick }) => (
     <a
       href={href}
@@ -157,14 +155,13 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
     <>
       <nav className={`${bgColor} backdrop-blur-md shadow-lg sticky top-0 z-50`}>
         <div className="container mx-auto flex items-center justify-between py-3">
-          {/* SOLDA: CarHub */}
+          
           <a
             href="#"
             className="text-3xl font-extrabold tracking-wider text-gray-300 hover:text-white transition-colors duration-300 drop-shadow-lg"
           >
             CarHub
           </a>
-          {/* ORTADA: Navbar */}
           <div className="flex justify-center items-center space-x-8">
             <NavbarLink href="/">Home</NavbarLink>
             <div className="relative group" id="search-box">
@@ -302,7 +299,6 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
             </button>
             <NavbarLink href="#">Contact</NavbarLink>
           </div>
-          {/* SAĞDA: Profil */}
           {user ? (
   <div className="ml-4">
     {user.userImagePath ? (
@@ -336,7 +332,6 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
         </div>
       </nav>
 
-      {/* PROFİL DRAWER */}
       {isProfileDrawerOpen && (
   <>
     <div
@@ -391,13 +386,11 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
         </div>
       </div>
     </div>
-    {/* Modal dışında tıklayınca kapansın */}
     <div
       id="profile-drawer-backdrop"
       className="fixed inset-0 z-[99]"
       style={{ background: "transparent" }}
     />
-    {/* Drawer animasyonu için style */}
     <style>{`
       @keyframes slideInDrawerSmall {
         from { transform: translateX(60px) scale(0.95); opacity: 0;}

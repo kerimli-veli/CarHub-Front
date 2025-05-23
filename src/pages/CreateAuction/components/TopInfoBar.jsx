@@ -29,7 +29,7 @@ const TopInfoBar = ({ car, auctionData }) => {
           },
         }
       );
-  
+      
       navigate("/auctionList");
     } catch (error) {
       console.error("Stop zamanı xəta:", error);
@@ -90,6 +90,7 @@ const TopInfoBar = ({ car, auctionData }) => {
       } else {
         if (isActive) handleStopAuction();
         setTimeLeft("Auction ended");
+        
         clearInterval(interval);
       }
     }, 1000);

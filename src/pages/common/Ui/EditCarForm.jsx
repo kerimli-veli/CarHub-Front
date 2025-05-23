@@ -98,7 +98,7 @@ const EditCarForm = ({ car }) => {
   
       const data = await response.json();
       console.log('Car updated successfully:', data);
-      // success notification vs
+      window.location.reload();
     } catch (error) {
       console.error('Update failed:', error);
     }
