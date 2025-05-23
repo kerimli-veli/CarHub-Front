@@ -38,6 +38,7 @@ import { startConnection, registerOnNotification } from "./assets/Services/notif
 import BuyCar from "./pages/buyCar/BuyCar";
 import MiniAuctionTimer from "./pages/common/modals/MiniAuctionTimer"
 import getUserFromToken from "./pages/common/GetUserFromToken";
+import Notifications from "./pages/userProfil/components/Notifications";
 
 function AppRoutes() {
   const location = useLocation();
@@ -100,6 +101,7 @@ function AppRoutes() {
           <Route path="category" element={<CategoryController />} />
           <Route path="product" element={<ProductController />} />
           <Route path="userController" element={<UserController />} />
+          <Route path="notifications" element={<Notifications/>}/>
         </Route>
         
         <Route path="/messages/:receiverId" element={<Message />} />

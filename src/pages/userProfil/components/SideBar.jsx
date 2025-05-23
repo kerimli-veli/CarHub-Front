@@ -25,7 +25,8 @@ import Cart from "../../shop/cart/Cart";
 import UserBaskets from "../Admin/UserBaskets";
 import CategoryController from "../Admin/CategoryController";
 import ProductController from "../Admin/ProductController";
-import UserController from "../Admin/UserController"; // ✅ Eklendi
+import UserController from "../Admin/UserController"; 
+import Notifications from "./Notifications";
 
 const getMenuItems = (isAdmin) => [
   {
@@ -44,6 +45,7 @@ const getMenuItems = (isAdmin) => [
   { id: "favorites", icon: <FaHeart />, label: "Favorites", path: "favorites" },
   { id: "myCars", icon: <FaCar />, label: "My Cars", path: "myCars" },
   { id: "addCar", icon: <FaPlusSquare />, label: "Add Car", path: "addCar" },
+  { id: "notifications", icon: <FaPlusSquare />, label: "Your notifications", path: "notifications" },
 ];
 
 const getOtherMenu = (isAdmin) => [
@@ -221,7 +223,9 @@ const Sidebar = () => {
           {location.pathname === "/userProfile/myCars" && "Manage your cars"}
           {location.pathname === "/userProfile/addCar" && "Add your car"}
           {location.pathname === "/userProfile/userController" && "User Management Panel"}
-          {location.pathname === "/userProfile/help" && "Help Center"}
+          {location.pathname === "/userProfile/help" && "Help Center"} 
+          {location.pathname === "/userProfile/notifications" && "My Notifications"} 
+
         </motion.div>
 
         <div className="mt-6">
@@ -230,6 +234,7 @@ const Sidebar = () => {
             {location.pathname === "/userProfile/account" && <Account />}
             {location.pathname === "/userProfile/addCar" && <AddCarForm />}
             {location.pathname === "/userProfile/myCars" && <MyCars />}
+            {location.pathname === "/userProfile/notifications" && <Notifications/>}
             {location.pathname === "/userProfile/cart" &&
               (user?.isAdmin ? <UserBaskets /> : <Cart />)}
             {location.pathname === "/userProfile/category" && <CategoryController />}

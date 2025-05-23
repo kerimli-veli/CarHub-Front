@@ -23,7 +23,6 @@ const Message = () => {
   const [senderInfo, setSenderInfo] = useState({});
   const [receiverInfo, setReceiverInfo] = useState({});
 
-  const { receiverId: receiverIdFromParams } = useParams();
 
 
 
