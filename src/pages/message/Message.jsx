@@ -117,7 +117,6 @@ const Message = () => {
         for (const msg of combined) {
           const key = `${msg.senderId}-${msg.text}-${new Date(msg.sentAt).getTime()}`;
       
-          // 2 saniyəlik fərqlə gələn mesajları da eyni saymaq üçün
           const existing = uniqueMessages.find((m) =>
             m.senderId === msg.senderId &&
             m.text === msg.text &&
@@ -229,7 +228,7 @@ const Message = () => {
           </button>
         )}
   
-        <h2 className="text-xl font-bold mb-4 text-center pt-4">💬 Söhbət</h2>
+        <h2 className="text-xl font-bold mb-4 text-center pt-4">💬 Chat</h2>
   
         <MessageList
           messages={messages}

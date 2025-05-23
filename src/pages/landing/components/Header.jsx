@@ -12,6 +12,7 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
   const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPagesOpen, setIsPagesOpen] = useState(false);
 
   const handleAuctionClick = (e) => {
     e.preventDefault();
@@ -66,6 +67,15 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest("#pages-dropdown")) setIsPagesOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  
 
   const handleProductSearch = async (query) => {
     try {
@@ -268,24 +278,22 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
                 </div>
               )}
             </div>
-            <div className="relative group">
-              <button className="
-                relative px-4 py-2 font-semibold text-lg text-zinc-400 transition-all duration-300 group
-                hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.7)]
-              ">
+            <div className="relative group " id="pages-dropdown">
+              <button
+                onClick={() => setIsPagesOpen(!isPagesOpen)}
+                className="relative px-4 py-2 font-semibold text-lg text-zinc-400 transition-all duration-300 group hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.7)]"
+              >
                 Pages
               </button>
                 <span className="absolute left-1/2 -translate-x-1/2 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-cyan-400 via-blue-500 to-blue-700 rounded-full group-hover:w-full transition-all duration-500 group-hover:shadow-[0_0_8px_#0ff]"></span>
-              <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-48 bg-white text-black rounded-xl shadow-xl scale-95 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 origin-top z-50">
-                <a href="/shopPage" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Shop</a>
-                <a href="#" onClick={(e) => {
-                    window.openGlobalModal()
-                }} className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Auction</a>
-                <button
-                  onClick={handleBasketClick}
-                  className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Basket
-                </button>
-              </div>
+                {isPagesOpen && (
+                  <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-48 bg-white text-black rounded-xl shadow-xl z-50">
+                    <a href="/shopPage" className="block px-4 py-3 hover:bg-blue-50 rounded-t-xl">Shop</a>
+                    <a href="#" onClick={(e) => { window.openGlobalModal(); setIsPagesOpen(false); }} className="block px-4 py-3 hover:bg-blue-50">Auction</a>
+                    <button onClick={() => { handleBasketClick(); setIsPagesOpen(false); }} className="block px-4 py-3 hover:bg-blue-50 rounded-b-xl">Basket</button>
+                  </div>
+                )}
+
             </div>
             <button
               onClick={handleNavigate}
@@ -335,68 +343,90 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
       {isProfileDrawerOpen && (
   <>
     <div
-      className="fixed top-8 right-8 z-[100] w-[290px] max-w-[90vw] bg-gradient-to-br from-zinc-900 via-zinc-800 to-white/90 shadow-2xl border border-zinc-300/30 flex flex-col items-center px-6 py-6"
-      style={{
-        borderRadius: "1.5rem",
-        animation: "slideInDrawerSmall 0.33s cubic-bezier(.4,2,.6,1) both",
-        boxShadow: "0 8px 36px 0 rgba(0,0,0,0.28)",
-        minHeight: "290px"
+  className="fixed top-8 right-8 z-[100] w-[280px] max-w-[90vw]
+             bg-blue-500/20 backdrop-blur-md border border-blue-200
+             rounded-2xl shadow-2xl flex flex-col items-center px-6 py-6 text-white"
+  style={{
+    animation: "fadeInProfile 0.3s ease-out",
+    minHeight: "260px",
+  }}
+>
+  <button
+    onClick={() => setIsProfileDrawerOpen(false)}
+    className="absolute top-3 right-3 text-white hover:text-red-400 text-xl"
+    aria-label="close"
+    style={{
+      background: "rgba(255, 255, 255, 0.1)",
+      borderRadius: "999px",
+      width: 32,
+      height: 32,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+  >
+    &times;
+  </button>
+
+  <img
+    src={
+      user.userImagePath
+        ? `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${user.userImagePath}`
+        : "https://via.placeholder.com/150"
+    }
+    alt="User"
+    className="w-16 h-16 rounded-full border-2 border-white shadow-md object-cover"
+  />
+
+  <h2 className="text-base font-semibold text-white mt-4">
+    {user.name} {user.surname}
+  </h2>
+  <p className="text-sm text-blue-100">{user.email}</p>
+  <span className="text-xs mt-1 bg-blue-600/80 px-3 py-1 rounded-full shadow">
+    {user.userRole}
+  </span>
+
+  <div className="w-full flex flex-col mt-5 space-y-3">
+    <button
+      onClick={() => {
+        setIsProfileDrawerOpen(false);
+        window.location.href = "/userProfile/account";
       }}
+      className="flex items-center gap-3 px-4 py-2 w-full bg-white/90 hover:bg-white text-blue-900 font-medium rounded-lg transition shadow"
     >
-      <button
-        onClick={() => setIsProfileDrawerOpen(false)}
-        className="absolute top-3 right-3 text-zinc-400 hover:text-red-500 text-2xl"
-        aria-label="close"
-        style={{ background: "rgba(255,255,255,0.06)", borderRadius: "50%", width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", border: "none" }}
-      >
-        &times;
-      </button>
-      <div className="flex flex-col items-center mt-2">
-        <img
-          src={
-            user.userImagePath
-              ? `https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${user.userImagePath}`
-              : "https://via.placeholder.com/150"
-          }
-          alt="User"
-          className="w-16 h-16 rounded-full shadow-lg border-2 border-zinc-300 object-cover"
-        />
-        <h2 className="text-lg font-bold text-white mt-3 mb-1">
-          {user.name} {user.surname}
-        </h2>
-        <p className="text-zinc-300 text-sm mb-2">{user.email}</p>
-        <span className="text-xs text-white bg-gradient-to-r from-zinc-700 via-zinc-900 to-zinc-600 px-3 py-1 rounded-full mb-4 shadow">
-          {user.userRole}
-        </span>
-        <div className="w-full flex flex-col gap-2 mt-1">
-          <button
-            onClick={() => { setIsProfileDrawerOpen(false); window.location.href = "/userProfile/account"; }}
-            className="flex items-center px-4 py-2 w-full text-zinc-900 font-semibold bg-zinc-100 hover:bg-zinc-200 rounded-lg transition shadow"
-          >
-            <svg className="w-5 h-5 mr-2 text-zinc-700" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v2a6 6 0 006 6 6 6 0 006-6V8a6 6 0 00-6-6zm-4 6a4 4 0 118 0v2a4 4 0 11-8 0V8zm10 6a8 8 0 11-16 0v-2a8 8 0 0116 0v2z" /></svg>
-            Hesap Ayarları
-          </button>
-          <button
-            onClick={() => { setIsProfileDrawerOpen(false); window.location.href = "/userProfile/favorites"; }}
-            className="flex items-center px-4 py-2 w-full text-zinc-100 font-semibold bg-zinc-800 hover:bg-zinc-700 rounded-lg transition shadow"
-          >
-            <svg className="w-5 h-5 mr-2 text-zinc-200" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 18.343l-6.828-6.829a4 4 0 010-5.656z" /></svg>
-            Favorilerim
-          </button>
-        </div>
-      </div>
-    </div>
-    <div
-      id="profile-drawer-backdrop"
-      className="fixed inset-0 z-[99]"
-      style={{ background: "transparent" }}
-    />
-    <style>{`
-      @keyframes slideInDrawerSmall {
-        from { transform: translateX(60px) scale(0.95); opacity: 0;}
-        to { transform: translateX(0) scale(1); opacity: 1;}
-      }
-    `}</style>
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 2a6 6 0 00-6 6v2a6 6 0 006 6 6 6 0 006-6V8a6 6 0 00-6-6z" />
+        <path d="M2 14a8 8 0 1116 0v2H2v-2z" />
+      </svg>
+      Account Settings
+    </button>
+    <button
+      onClick={() => {
+        setIsProfileDrawerOpen(false);
+        window.location.href = "/userProfile/favorites";
+      }}
+      className="flex items-center gap-3 px-4 py-2 w-full bg-white/90 hover:bg-white text-blue-900 font-medium rounded-lg transition shadow"
+    >
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 18.343l-6.828-6.829a4 4 0 010-5.656z" />
+      </svg>
+      My Favorites
+    </button>
+  </div>
+</div>
+
+<div
+  id="profile-drawer-backdrop"
+  className="fixed inset-0 z-[99] backdrop-blur-sm bg-black/30"
+/>
+
+<style>{`
+  @keyframes fadeInProfile {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`}</style>
+
   </>
 )}
     </>
