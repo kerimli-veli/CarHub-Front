@@ -156,7 +156,7 @@ export default function FeaturedListings() {
                 <img
                   src={car.image}
                   alt={car.model}
-                  className="w-full h-[200px] object-cover"
+                  className="w-full h-[200px] object-contain"
                 />
                 <button
                   className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition ${

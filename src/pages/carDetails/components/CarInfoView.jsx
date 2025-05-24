@@ -28,9 +28,9 @@ const CarInfoView = ({
   const handleSendMessage = () => {
     navigate(`/messages/${car.createdBy}`, {
       state: {
-        background: location, // indiki yeri yadda saxla
+        background: location, 
         receiverId: car.createdBy,
-        showInlineChat: true, // biz əlavə olaraq bunu yoxlayaq
+        showInlineChat: true, 
       },
     });
   };
@@ -83,7 +83,7 @@ const CarInfoView = ({
     <img
       src={mainImage || "https://via.placeholder.com/150"}
       alt={car.model}
-      className="w-full h-full object-cover rounded-xl"
+      className="w-full h-full max-w-full max-h-full  object-contain rounded-xl"
     />
     <span className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
       ${car.price}
@@ -93,7 +93,7 @@ const CarInfoView = ({
   {otherImages.map((img, index) => (
     <img
       key={index}
-      src={img.imagePath}   // burada imagePath olacaq
+      src={img.imagePath}   
       alt={`car-${index + 1}`}
       className="w-full h-full object-cover rounded-xl cursor-pointer"
       onClick={() => handleImageClick(img.imagePath, index)}

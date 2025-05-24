@@ -35,9 +35,9 @@ const CarCard = ({ car }) => {
       
       <div className="relative h-52 w-full">
         <img
-          src={car.carImagePaths?.[0]?.imagePath || "https://via.placeholder.com/400"}
+          src={car.carImagePaths?.[0]?.imagePath}
           alt={car.model}
-          className="w-full h-full object-cover"
+          className="w-full h-full max-w-full max-h-full object-cover"
         />
         <span className="absolute top-2 left-2 bg-white text-xs font-semibold px-2 py-1 rounded-full shadow">
           1/{car.carImagePaths?.length || 1}
