@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GetUserFromToken from './../../common/GetUserFromToken';
 import axios from 'axios';
 import { motion, AnimatePresence } from "framer-motion";
-
+import { toast } from 'react-toastify';
 
 
 export default function AddCarForm() {
+
+  const [fuelTypes, setFuelTypes] = useState([]);
+  const [transmissionTypes, setTransmissionTypes] = useState([]);
+  const [bodyTypes, setBodyTypes] = useState([]);
+  
+
   const [showSuccess, setShowSuccess] = useState(false);
   const user = GetUserFromToken().id;
   const [formData, setFormData] = useState({
@@ -20,25 +26,102 @@ export default function AddCarForm() {
     color: '',
     vin: '',
     text: '',
-    images: [] // Fayllar üçün
+    images: [] 
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const isFormValid = () => {
+  return (
+    formData.brand.trim() &&
+    formData.model.trim() &&
+    formData.year &&
+    formData.price &&
+    formData.fuel &&
+    formData.transmission &&
+    formData.miles &&
+    formData.body &&
+    formData.color.trim() &&
+    formData.vin.trim() &&
+    formData.text.trim() &&
+    formData.images.length === 5
+  );
+};
+
+
+
+  useEffect(() => {
+  const fetchOptions = async () => {
+    try {
+      const [fuels, transmissions, bodies] = await Promise.all([
+        axios.get('https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Car/GetAllFuelTypes'),
+        axios.get('https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Car/GetAllTransmissionTypes'),
+        axios.get('https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Car/GetAllBodyTypes'),
+      ]);
+      setFuelTypes(fuels.data);
+      setTransmissionTypes(transmissions.data);
+      setBodyTypes(bodies.data);
+    } catch (error) {
+      console.error("Failed to load car options:", error);
+    }
   };
 
-  const handleFileChange = (e) => {
-    const newFiles = Array.from(e.target.files);
-    const totalFiles = formData.images.length + newFiles.length;
-  
-    if (totalFiles > 5) {
-      alert("Ən çox 5 şəkil yükləyə bilərsiniz.");
-      return;
+  fetchOptions();
+}, []);
+
+
+  const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  let newValue = value;
+
+  if (['year', 'price', 'miles'].includes(name)) {
+    const numericValue = parseInt(value, 10);
+
+    if (name === 'year') {
+      if (numericValue < 1800) {
+        newValue = 1800;
+      } else {
+        newValue = numericValue;
+      }
+    } else if (name === 'miles'){
+      if (numericValue < 0) {
+        newValue = 0;
+      } else {
+        newValue = numericValue;
+      }
     }
-  
-    setFormData({ ...formData, images: [...formData.images, ...newFiles] });
-  };
+    else {
+      if (numericValue < 1) {
+        newValue = 1;
+      } else {
+        newValue = numericValue;
+      }
+    }
+
+    if (value === '') {
+      newValue = '';
+    }
+  }
+
+  setFormData({ ...formData, [name]: newValue });
+};
+
+
+  const handleFileChange = (e) => {
+  const newFiles = Array.from(e.target.files);
+  const totalFiles = formData.images.length + newFiles.length;
+
+  if (totalFiles > 5) {
+    toast.error("You must upload exactly 5 images!", {
+      position: "top-right",
+      autoClose: 3000,
+    });
+    return;
+  }
+
+  const updatedImages = [...formData.images, ...newFiles].slice(0, 5);
+  setFormData({ ...formData, images: updatedImages });
+};
+
   
   const handleImageRemove = (index) => {
     const updatedImages = [...formData.images];
@@ -65,7 +148,7 @@ export default function AddCarForm() {
     data.append('text', formData.text);
   
     formData.images.forEach((file) => {
-      data.append('CarImagePaths', file); // 🎯 DÜZGÜN AD BUDUR!
+      data.append('CarImagePaths', file); 
     });
   
     try {
@@ -73,13 +156,16 @@ export default function AddCarForm() {
         'https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Car',
         data
       );
-      setShowSuccess(true); // ✅ Success banneri göstər
+      setShowSuccess(true); 
+      window.location.reload();
       setTimeout(() => setShowSuccess(false), 4000);
     } catch (error) {
       console.error('Xəta:', error.response?.data || error.message);
       alert('Xəta baş verdi: ' + (error.response?.data?.message || 'Bilinməyən problem'));
     }
   };
+
+
   
 
   return (
@@ -107,12 +193,9 @@ export default function AddCarForm() {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {[{ name: 'brand', placeholder: 'Brand' },
           { name: 'model', placeholder: 'Model' },
-          { name: 'year', placeholder: 'Year', type: 'number' },
-          { name: 'price', placeholder: 'Price', type: 'number' },
-          { name: 'fuel', placeholder: 'Fuel (0=Petrol, 1=Diesel)', type: 'number' },
-          { name: 'transmission', placeholder: 'Transmission (0=Manual, 1=Auto)', type: 'number' },
-          { name: 'miles', placeholder: 'Miles', type: 'number' },
-          { name: 'body', placeholder: 'Body Type', type: 'number' },
+          { name: 'year', placeholder: 'Year', type: 'number', min: '1800' },
+          { name: 'price', placeholder: 'Price', type: 'number', min: '1' },
+          { name: 'miles', placeholder: 'Miles', type: 'number', min: '0' },
           { name: 'color', placeholder: 'Color' },
           { name: 'vin', placeholder: 'VIN' },
         ].map((field, i) => (
@@ -126,10 +209,47 @@ export default function AddCarForm() {
             className="px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 placeholder-gray-400 text-gray-800"
           />
         ))}
+
+        <select
+  name="fuel"
+  value={formData.fuel}
+  onChange={handleChange}
+  className="px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 text-gray-800"
+>
+  <option value="">Select Fuel Type</option>
+  {fuelTypes.map((fuel) => (
+    <option key={fuel.id} value={fuel.name}>{fuel.name}</option>
+  ))}
+</select>
+
+<select
+  name="transmission"
+  value={formData.transmission}
+  onChange={handleChange}
+  className="px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 text-gray-800"
+>
+  <option value="">Select Transmission</option>
+  {transmissionTypes.map((trans) => (
+    <option key={trans.id} value={trans.name}>{trans.name}</option>
+  ))}
+</select>
+
+<select
+  name="body"
+  value={formData.body}
+  onChange={handleChange}
+  className="px-5 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200 text-gray-800"
+>
+  <option value="">Select Body Type</option>
+  {bodyTypes.map((body) => (
+    <option key={body.id} value={body.name}>{body.name}</option>
+  ))}
+</select>
+
         
         <textarea
           name="text"
-          placeholder="Əlavə məlumatlar..."
+          placeholder="Other info..."
           value={formData.text}
           onChange={handleChange}
           rows={4}
@@ -137,7 +257,7 @@ export default function AddCarForm() {
         />
 
         <div className="md:col-span-2">
-          <label className="block text-gray-700 font-medium mb-2">Şəkil Yüklə</label>
+          <label className="block text-gray-700 font-medium mb-2">Upload image</label>
           <input
             type="file"
             accept="image/*"
@@ -145,7 +265,6 @@ export default function AddCarForm() {
             onChange={handleFileChange}
             className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
           />
-          {/* Preview added images */}
 <div className="flex flex-wrap gap-4 mt-4">
   {formData.images.map((img, index) => (
     <div key={index} className="relative w-24 h-24 rounded-xl overflow-hidden border border-gray-300 shadow-sm">
@@ -170,9 +289,11 @@ export default function AddCarForm() {
 
         <button
           type="submit"
-          className="md:col-span-2 mt-4 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-3 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl hover:scale-[1.01] transition-transform duration-200"
+          disabled={!isFormValid()}
+          className={`md:col-span-2 mt-4 text-white py-3 rounded-xl font-bold text-lg shadow-lg transition-transform duration-200
+            ${isFormValid() ? 'bg-gradient-to-r from-blue-600 to-blue-400 hover:shadow-xl hover:scale-[1.01]' : 'bg-gray-300 cursor-not-allowed'}`}
         >
-          ✅ Maşını Əlavə Et
+          Add Car
         </button>
       </form>
     </div>

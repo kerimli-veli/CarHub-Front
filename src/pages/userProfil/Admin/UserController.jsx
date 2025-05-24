@@ -1,9 +1,11 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MoreVertical } from 'lucide-react';
+import getUserFromToken from '../../common/GetUserFromToken';
 
 const BASE_URL = 'https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User';
+
 
 const Tag = ({ label, color }) => {
   const colorMap = {
@@ -17,9 +19,7 @@ const Tag = ({ label, color }) => {
       {label}
     </span>
   );
-
 };
-
 
 const UserController = () => {
   const [users, setUsers] = useState([]);
@@ -34,6 +34,14 @@ const UserController = () => {
     password: '',
     userImage: null,
   });
+  const [editForm, setEditForm] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    phone: '',
+    userRole: '',
+  });
+  const [editingField, setEditingField] = useState(null);
 
   const fetchUsers = async () => {
     try {
@@ -41,15 +49,6 @@ const UserController = () => {
       setUsers(data);
     } catch (err) {
       console.error('Failed to retrieve users:', err);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`${BASE_URL}/Remove?id=${id}`);
-      fetchUsers();
-    } catch (err) {
-      console.error('Failed to delete user:', err);
     }
   };
 
@@ -63,12 +62,12 @@ const UserController = () => {
     if (formData.userImage) form.append('userImage', formData.userImage);
 
     try {
-      await axios.put(`${BASE_URL}/Update`, form, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+      await axios.post(`${BASE_URL}/Register`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       setShowAddModal(false);
       setFormData({
-        name: '', surname: '', email: '', phone: '', password: '', userImage: null
+        name: '', surname: '', email: '', phone: '', password: '', userImage: null,
       });
       fetchUsers();
     } catch (err) {
@@ -76,42 +75,81 @@ const UserController = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+  const token = getUserFromToken(); 
+
+  try {
+    await axios.delete(`${BASE_URL}/Remove?id=${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    fetchUsers();
+  } catch (err) {
+    console.error('Failed to delete user:', err);
+  }
+};
+
+
   const handleUserClick = (user) => {
     setSelectedUser(user);
+    setEditForm({
+      name: user.name,
+      surname: user.surname,
+      email: user.email,
+      phone: user.phone,
+      userRole: user.userRole,
+    });
     setShowDetailModal(true);
+    setEditingField(null);
   };
+
+  const updateAllFields = async () => {
+  const formData = new FormData();
+  formData.append("Id", selectedUser.id);
+  formData.append("Name", editForm.name);
+  formData.append("Surname", editForm.surname);
+  formData.append("Email", editForm.email);
+  formData.append("Phone", editForm.phone);
+  formData.append("UserRole", editForm.userRole);
+
+  // Şəkil dəyişib?
+  if (editForm.userImage) {
+    formData.append("UserImage", editForm.userImage);
+  }
+
+  const token = getUserFromToken();
+
+  try {
+    const response = await fetch(`${BASE_URL}/Update`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // **Diqqət**: FormData üçün Content-Type **TƏYİN ETMƏ**
+        // fetch özü multipart/form-data header əlavə edir
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Update error:", errorText);
+      throw new Error("Failed to update user");
+    }
+
+    alert("User updated successfully!");
+    setShowDetailModal(false);
+    setEditingField(null);
+    fetchUsers();
+  } catch (err) {
+    console.error("Update error:", err);
+  }
+};
+
 
   useEffect(() => {
     fetchUsers();
   }, []);
-
-  const roleColorMap = {
-    Admin: 'green',
-    'Data Export': 'blue',
-    'Data Import': 'purple',
-  };
-
-  const [editingField, setEditingField] = useState(null);
-const [editForm, setEditForm] = useState({
-  name: '', surname: '', email: '', phone: ''
-});
-
-const updateField = async (field) => {
-    const payload = {
-      ...selectedUser,
-      [field]: editForm[field],
-    };
-  
-    try {
-      await axios.put(`${BASE_URL}/Update`, payload);
-      setShowDetailModal(false);
-      setEditingField(null);
-      fetchUsers();
-    } catch (err) {
-      console.error('Update error:', err);
-    }
-  };
-
 
   return (
     <div className="p-6 font-sans relative">
@@ -148,7 +186,7 @@ const updateField = async (field) => {
                 onClick={() => handleUserClick(user)}
               >
                 <img
-                  src={`https://localhost:7282/${user.userImagePath}`}
+                  src={`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${user.userImagePath}`}
                   alt={`${user.name}`}
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -159,20 +197,51 @@ const updateField = async (field) => {
               </td>
               <td className="px-4 py-3 space-x-1">
                 {user.userRole === 'Admin' && <Tag label="Admin" color="green" />}
-                <Tag label="Data Export" color="blue" />
-                <Tag label="Data Import" color="purple" />
+                <Tag label="User" color="blue" />
               </td>
-              <td className="px-4 py-3 text-gray-600">Mar 4, 2024</td>
-              <td className="px-4 py-3 text-gray-600">July 4, 2022</td>
-              <td className="px-4 py-3">
-                <button onClick={() => handleDelete(user.id)}>⋮</button>
+              <td className="px-4 py-3 text-gray-600">{user.createdDate}</td>
+              <td className="px-4 py-3 relative">
+                <div className="relative inline-block text-left">
+                  <button
+                    onClick={() =>
+                      setUsers((prev) =>
+                        prev.map((u) =>
+                          u.id === user.id ? { ...u, showMenu: !u.showMenu } : { ...u, showMenu: false }
+                        )
+                      )
+                    }
+                    className="text-gray-600 hover:text-black"
+                  >
+                    <MoreVertical size={18} />
+                  </button>
+
+                  {user.showMenu && (
+                    <div className="absolute right-0 mt-2 w-28 bg-white border border-gray-200 rounded shadow-lg z-10">
+                      <button
+                        onClick={() => {
+                          handleUserClick(user);
+                          setUsers((prev) => prev.map((u) => ({ ...u, showMenu: false })));
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* ADD USER MODAL */}
+      {/* ADD USER MODAL (qorunur) */}
       <AnimatePresence>
         {showAddModal && (
           <motion.div
@@ -228,107 +297,74 @@ const updateField = async (field) => {
       {/* USER DETAIL MODAL */}
       <AnimatePresence>
         {showDetailModal && selectedUser && (
-        <motion.div
-        className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <motion.div
-          className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-4xl relative flex gap-10 items-start"
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0.9 }}
-        >
-          <button
-            className="absolute top-4 right-4 text-gray-400 hover:text-black text-2xl"
-            style={{ right: '1.5rem' }}
-            onClick={() => {
-              setShowDetailModal(false);
-              setEditingField(null);
-            }}
-          >✕</button>
-      
-          {/* LEFT: Avatar */}
-          <div className="w-1/3 flex flex-col items-center text-center bg-gray-50 rounded-xl p-5 shadow-inner">
-            <img
-              src={`https://localhost:7282/${selectedUser.userImagePath}`}
-              alt="User Avatar"
-              className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-md"
-            />
-            <h3 className="mt-4 text-xl font-semibold text-gray-800">{selectedUser.name} {selectedUser.surname}</h3>
-            <p className="text-gray-500 text-sm">{selectedUser.email}</p>
-          </div>
-      
-          {/* RIGHT: Fields */}
-          <div className="w-2/3 space-y-5 pt-6">
-            {['name', 'surname', 'email', 'phone'].map((field) => (
-              <div key={field} className="flex items-center gap-4">
-                <label className="w-24 font-medium text-gray-600 capitalize">{field}:</label>
-                {editingField === field ? (
-                  <input
-                    type="text"
-                    value={editForm[field]}
-                    onChange={(e) =>
-                      setEditForm({ ...editForm, [field]: e.target.value })
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') updateField(field);
-                    }}
-                    className="border-b w-full border-gray-300 focus:outline-none focus:border-blue-500 px-2 py-1 text-gray-800"
-                  />
-                ) : (
-                  <div className="flex justify-between items-center w-full">
-                    <span className="text-gray-800 text-base">{selectedUser[field]}</span>
-                    <button
-                      className="text-gray-400 hover:text-blue-600 transition-transform transform hover:scale-110 ml-2"
-                      onClick={() => {
-                        setEditingField(field);
-                        setEditForm({ ...editForm, [field]: selectedUser[field] });
-                      }}
-                    >
-                      ✏️
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
+          <motion.div
+            className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-4xl relative flex gap-10 items-start"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+            >
+              <button
+                className="absolute top-4 right-4 text-gray-400 hover:text-black text-2xl"
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setEditingField(null);
+                }}
+              >✕</button>
 
-            <div className="flex items-center gap-4">
-              <label className="w-24 font-medium text-gray-600 capitalize">Role:</label>
-              {editingField === 'userRole' ? (
-                <select
-                  value={editForm.userRole}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, userRole: e.target.value })
-                  }
-                  onBlur={() => updateField('userRole')}
-                  className="border rounded px-3 py-1 text-gray-800"
-                >
-                  <option value="Admin">Admin</option>
-                  <option value="User">User</option>
-                </select>
-              ) : (
-                <div className="flex justify-between items-center w-full">
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded">{selectedUser.userRole}</span>
-                  <button
-                    className="text-gray-400 hover:text-blue-600 transition-transform transform hover:scale-110 ml-2"
-                    onClick={() => {
-                      setEditingField('userRole');
-                      setEditForm({ ...editForm, userRole: selectedUser.userRole });
-                    }}
+              <div className="w-1/3 flex flex-col items-center text-center bg-gray-50 rounded-xl p-5 shadow-inner">
+                <img
+                  src={`https://localhost:7282/${selectedUser.userImagePath}`}
+                  alt="User Avatar"
+                  className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-md"
+                />
+                <h3 className="mt-4 text-xl font-semibold text-gray-800">{editForm.name} {editForm.surname}</h3>
+                <p className="text-gray-500 text-sm">{editForm.email}</p>
+              </div>
+
+              <div className="w-2/3 space-y-5 pt-6">
+                {['name', 'surname', 'email', 'phone'].map((field) => (
+                  <div key={field} className="flex items-center gap-4">
+                    <label className="w-24 font-medium text-gray-600 capitalize">{field}:</label>
+                    <input
+                      type="text"
+                      value={editForm[field]}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, [field]: e.target.value })
+                      }
+                      className="border-b w-full border-gray-300 focus:outline-none focus:border-blue-500 px-2 py-1 text-gray-800"
+                    />
+                  </div>
+                ))}
+
+                <div className="flex items-center gap-4">
+                  <label className="w-24 font-medium text-gray-600 capitalize">Role:</label>
+                  <select
+                    value={editForm.userRole}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, userRole: e.target.value })
+                    }
+                    className="border rounded px-3 py-1 text-gray-800"
                   >
-                    ✏️
-                  </button>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                  </select>
                 </div>
-              )}
-            </div>
-             
-          </div>
-        </motion.div>
-      </motion.div>
-      
-      
+
+                <button
+                  onClick={() => updateAllFields()}
+                  className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Save
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
