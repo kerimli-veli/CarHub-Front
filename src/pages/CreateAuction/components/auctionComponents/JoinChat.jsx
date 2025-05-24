@@ -207,7 +207,6 @@ const JoinChat = ({ auctionId, auctionData }) => {
 
       await connection.stop();
       hasConnected.current = false;
-      sessionStorage.removeItem(`joined_auction_${auctionId}`);
       navigate("/auctionList");
       window.location.reload();
     } catch (err) {

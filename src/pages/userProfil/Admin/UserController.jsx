@@ -3,6 +3,8 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MoreVertical } from 'lucide-react';
 import getUserFromToken from '../../common/GetUserFromToken';
+import Cookies from "js-cookie";
+
 
 const BASE_URL = 'https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/User';
 
@@ -76,19 +78,28 @@ const UserController = () => {
   };
 
   const handleDelete = async (id) => {
-  const token = getUserFromToken(); 
-
-  try {
-    await axios.delete(`${BASE_URL}/Remove?id=${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    fetchUsers();
-  } catch (err) {
-    console.error('Failed to delete user:', err);
-  }
-};
+    const userInfo = getUserFromToken();
+        const token = Cookies.get("accessToken");
+  
+    try {
+      const response = await fetch(`${BASE_URL}/Remove?id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      fetchUsers();
+    } catch (err) {
+      console.error('Failed to delete user:', err);
+    }
+  };
+  
 
 
   const handleUserClick = (user) => {
@@ -125,8 +136,6 @@ const UserController = () => {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        // **Diqqət**: FormData üçün Content-Type **TƏYİN ETMƏ**
-        // fetch özü multipart/form-data header əlavə edir
       },
       body: formData,
     });
@@ -169,18 +178,15 @@ const UserController = () => {
       <table className="w-full border-t text-left">
         <thead>
           <tr className="text-sm text-gray-500">
-            <th className="px-4 py-2"><input type="checkbox" /></th>
             <th className="px-4 py-2">User name</th>
             <th className="px-4 py-2">Access</th>
-            <th className="px-4 py-2">Last active</th>
             <th className="px-4 py-2">Date added</th>
-            <th className="px-4 py-2"></th>
+            <th className="px-4 py-2">Options</th>
           </tr>
         </thead>
         <tbody>
           {users.map(user => (
             <tr key={user.id} className="hover:bg-gray-50">
-              <td className="px-4 py-3"><input type="checkbox" /></td>
               <td
                 className="flex items-center gap-3 px-4 py-3 cursor-pointer"
                 onClick={() => handleUserClick(user)}
@@ -241,7 +247,6 @@ const UserController = () => {
         </tbody>
       </table>
 
-      {/* ADD USER MODAL (qorunur) */}
       <AnimatePresence>
         {showAddModal && (
           <motion.div
@@ -319,7 +324,7 @@ const UserController = () => {
 
               <div className="w-1/3 flex flex-col items-center text-center bg-gray-50 rounded-xl p-5 shadow-inner">
                 <img
-                  src={`https://localhost:7282/${selectedUser.userImagePath}`}
+                  src={`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${selectedUser.userImagePath}`}
                   alt="User Avatar"
                   className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-md"
                 />

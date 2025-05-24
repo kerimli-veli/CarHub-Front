@@ -1,18 +1,33 @@
 import React from 'react';
 import { Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 
 const CarCardAuction = ({ car, selectedCarId, onSelect, userId }) => {
   const isSelected = selectedCarId === car.id;
+  const isAnotherSelected = selectedCarId && !isSelected;
+  const navigate = useNavigate();
+
 
   return (
-    <div className={`relative w-70 m-4 p-4 shadow-lg rounded-2xl border transition-all duration-300 ${isSelected ? 'border-blue-500' : 'border-gray-200'}`}>
+    <div
+      className={`relative w-70 m-4 p-4 shadow-lg rounded-2xl border transition-all duration-300 
+        ${isSelected ? 'border-blue-500' : 'border-gray-200'} 
+        ${isAnotherSelected ? 'opacity-50' : 'opacity-100'}
+      `}
+    >
       <div className="flex justify-between items-center mb-2">
         <h2 className="font-semibold overflow-hidden text-ellipsis text-lg whitespace-nowrap">
           {car.brand} {car.model}
         </h2>
         <div
-          onClick={() => onSelect(car.id)} // Seçim funksiyasını tetik edirik
-          className={`w-5 h-5 rounded-sm border-2 cursor-pointer flex items-center justify-center ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-400'}`}
+          onClick={() => {
+            if (!isAnotherSelected) onSelect(car.id);
+          }}
+          className={`w-5 h-5 rounded-sm border-2 cursor-pointer flex items-center justify-center transition 
+            ${isSelected ? 'border-blue-500 bg-blue-500' : 'border-gray-400'}
+            ${isAnotherSelected ? 'pointer-events-none' : ''}
+          `}
         >
           {isSelected && <Check size={14} className="text-white" />}
         </div>
@@ -32,9 +47,13 @@ const CarCardAuction = ({ car, selectedCarId, onSelect, userId }) => {
       </div>
       <div className="flex justify-between items-center mt-3">
         <span className="text-xl font-bold">{car.price}</span>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+        <button
+          onClick={() => navigate(`/carDetails/${car.id}`)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+        >
           Edit Car
         </button>
+
       </div>
     </div>
   );

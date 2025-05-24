@@ -54,11 +54,23 @@ function AppRoutes() {
       if (connection) {
         registerOnNotification((message) => {
           toast.info(message.message);
-
+        
           if (message.message?.toLowerCase().includes("auction time out")) {
+            localStorage.removeItem("activeAuction"); 
             navigate("/auctionList");
-          }          
+          }
+        
+          if (message.message?.toLowerCase().includes("auction was won by")) {
+            const user = getUserFromToken();
+            const winnerName = message.message.split("Auction was won by")[1]?.trim();
+        
+            if (user && winnerName && user.name !== winnerName) {
+              localStorage.removeItem("activeAuction"); 
+              window.dispatchEvent(new Event("auctionEnded"));
+            }
+          }
         });
+        
       }
     };
   

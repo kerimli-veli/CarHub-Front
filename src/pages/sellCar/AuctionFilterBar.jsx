@@ -19,14 +19,14 @@ const AuctionFilterBar = ({ selectedCarId }) => {
 
   const handleApply = async () => {
   if (!selectedCarId || !startTime || !endTime || !price) {
-    alert("Zəhmət olmasa bütün sahələri doldurun.");
+    alert("Please enter all options");
     return;
   }
 
   const user = getUserFromToken();
 
   if (!user || !user.id) {
-    alert("İstifadəçi tapılmadı.");
+    alert("User not found.");
     return;
   }
 
@@ -64,7 +64,7 @@ const AuctionFilterBar = ({ selectedCarId }) => {
 
   } catch (error) {
     console.error("Auction creation failed:", error);
-    alert("Auction yaradılarkən xəta baş verdi.");
+    alert("Eror when creating auction.");
   }
 };
 
@@ -118,12 +118,7 @@ const AuctionFilterBar = ({ selectedCarId }) => {
           </AnimatePresence>
         </div>
 
-        <DropdownButton
-          icon={<FaHourglassHalf size={16} />}
-          label="Status"
-          active={active === "status"}
-          onClick={() => setActive("status")}
-        />
+        
       </div>
 
       <div className="flex items-center gap-3">

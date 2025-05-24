@@ -21,7 +21,7 @@ const AuctionList = () => {
         console.error("Token tapılmadı və ya istifadəçi məlumatı alınmadı.");
         return;
       }
-
+  
       const newConnection = new signalR.HubConnectionBuilder()
         .withUrl('https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/auctionHub', {
           accessTokenFactory: () => {
@@ -34,11 +34,23 @@ const AuctionList = () => {
         })
         .withAutomaticReconnect()
         .build();
-
-      newConnection.on('ParticipantJoined', (participant) => {
+  
+      newConnection.on('ReceiveNotification', (participant) => {
         setJoinedParticipants(prev => [...prev, participant]);
       });
-
+  
+      newConnection.on('ReceiveNotification', () => {
+        fetchAuctions(selectedFilter);
+      });
+  
+      newConnection.on('AuctionCreated', () => {
+        fetchAuctions(selectedFilter);
+      });
+  
+      newConnection.on('AuctionEnded', () => {
+        fetchAuctions(selectedFilter);
+      });
+  
       try {
         await newConnection.start();
         setConnection(newConnection);
@@ -46,15 +58,16 @@ const AuctionList = () => {
         console.error("SignalR bağlantısı qurularkən xəta:", err);
       }
     };
-
+  
     connectToSignalR();
-
+  
     return () => {
       if (connection) {
         connection.stop();
       }
     };
-  }, []);
+  }, [selectedFilter]); 
+  
 
   const handleJoinAuction = async (auctionId) => {
     try {

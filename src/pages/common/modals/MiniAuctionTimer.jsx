@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { startConnection, registerOnNotification } from "../../../assets/Services/notificationService";
+
 
 const MiniAuctionTimer = () => {
   const [timeLeft, setTimeLeft] = useState({});
@@ -18,6 +20,18 @@ const MiniAuctionTimer = () => {
       startCountdown(new Date(parsed.endTime));
     }
   }, []);
+
+  useEffect(() => {
+    const handleAuctionEnded = () => {
+      setAuction(null);
+    };
+  
+    window.addEventListener("auctionEnded", handleAuctionEnded);
+    return () => {
+      window.removeEventListener("auctionEnded", handleAuctionEnded);
+    };
+  }, []);
+  
 
   const startCountdown = (endTime) => {
     const interval = setInterval(() => {
@@ -58,16 +72,9 @@ const MiniAuctionTimer = () => {
       setTimeLeft({ days, hours, minutes, seconds });
     }, 1000);
   };
+  
+  
 
-  // useEffect(() => {
-  //   const stored = localStorage.getItem("activeAuction");
-  //   const parsed = stored ? JSON.parse(stored) : null;
-  
-  //   if (parsed && parsed.status === "ended" && parsed.auctionId !== currentAuctionId) {
-  //     localStorage.removeItem("activeAuction");
-  //   }
-  // }, [currentAuctionId]);
-  
 
   const handleMouseDown = (e) => {
     setDragging(true);
