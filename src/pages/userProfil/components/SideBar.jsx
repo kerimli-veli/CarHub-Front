@@ -14,6 +14,7 @@ import {
   FaPlusSquare,
   FaLifeRing,
   FaSignOutAlt,
+  FaBell 
 } from "react-icons/fa";
 import getUserFromToken from "./../../common/GetUserFromToken";
 import CarFavorites from "./CarFavorites";
@@ -35,29 +36,36 @@ const getMenuItems = (isAdmin) => [
     label: isAdmin ? "User Baskets" : "Basket",
     path: "cart",
   },
-  isAdmin
-    ? { id: "category", icon: <FaCog />, label: "Category Controller", path: "category" }
-    : { id: "cards", icon: <FaCreditCard />, label: "Card Manager", path: "cards" },
   { id: "account", icon: <FaUser />, label: "Account", path: "account" },
-  isAdmin
-    ? { id: "productController", icon: <FaCog />, label: "Product Controller", path: "product" }
-    : { id: "transactions", icon: <FaExchangeAlt />, label: "Transactions", path: "transactions" },
   { id: "favorites", icon: <FaHeart />, label: "Favorites", path: "favorites" },
   { id: "myCars", icon: <FaCar />, label: "My Cars", path: "myCars" },
   { id: "addCar", icon: <FaPlusSquare />, label: "Add Car", path: "addCar" },
-  { id: "notifications", icon: <FaPlusSquare />, label: "Your notifications", path: "notifications" },
+  { id: "notifications", icon: <FaBell  />, label: "Your notifications", path: "notifications" },
 ];
 
-const getOtherMenu = (isAdmin) => [
+const getOtherMenu = (isAdmin) => (
   isAdmin
-    ? { id: "userController", icon: <FaUser />, label: "User Controller", path: "userController" }
-    : { id: "help", icon: <FaLifeRing />, label: "Help Center", path: "help" },
-];
+    ? [
+        { id: "productController", icon: <FaCog />, label: "Product Controller", path: "product" },
+        { id: "userController", icon: <FaUser />, label: "User Controller", path: "userController" },
+        { id: "category", icon: <FaCog />, label: "Category Controller", path: "category" }
+      ]
+    : [
+        { id: "help", icon: <FaLifeRing />, label: "Help Center", path: "help" },
+      ]
+);
+
 
 const Sidebar = () => {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleLogout = () => {
+    Cookies.remove("accessToken")
+    
+    navigate('/');
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -192,7 +200,9 @@ const Sidebar = () => {
           whileTap={{ scale: 0.97 }}
           className="px-4 pb-6"
         >
-          <div className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-800 transition-all duration-300">
+          <div
+          onClick={handleLogout}
+           className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer text-sm text-gray-700 dark:text-gray-300 hover:bg-red-100 dark:hover:bg-red-800 transition-all duration-300">
             <FaSignOutAlt />
             Logout
           </div>
@@ -223,7 +233,6 @@ const Sidebar = () => {
           {location.pathname === "/userProfile/myCars" && "Manage your cars"}
           {location.pathname === "/userProfile/addCar" && "Add your car"}
           {location.pathname === "/userProfile/userController" && "User Management Panel"}
-          {location.pathname === "/userProfile/help" && "Help Center"} 
           {location.pathname === "/userProfile/notifications" && "My Notifications"} 
 
         </motion.div>
@@ -244,7 +253,7 @@ const Sidebar = () => {
               <UserController />
             )}
             {location.pathname === "/userProfile/help" && !user?.isAdmin && (
-              <div>Help Center İçeriği</div>
+              <div></div>
             )}
           </AnimatePresence>
         </div>

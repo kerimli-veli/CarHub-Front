@@ -7,7 +7,6 @@ import ElectricVehicles from './components/ElectricVehicles'
 import Filter from './components/Filter';
 import Background from './../../assets/images/Background.mp4'; 
 import Footer from './components/Footer';
-import CarSaleSection from './components/CarSaleSection';
 import ActionCards from './components/ActionsCard';
 import { motion } from "framer-motion";
 import ChooseTemplateModal from '../common/modals/ChooseTemplateModal';
@@ -65,7 +64,6 @@ const Landing = () => {
         <ActionCards/>
         <BrowseByType />
         <ElectricVehicles/>
-        <CarSaleSection/>
       </div>
 
       <div className="mt-auto w-full">

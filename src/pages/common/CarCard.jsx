@@ -32,7 +32,7 @@ const CarCard = ({ car }) => {
 
   return (
     <div className="bg-white rounded-2xl shadow-md relative transition hover:shadow-lg overflow-hidden">
-      {/* Image with overlay info */}
+      
       <div className="relative h-52 w-full">
         <img
           src={car.carImagePaths?.[0]?.imagePath || "https://via.placeholder.com/400"}

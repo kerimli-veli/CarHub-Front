@@ -135,7 +135,7 @@ const FilterSidebar = () => {
     }
   }, [yearRange, kilometers]);
   
-  const priceChangedRef = useRef(false); // yeni dəyişən əlavə et
+  const priceChangedRef = useRef(false); 
 
 useEffect(() => {
   if (priceChangedRef.current) {
@@ -153,9 +153,9 @@ useEffect(() => {
 
 useEffect(() => {
   if (selectedBrand === "") {
-    setSelectedModel("");  // Brand sıfırlanarsa, model sıfırlansın
+    setSelectedModel("");  
     const params = new URLSearchParams(location.search);
-    params.delete("Model"); // Model parametresi URL-dən silinsin
+    params.delete("Model"); 
     navigate({ search: params.toString() });
   }
 }, [selectedBrand]);
@@ -190,7 +190,7 @@ return (
     <h2 className="text-base font-semibold mb-4">Filter</h2>
 
     <div className="relative flex mb-4 bg-gray-100 rounded-full p-1">
-  {/* Moving indicator */}
+  
   <div
     className={`absolute top-1 bottom-1 w-1/2 rounded-full bg-blue-500 transition-all duration-300 ease-in-out ${
       carType === "Used" ? "left-1" : "left-1/2"
@@ -235,9 +235,17 @@ return (
     <select
       value={selectedBrand}
       onChange={(e) => {
-        setSelectedBrand(e.target.value);
-        updateParams("Brand", e.target.value);
+        const newBrand = e.target.value;
+      
+        setSelectedBrand(newBrand);
+        setSelectedModel(""); // Model sıfırlansın
+        updateParams("Brand", newBrand);
+      
+        const params = new URLSearchParams(location.search);
+        params.delete("Model"); // URL-dən model silinsin
+        navigate({ search: params.toString() });
       }}
+      
       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-blue-400"
     >
       <option value="">Brand</option>

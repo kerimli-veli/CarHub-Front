@@ -48,7 +48,7 @@ const CarListing = () => {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-semibold mb-10 text-center sm:text-left">Listing</h1>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 min-h-[600px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 min-h-[400px]">
           {currentCars.length === 0 ? (
             <div className="col-span-full text-center mt-20 flex flex-col items-center justify-center">
               <MagnifyingGlassIcon className="h-16 w-16 text-gray-400 mb-4" />
