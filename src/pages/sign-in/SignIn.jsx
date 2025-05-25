@@ -93,31 +93,11 @@ const SignIn = () => {
               <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="w-full p-3 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
               <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="w-full p-3 mt-4 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300" />
 
-              <div className="flex items-center justify-between mt-2">
-                <label className="flex items-center">
-                  <input type="checkbox" className="mr-2" />
-                  <span className="text-sm text-gray-600">Keep me signed in</span>
-                </label>
-                <a href="#" className="text-sm text-indigo-600">Lost Your Password?</a>
-              </div>
-
               <motion.button type="submit" disabled={loading} className="w-full mt-4 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-3" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
                 <FaSignInAlt />
                 {loading ? "Loading..." : "Login"}
               </motion.button>
 
-              <div className="mt-6 text-center text-gray-500">OR</div>
-
-              <div className="flex gap-4 mt-4">
-                <motion.button className="flex-1 flex items-center justify-center gap-2 p-3 border rounded-lg text-blue-600 hover:text-blue-800 transition-all duration-300" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                  <img src="https://i.postimg.cc/wxJjyrrZ/Icon-Facebook.png" alt="Facebook Icon" />
-                  Login with Facebook
-                </motion.button>
-                <motion.button className="flex-1 flex items-center justify-center gap-2 p-3 border rounded-lg text-red-600 hover:text-red-800 transition-all duration-300" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                  <img src="https://i.postimg.cc/fb4HLJS6/Icon-Google.png" alt="Google Icon" />
-                  Login with Google
-                </motion.button>
-              </div>
             </motion.form>
           )}
         </motion.div>

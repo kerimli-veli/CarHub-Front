@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import getUserFromToken from './../../common/GetUserFromToken';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { UserIcon, Clock, Mail } from 'lucide-react';
+import NotificatinList from './NotificationList'
 
 const Notifications = () => {
   const [messages, setMessages] = useState([]);
@@ -61,7 +62,8 @@ const Notifications = () => {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Bildirişlər</h2>
-      <ul className="space-y-4">
+      <NotificatinList/>
+      <ul className="space-y-4 mt-[4%]">
         {messages.map((msg) => (
           <li key={msg.id}>
             <div
