@@ -111,6 +111,7 @@ const JoinChat = ({ auctionId, auctionData }) => {
 
         
         connection.on("AuctionEnded", async (data) => {
+          localStorage.setItem("finalPrice", data.finalPrice);
         const winnerMsg = `🎉 Təbriklər ${data.winner}, maşını qazandınız! Son təklif: ${data.finalPrice} AZN`;
         setParticipantMessages((prev) => [...prev, winnerMsg]);
         setRemainingSeconds(0);

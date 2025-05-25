@@ -314,7 +314,7 @@ const Cart = ({ onTotalChange }) => {
       {showConfirm && (
         <div className="fixed inset-0 backdrop-blur-sm bg-black/10 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm text-center">
-            <h2 className="text-xl font-semibold mb-4">Sepeti silmek istediğinize emin misiniz?</h2>
+            <h2 className="text-xl font-semibold mb-4">Are you sure delete basket?</h2>
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => {

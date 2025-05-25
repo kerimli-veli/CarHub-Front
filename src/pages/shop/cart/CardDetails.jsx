@@ -167,7 +167,7 @@ const CardDetails = ({ total = 0 }) => {
           onClick={() => setShowModal(true)}
           className="w-full bg-blue-400 hover:bg-blue-500 transition-all duration-300 ease-in-out transform hover:scale-105 text-white font-semibold py-3 rounded-lg"
         >
-          Devam Et ➞
+          Continue ➞
         </button>
       </div>
 

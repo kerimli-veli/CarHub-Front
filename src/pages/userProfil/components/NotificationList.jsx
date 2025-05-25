@@ -72,7 +72,6 @@ const NotificationList = () => {
       if (!res.ok) throw new Error("Rejection failed");
 
       setStatusMessage({ type: 'success', text: 'Notification successfully removed.' });
-
       // Remove from UI
       setNotifications(prev => prev.filter(n => n.id !== id));
     } catch (err) {
@@ -82,6 +81,8 @@ const NotificationList = () => {
   };
 
   if (loading) return <div className="text-center text-gray-500">Loading notifications...</div>;
+
+    const finalPrice = localStorage.getItem("finalPrice");
 
   return (
     <div>
@@ -97,11 +98,14 @@ const NotificationList = () => {
         <ul className="space-y-4">
           {notifications.map((item) => (
             <li key={item.id} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-              <h3 className="text-lg font-semibold text-blue-600 mb-1">{item.title}</h3>
-              <p className="text-gray-700 mb-4">{item.message}</p>
+              <h3 className="text-lg font-semibold text-blue-600 mb-1">{item.message}</h3>
+              <p className="text-gray-700 mb-4">{finalPrice} Azn</p>
               <div className="flex space-x-4">
                 <button
-                  onClick={() => handleApprove(item)}
+                  onClick={async () => {
+                    await handleApprove(item);
+                    await handleReject(item.id);
+                  }}
                   className="flex items-center px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded-lg transition"
                 >
                   <CheckCircle className="w-4 h-4 mr-2" /> Approve
@@ -113,6 +117,7 @@ const NotificationList = () => {
                   <XCircle className="w-4 h-4 mr-2" /> Cancel
                 </button>
               </div>
+
             </li>
           ))}
         </ul>
