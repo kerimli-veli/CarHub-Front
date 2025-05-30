@@ -26,7 +26,7 @@ const Cart = ({ onTotalChange }) => {
 
   const fetchCart = async () => {
     if (!userId || !accessToken) {
-      setCartItems([]);  // 👈 boş dahi olsa cart gösterilecek
+      setCartItems([]);  
       onTotalChange?.(0);
       return;
     }

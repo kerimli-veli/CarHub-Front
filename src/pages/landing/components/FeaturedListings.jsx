@@ -12,7 +12,7 @@ export default function FeaturedListings() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const itemsPerPage = 4;
+  const itemsPerPage = 3;
   const containerVariants = {
     hidden: { opacity: 0, y: -50, x: -50 },
     visible: {
@@ -143,7 +143,7 @@ export default function FeaturedListings() {
           </button>
         </div>
   
-        <div className="py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="py-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {cars.slice(currentIndex, currentIndex + itemsPerPage).map((car, index) => (
   <motion.div
     key={car.id}

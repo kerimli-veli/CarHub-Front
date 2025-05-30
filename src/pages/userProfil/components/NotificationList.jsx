@@ -11,12 +11,15 @@ const NotificationList = () => {
 
   useEffect(() => {
     const fetchNotifications = async () => {
+      const userInfo = getUserFromToken();
       try {
-        const res = await fetch('https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Notification/GetAllNotifications?UserId=1');
+        const res = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Notification/GetAllNotifications?UserId=${userInfo.id}`);
         if (!res.ok) throw new Error("Failed to fetch notifications");
 
         const json = await res.json();
+        console.log(json);
         const filtered = json.data.filter(item => item.title.startsWith("newUser"));
+        console.log(filtered);
         setNotifications(filtered);
       } catch (err) {
         console.error("Error fetching notifications:", err);
@@ -72,7 +75,6 @@ const NotificationList = () => {
       if (!res.ok) throw new Error("Rejection failed");
 
       setStatusMessage({ type: 'success', text: 'Notification successfully removed.' });
-      // Remove from UI
       setNotifications(prev => prev.filter(n => n.id !== id));
     } catch (err) {
       console.error("Rejection error:", err);

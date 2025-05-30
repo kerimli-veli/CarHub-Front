@@ -415,18 +415,6 @@ const Header = ({ onAuctionClick, bgColor = "bg-[#050B20]" }) => {
   </div>
 </div>
 
-<div
-  id="profile-drawer-backdrop"
-  className="fixed inset-0 z-[99] backdrop-blur-sm bg-black/30"
-/>
-
-<style>{`
-  @keyframes fadeInProfile {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-`}</style>
-
   </>
 )}
     </>

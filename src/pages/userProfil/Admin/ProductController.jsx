@@ -37,7 +37,7 @@ const ProductController = () => {
   const itemsPerPage = 10;
 
   const getProducts = () => {
-    axios.get('https://localhost:7282/api/Product/GetAll')
+    axios.get('https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Product/GetAll')
       .then((res) => setProducts(res.data))
       .catch((err) => console.error('Failed to fetch products', err));
   };
@@ -46,7 +46,7 @@ const ProductController = () => {
     if (value.trim() === '') {
       getProducts();
     } else {
-      axios.get(`https://localhost:7282/api/Product/GetByNameProduct?name=${value}`)
+      axios.get(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Product/GetByNameProduct?name=${value}`)
         .then((res) => setProducts(res.data))
         .catch((err) => console.error('Search failed', err));
     }
@@ -69,15 +69,32 @@ const ProductController = () => {
   };
 
   const handleDelete = async () => {
-    try {
-      await axios.post(`https://localhost:7282/api/Product/DeleteProduct`, { id: deleteId });
-      setShowDeleteModal(false);
-      getProducts();
-      setCurrentPage(1);
-    } catch (err) {
-      console.error('Delete failed', err);
+  try {
+    const response = await fetch(
+      'https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Product/DeleteProduct',
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: deleteId,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Delete failed');
     }
-  };
+
+    setShowDeleteModal(false);
+    getProducts();
+    setCurrentPage(1);
+  } catch (err) {
+    console.error('Delete failed', err);
+  }
+};
+
 
   useEffect(() => {
     getProducts();
@@ -108,7 +125,7 @@ const ProductController = () => {
         formData.append('imagePath', file);
       });
 
-      await axios.post('https://localhost:7282/api/Product/AddProduct', formData);
+      await axios.post('https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Product/AddProduct', formData);
       setShowModal(false);
       getProducts();
       setCurrentPage(1);
@@ -243,26 +260,31 @@ const ProductController = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg text-center">
-            <h3 className="text-lg font-bold mb-4">Bu ürünü silmek istiyor musunuz?</h3>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
-              >
-                Hayır
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Evet, Sil
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 space-y-5 text-center animate-in fade-in-0 zoom-in-95">
+      <div className="text-2xl font-semibold text-gray-800">Delete Item</div>
+      <p className="text-gray-500 text-sm">
+        Are you sure you want to delete this item? This action cannot be undone.
+      </p>
+      <div className="flex justify-center gap-3 pt-2">
+        <button
+          onClick={() => setShowDeleteModal(false)}
+          className="px-4 py-2 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleDelete}
+          className="px-4 py-2 text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+        >
+          Yes, delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 };

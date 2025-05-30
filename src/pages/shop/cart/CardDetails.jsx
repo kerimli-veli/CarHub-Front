@@ -92,12 +92,11 @@ const CardDetails = ({ total = 0 }) => {
       const timeoutId = setTimeout(async () => {
         try {
           const response = await fetch(`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/api/Payment/payment-success?sessionId=${sessionId}`, {
-            method: 'GET',
-            headers: {
-              "Authorization": `Bearer ${accessToken}`
-            }
+            method: 'POST',
+  headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+  body: JSON.stringify({ sessionId })
           });
-  
+          
           if (response.ok) {
             console.log("Payment successful! Cart cleared and order created.");
             alert("Payment successful! Your order has been created.");

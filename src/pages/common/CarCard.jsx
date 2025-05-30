@@ -35,7 +35,8 @@ const CarCard = ({ car }) => {
       
       <div className="relative h-52 w-full">
         <img
-          src={car.carImagePaths?.[0]?.imagePath}
+        src={`https://carhubwebappp-c3f2fwgtfaf4bygr.italynorth-01.azurewebsites.net/${car.carImagePaths?.[0]?.mainImage}`}
+
           alt={car.model}
           className="w-full h-full max-w-full max-h-full object-cover"
         />

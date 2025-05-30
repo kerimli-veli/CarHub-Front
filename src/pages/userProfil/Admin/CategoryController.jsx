@@ -150,13 +150,13 @@ const CategoryController = () => {
             <input
               value={newCategoryName}
               onChange={(e) => setNewCategoryName(e.target.value)}
-              placeholder="Kategori adı girin"
+              placeholder="Enter category name"
               className="border border-gray-300 p-2 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
             <textarea
               value={newCategoryDescription}
               onChange={(e) => setNewCategoryDescription(e.target.value)}
-              placeholder="Açıklama girin"
+              placeholder="Enter description"
               className="border border-gray-300 p-2 rounded-lg w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
             <div className="flex gap-2">
@@ -226,13 +226,13 @@ const CategoryController = () => {
                   type="text"
                   value={editData.name}
                   onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                  placeholder="Kategori adı"
+                  placeholder="Category Name"
                   className="w-full border border-gray-300 p-2 rounded-md"
                 />
                 <textarea
                   value={editData.description}
                   onChange={(e) => setEditData({ ...editData, description: e.target.value })}
-                  placeholder="Açıklama"
+                  placeholder="Description"
                   className="w-full border border-gray-300 p-2 rounded-md"
                 />
                 <div className="flex justify-end">
